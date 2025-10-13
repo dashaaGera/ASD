@@ -23,5 +23,63 @@ public:
     void clear() noexcept;
 };
 
+template <class T>
+Stack<T>::Stack(int size) : _data(new T[size]), _size(size), _top(-1) {}
+
+template <class T>
+Stack<T>::~Stack() {
+    delete[] _data;
+}
+
+template <class T>
+void Stack<T>::push(const T& val) {
+    if (is_full())
+        throw std::logic_error("Stack is full");
+    _data[++_top] = val;
+}
+
+template <class T>
+void Stack<T>::pop() {
+    if (is_empty())
+        throw std::logic_error("Stack is empty");
+    --_top;
+}
+
+template <class T>
+inline T Stack<T>::top() const {
+    if (is_empty())
+        throw std::logic_error("Stack is empty");
+    return _data[_top];
+}
+
+template <class T>
+inline int Stack<T>::top_index() const noexcept {
+    return _top;
+}
+
+template <class T>
+inline T* Stack<T>::data() const noexcept {
+    return _data;
+}
+
+template <class T>
+inline int Stack<T>::size() const noexcept {
+    return _size;
+}
+
+template <class T>
+inline bool Stack<T>::is_empty() const noexcept {
+    return _top == -1;
+}
+
+template <class T>
+inline bool Stack<T>::is_full() const noexcept {
+    return _top == _size - 1;
+}
+
+template <class T>
+void Stack<T>::clear() noexcept {
+    _top = -1;
+}
 
 #endif
