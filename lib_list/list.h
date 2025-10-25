@@ -48,12 +48,18 @@ List<T>::List():_head(nullptr),_tail(nullptr),_count(0){}
 
 template <class T>
 List<T>::List(const List& other) : _head(nullptr), _tail(nullptr), _count(0) {
-	Node<T>* cur = other._head;
-	while (cur != nullptr) {
-		push_back(cur->value);  
-		cur = cur->next;
+	_head = new Node<T>(*other._head);
+	Node<T>* tmpNode = _head;
+	Node<T>* tmpNode1 = _head->next;
+	while (tmpNode1 != nullptr) {
+		tmpNode->next = new Node<T>(tmpNode1->value);
+		tmpNode = tmpNode->next;
+		tmpNode1 = tmpNode1->next;
 	}
+	_tail = tmpNode;
+	_count = other.size();
 }
+
 
 template <class T>
 List<T>::~List() {

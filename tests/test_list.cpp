@@ -44,6 +44,19 @@ TEST(TestList, copy_constructor_works_corretly) {
     EXPECT_EQ(copy.tail()->value, 3);
 }
 
+TEST(TestList,nodes_store_in_different_places_when_copying) {
+    List<int> original;
+    original.push_back(1);
+    original.push_back(2);
+    original.push_back(3);
+
+    List<int> copy(original);
+
+    EXPECT_NE(copy.head(), original.head());
+    EXPECT_NE(copy.head()->next, original.head()->next);   
+    EXPECT_NE(copy.tail(), original.tail());
+}
+
 TEST(TestList, is_empty_work_correctly) {
     List<int> l1;
     EXPECT_TRUE(l1.is_empty());
