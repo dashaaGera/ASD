@@ -39,7 +39,7 @@ public:
 	void erase(int pos);
 	void erase(Node<T>* node);
 
-	Node<T>* find(const T& val);
+	Node<T>* find(const T& val) const;
 
 };
 
@@ -218,5 +218,16 @@ void List<T>::erase(int pos) {
 	}
 }
 
+template <class T>
+Node<T>* List<T>::find(const T& val) const {
+	Node<T>* cur = _head;
+
+	while (cur != nullptr) {
+		if (cur->value == val)
+			return cur;
+		cur = cur->next;
+	}
+	throw std::logic_error("Value not found in the list");
+}
 
 #endif

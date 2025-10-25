@@ -298,3 +298,20 @@ TEST(TestList, erase_with_pos_work_correctly) {
     EXPECT_EQ(l1.tail(), nullptr);
 }
 
+TEST(TestList, find_throw_exception_when_val_not_found) {
+    List<int> list;
+    list.push_back(10);
+    list.push_back(20);
+    ASSERT_THROW(list.find(99), std::logic_error);
+}
+
+TEST(TestList, find_work_correctly) {
+    List<int> list;
+    list.push_back(10);
+    list.push_back(20);
+    Node<int>* result1 = list.find(20);
+    EXPECT_EQ(result1, list.head()->next);
+
+    Node<int>* result2 = list.find(10);
+    EXPECT_EQ(result2, list.head());
+}
