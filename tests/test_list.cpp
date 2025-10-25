@@ -55,6 +55,9 @@ TEST(TestList,nodes_store_in_different_places_when_copying) {
     EXPECT_NE(copy.head(), original.head());
     EXPECT_NE(copy.head()->next, original.head()->next);   
     EXPECT_NE(copy.tail(), original.tail());
+
+    original.push_back(4);
+    EXPECT_NE(copy.size(), original.size());
 }
 
 TEST(TestList, is_empty_work_correctly) {
@@ -342,3 +345,4 @@ TEST(TestList, find_work_correctly) {
     Node<int>* result2 = list.find(10);
     EXPECT_EQ(result2, list.head());
 }
+

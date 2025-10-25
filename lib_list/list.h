@@ -60,7 +60,6 @@ List<T>::List(const List& other) : _head(nullptr), _tail(nullptr), _count(0) {
 	_count = other.size();
 }
 
-
 template <class T>
 List<T>::~List() {
 	while (_head!=nullptr) {
