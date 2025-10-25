@@ -70,4 +70,65 @@ inline Node<T>* List<T>::tail() const {
 	return _tail;
 }
 
+template <class T>
+inline bool List<T>::is_empty() const {
+	return _count == 0;
+}
+
+template <class T>
+void List<T>::push_front(const T& val) noexcept {
+	Node<T>* node = new Node<T>(val,_head);
+	if (is_empty())
+		_tail = node;
+	_head = node;
+	_count++;
+}
+
+
+template <class T>
+void List<T>::push_back(const T& val) noexcept {
+	Node<T>* node = new Node<T>(val);
+	if (is_empty()) {
+		_head = node;
+		_tail = node;
+		_count++;
+		return;
+	}
+	_tail->next = node;
+	_tail = node;
+	_count++;
+}
+
+template <class T>
+void List<T>::insert(Node<T>* node, const T& val) {
+	if (node == nullptr)
+		throw std::logic_error("List is empty");
+	Node<T>* new_node = new Node<T>(val,node->next);
+	node->next = new_node;
+	if (_tail == node)
+		_tail = new_node;
+	_count++;
+}
+
+template <class T>
+void List<T>::insert(int pos, const T& val) {
+	if (pos < 0 || pos > _count)  
+		throw std::logic_error("the position is not on the list");
+	if (pos == 0) 
+		push_front(val);
+
+	else if (pos == _count)  
+		push_back(val);
+	else {
+		Node<T>* cur = _head;
+		int cur_pos = 0;
+		while (cur_pos < pos - 1) {  
+			cur_pos++;
+			cur = cur->next;
+		}
+		insert(cur, val);  
+	}
+}
+
+
 #endif
