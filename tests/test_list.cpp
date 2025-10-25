@@ -30,6 +30,20 @@ TEST(TestList, can_create_with_init_constructor_correctly) {
     EXPECT_EQ(l1.size(), 0);
 }
 
+TEST(TestList, copy_constructor_works_corretly) {
+    List<int> original;
+    original.push_back(1);
+    original.push_back(2);
+    original.push_back(3);
+
+    List<int> copy(original);
+
+    EXPECT_EQ(copy.size(), 3);
+    EXPECT_EQ(copy.head()->value, 1);
+    EXPECT_EQ(copy.head()->next->value, 2);
+    EXPECT_EQ(copy.tail()->value, 3);
+}
+
 TEST(TestList, is_empty_work_correctly) {
     List<int> l1;
     EXPECT_TRUE(l1.is_empty());

@@ -47,6 +47,15 @@ template <class T>
 List<T>::List():_head(nullptr),_tail(nullptr),_count(0){}
 
 template <class T>
+List<T>::List(const List& other) : _head(nullptr), _tail(nullptr), _count(0) {
+	Node<T>* cur = other._head;
+	while (cur != nullptr) {
+		push_back(cur->value);  
+		cur = cur->next;
+	}
+}
+
+template <class T>
 List<T>::~List() {
 	while (_head!=nullptr) {
 		Node<T>* temp = _head;
