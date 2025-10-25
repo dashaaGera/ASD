@@ -130,5 +130,93 @@ void List<T>::insert(int pos, const T& val) {
 	}
 }
 
+template <class T>
+void List<T>::pop_front() {
+	if (is_empty()) 
+		throw std::logic_error("List is empty ");
+	Node<T>* temp = _head;
+	_head = _head->next;
+
+	if (_head == nullptr) 
+		_tail = nullptr; 
+	delete temp;
+	_count--;
+}
+
+template <class T>
+void List<T>::pop_back() {
+	if (is_empty()) {
+		throw std::logic_error("List is empty");
+	}
+	if (_head == _tail) {
+		delete _head;
+		_head = nullptr;
+		_tail = nullptr;
+	}
+	else {
+		Node<T>* cur = _head;
+		while (cur->next != _tail) {
+			cur = cur->next;
+		}
+		delete _tail;
+		_tail = cur;
+		_tail->next = nullptr;
+	}
+	_count--;
+}
+
+template <class T>
+void List<T>::erase(Node<T>* node) {
+	if (node == nullptr) {
+		throw std::logic_error("Node indicates nullptr");
+	}
+
+	if (node == _head) {
+		pop_front();
+		return;
+	}
+
+	if (node == _tail) {
+		pop_back();
+		return;
+	}
+
+	Node<T>* prev = _head;
+	while (prev != nullptr && prev->next != node) {
+		prev = prev->next;
+	}
+
+	if (prev == nullptr) {
+		throw std::logic_error("Node not found in the list");
+	}
+
+	prev->next = node->next;
+	delete node;
+	_count--;
+}
+
+template <class T>
+void List<T>::erase(int pos) {
+	if (pos < 0 || pos >= _count) 
+		throw std::logic_error("The position is not in the list");
+
+	if (pos == 0) 
+		pop_front();
+
+	else if (pos == _count - 1) 
+		pop_back();
+	
+	else {
+		Node<T>* cur = _head;
+		int cur_pos = 0;
+
+		while (cur_pos < pos) {
+			cur_pos++;
+			cur = cur->next;
+		}
+		erase(cur);
+	}
+}
+
 
 #endif
