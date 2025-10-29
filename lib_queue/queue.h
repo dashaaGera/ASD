@@ -10,6 +10,7 @@ class Queue{
     int _count;
 public:
     Queue(int size = 20);
+    Queue(const Queue& other); 
     ~Queue();
 
     inline T head() const;
@@ -27,6 +28,19 @@ public:
 
 template <class T>
 Queue<T>::Queue(int size) : _data(new T[size]), _size(size), _head(0), _count(0) {}
+
+template <class T>
+Queue<T>::Queue(const Queue& other) :
+    _data(new T[other._size]),
+    _size(other._size),
+    _head(other._head),
+    _count(other._count)
+{
+    for (int i = 0; i < _count; ++i) {
+        int index = (other._head + i) % other._size;
+        _data[index] = other._data[index];
+    }
+}
 
 template <class T>
 Queue<T>::~Queue() {

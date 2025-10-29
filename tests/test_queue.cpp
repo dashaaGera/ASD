@@ -14,6 +14,31 @@ TEST(TestQueue, can_create_with_default_constructor_correctly) {
     EXPECT_THROW(q.head(), std::logic_error);
 }
 
+TEST(TestQueue, copy_empty_queue_work_correctly) {
+    Queue<int> original(10);
+    Queue<int> copy(original);
+
+    EXPECT_EQ(original.size(), copy.size());
+    EXPECT_EQ(original.is_empty(), copy.is_empty());
+    EXPECT_EQ(original.count(), copy.count());
+    EXPECT_EQ(original.head_index(), copy.head_index());
+    EXPECT_NE(original.data(), copy.data()); 
+}
+
+TEST(TestQueue, copy_no_empty_queue_work_correctly) {
+    Queue<int> original(5);
+    original.push(1);
+    original.push(2);
+    original.push(3);
+
+    Queue<int> copy(original);
+    EXPECT_EQ(original.size(), copy.size());
+    EXPECT_EQ(original.count(), copy.count());
+    EXPECT_EQ(original.head_index(), copy.head_index());
+    EXPECT_NE(original.data(), copy.data());
+    EXPECT_EQ(original.head(), copy.head());
+}
+
 TEST(TestQueue, push_pop_work_correctly) {
     Queue<int> q(3);
 
