@@ -346,3 +346,45 @@ TEST(TestList, find_work_correctly) {
     EXPECT_EQ(result2, list.head());
 }
 
+TEST(TestIterator, can_read_correctly) {
+    List<int> list;
+    for (int i = 0;i < 10;i++) {
+        list.push_back(i + 1);
+    }
+
+    int expected_val = 1;
+    for (List<int>::Iterator it = list.begin(); it != list.end(); it++) {
+        EXPECT_EQ(*it, expected_val);
+        expected_val++;
+    }
+}
+
+TEST(TestIterator, can_write_correctly) {
+    List<int> list;
+    for (int i = 0; i < 5; i++) {
+        list.push_back(0); 
+    }
+
+    int val = 1;
+    for (List<int>::Iterator it = list.begin(); it != list.end(); it++) {
+        *it = val;
+        val++;
+    }
+
+    int expected_val = 1;
+    for (List<int>::Iterator it = list.begin(); it != list.end(); it++) {
+        EXPECT_EQ(*it, expected_val);
+        expected_val ++;
+    }
+}
+
+TEST(TestIterator, empty_list_work_correctly) {
+    List<int> list;
+
+    EXPECT_NO_THROW({
+        for (List<int>::Iterator it = list.begin(); it != list.end(); it++) {
+            *it = 0;
+        }
+        });
+}
+

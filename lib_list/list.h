@@ -41,6 +41,40 @@ public:
 
 	Node<T>* find(const T& val) const;
 
+	class Iterator {
+		Node<T>* current;
+	public:
+		Iterator() :current(nullptr){}
+		Iterator(Node<T>* pos):current(pos){}
+		Iterator(const Iterator& other): current(other.current){}
+
+		Iterator& operator=(const Iterator& other) {
+			if (this != &other) {
+				current = other.current;
+			}
+			return *this;
+		}
+		T& operator*() {
+			return current->value;
+		}
+		bool operator !=(const Iterator& other) {
+			return current != other.current;
+		}
+		Iterator operator++(int) {
+			Iterator tmp = *this;
+			current = current->next;
+			return tmp;
+		}
+		Iterator& operator++() {
+			current = current->next;
+			return *this;
+		}
+
+	};
+
+	Iterator begin() { return Iterator(_head); }
+	Iterator end() { return Iterator(nullptr); }
+
 };
 
 template <class T>
