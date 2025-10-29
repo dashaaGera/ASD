@@ -14,6 +14,29 @@ TEST(TestStack, can_create_with_default_constructor_correctly) {
     EXPECT_THROW(s.top(), std::logic_error);
 }
 
+TEST(TestStack, copy_empty_stack_correctly) {
+    Stack<int> original(10);
+    Stack<int> copy(original);
+
+    EXPECT_EQ(original.size(), copy.size());
+    EXPECT_EQ(original.is_empty(), copy.is_empty());
+    EXPECT_EQ(original.top_index(), copy.top_index());
+    EXPECT_NE(original.data(), copy.data()); 
+}
+
+TEST(TestStack, copy_no_empty_stack_correctly) {
+    Stack<int> original(5);
+    original.push(1);
+    original.push(2);
+    original.push(3);
+
+    Stack<int> copy(original);
+    EXPECT_EQ(original.size(), copy.size());
+    EXPECT_EQ(original.top_index(), copy.top_index());
+    EXPECT_NE(original.data(), copy.data());
+    EXPECT_EQ(original.top(), copy.top());
+}
+
 TEST(TestStack, push_pop_work_correctly) {
     Stack<int> s(3);
 

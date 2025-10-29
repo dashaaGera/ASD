@@ -9,6 +9,7 @@ class Stack {
     int _top;
 public:
     Stack(int size = 20);
+    Stack(const Stack& other);
     ~Stack();
 
     inline T top() const;
@@ -25,6 +26,17 @@ public:
 
 template <class T>
 Stack<T>::Stack(int size) : _data(new T[size]), _size(size), _top(-1) {}
+
+template <class T>
+Stack<T>::Stack(const Stack& other) :
+    _data(new T[other._size]),
+    _size(other._size),
+    _top(other._top)
+{
+    for (int i = 0; i <= other._top; ++i) {
+        _data[i] = other._data[i];
+    }
+}
 
 template <class T>
 Stack<T>::~Stack() {
