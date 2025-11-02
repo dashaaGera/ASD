@@ -6,7 +6,7 @@ struct Node
 {
 	T value;
 	Node<T>* next;
-	Node(T value_=0, Node<T>* next_ = nullptr);
+	Node(T value_= T(), Node<T>* next_ = nullptr);
 
 };
 
