@@ -9,14 +9,33 @@ TEST(TestNode, can_create_with_init_constructor_correctly) {
     Node<int> n;
     EXPECT_EQ(n.value, 0);
     EXPECT_EQ(n.next, nullptr);
+    EXPECT_EQ(n.prev, nullptr);
 
     Node<int> n1(4);
     EXPECT_EQ(n1.value, 4);
     EXPECT_EQ(n1.next, nullptr);
+    EXPECT_EQ(n1.prev, nullptr);
 
     Node<int> n2(7, &n1);
     EXPECT_EQ(n2.value, 7);
     EXPECT_EQ(n2.next, &n1);
+    EXPECT_EQ(n2.prev, nullptr); 
+
+    Node<int> n3(10, &n2, &n1);
+    EXPECT_EQ(n3.value, 10);
+    EXPECT_EQ(n3.next, &n2);
+    EXPECT_EQ(n3.prev, &n1);
+
+    Node<int> n4(5);
+    Node<int> n5(8, &n4, &n3);
+
+    EXPECT_EQ(n5.value, 8);
+    EXPECT_EQ(n5.next, &n4);
+    EXPECT_EQ(n5.prev, &n3);
+    EXPECT_EQ(n5.prev->prev, &n1);
+
+    EXPECT_EQ(n5.next->value, 5); 
+    EXPECT_EQ(n5.prev->value, 10); 
 }
 
 TEST(TestList, can_create_with_default_constructor_correctly) {
@@ -44,7 +63,7 @@ TEST(TestList, copy_constructor_works_corretly) {
     EXPECT_EQ(copy.tail()->value, 3);
 }
 
-TEST(TestList,nodes_store_in_different_places_when_copying) {
+TEST(TestList, nodes_store_in_different_places_when_copying) {
     List<int> original;
     original.push_back(1);
     original.push_back(2);
@@ -53,7 +72,7 @@ TEST(TestList,nodes_store_in_different_places_when_copying) {
     List<int> copy(original);
 
     EXPECT_NE(copy.head(), original.head());
-    EXPECT_NE(copy.head()->next, original.head()->next);   
+    EXPECT_NE(copy.head()->next, original.head()->next);
     EXPECT_NE(copy.tail(), original.tail());
 
     original.push_back(4);
@@ -71,11 +90,11 @@ TEST(TestList, push_front_work_correctly) {
     l1.push_front(6);
 
     EXPECT_FALSE(l1.is_empty());
-    EXPECT_NE(l1.tail(), nullptr);  
-    EXPECT_NE(l1.head(), nullptr);  
-    EXPECT_EQ(l1.head(), l1.tail()); 
-    EXPECT_EQ(l1.size(), 1);        
-    EXPECT_EQ(l1.head()->value, 6);  
+    EXPECT_NE(l1.tail(), nullptr);
+    EXPECT_NE(l1.head(), nullptr);
+    EXPECT_EQ(l1.head(), l1.tail());
+    EXPECT_EQ(l1.size(), 1);
+    EXPECT_EQ(l1.head()->value, 6);
 
     l1.push_front(8);
     EXPECT_NE(l1.tail(), nullptr);
@@ -160,7 +179,7 @@ TEST(TestList, insert_with_pos_throw_exception_when_pos_is_greater_size_list) {
 
 TEST(TestList, insert_with_pos_work_correctly) {
     List<int> l1;
-    l1.insert(0,5);
+    l1.insert(0, 5);
     EXPECT_EQ(l1.size(), 1);
     EXPECT_EQ(l1.head()->value, 5);
     EXPECT_EQ(l1.tail()->value, 5);
@@ -231,7 +250,7 @@ TEST(TestList, pop_back_work_correctly) {
 
 TEST(TestList, erase_with_node_throw_exception_when_node_indicates_nullptr) {
     List<int> l1;
-    Node<int>* node = nullptr; 
+    Node<int>* node = nullptr;
     ASSERT_THROW(l1.erase(node), std::logic_error);
 }
 
@@ -362,7 +381,7 @@ TEST(TestIterator, can_read_correctly) {
 TEST(TestIterator, can_write_correctly) {
     List<int> list;
     for (int i = 0; i < 5; i++) {
-        list.push_back(0); 
+        list.push_back(0);
     }
 
     int val = 1;
@@ -374,7 +393,7 @@ TEST(TestIterator, can_write_correctly) {
     int expected_val = 1;
     for (List<int>::Iterator it = list.begin(); it != list.end(); it++) {
         EXPECT_EQ(*it, expected_val);
-        expected_val ++;
+        expected_val++;
     }
 }
 
@@ -387,4 +406,3 @@ TEST(TestIterator, empty_list_work_correctly) {
         }
         });
 }
-

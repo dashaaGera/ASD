@@ -1,25 +1,5 @@
 #include <gtest/gtest.h>
 #include "../lib_doubly_linked_list/doubly_linked_list.h"
-TEST(TestDoublyLinkedNode, can_create_with_default_constructor_correctly) {
-    ASSERT_NO_THROW(Doubly_Linked_Node<int> n1);
-}
-
-TEST(TestDoublyLinkedNode, can_create_with_init_constructor_correctly) {
-    Doubly_Linked_Node<int> n;
-    EXPECT_EQ(n.value, 0);
-    EXPECT_EQ(n.next, nullptr);
-    EXPECT_EQ(n.prev, nullptr);
-
-    Doubly_Linked_Node<int> n1(4);
-    EXPECT_EQ(n1.value, 4);
-    EXPECT_EQ(n1.next, nullptr);
-    EXPECT_EQ(n1.prev, nullptr);
-
-    Doubly_Linked_Node<int> n2(7, &n1,&n);
-    EXPECT_EQ(n2.value, 7);
-    EXPECT_EQ(n2.next, &n1);
-    EXPECT_EQ(n2.prev, &n);
-}
 
 TEST(TestDoublyLinkedList, can_create_with_default_constructor_correctly) {
     ASSERT_NO_THROW(Doubly_Linked_List<int> l1);
@@ -62,11 +42,6 @@ TEST(TestDoublyLinkedList, nodes_store_in_different_places_when_copying) {
 
     original.push_back(4);
     EXPECT_NE(copy.size(), original.size());
-}
-
-TEST(TestDoublyLinkedList, is_empty_work_correctly) {
-    Doubly_Linked_List<int>l1;
-    EXPECT_TRUE(l1.is_empty());
 }
 
 TEST(TestDoublyLinkedList, push_back_in_empty_list_work_correctly) {
@@ -142,7 +117,7 @@ TEST(TestDoublyLinkedList, insert_with_node_work_correctly) {
     Doubly_Linked_List<int> l1;
     l1.push_back(3);
     l1.push_back(6);
-    Doubly_Linked_Node<int>* first_node = l1.head();
+    Node<int>* first_node = l1.head();
     ASSERT_NO_THROW(l1.insert(first_node, 10));
 
     EXPECT_EQ(l1.size(), 3);
@@ -152,7 +127,7 @@ TEST(TestDoublyLinkedList, insert_with_node_work_correctly) {
     EXPECT_EQ(l1.tail()->prev->value, 10);
     EXPECT_EQ(l1.tail()->value, 6);
 
-    Doubly_Linked_Node<int>* second_node = l1.head()->next;
+    Node<int>* second_node = l1.head()->next;
     l1.insert(second_node, 5);
 
     EXPECT_EQ(l1.size(), 4);
@@ -264,7 +239,7 @@ TEST(TestDoublyLinkedList, pop_back_work_correctly) {
 
 TEST(TestDoublyLinkedList, erase_with_node_throw_exception_when_node_indicates_nullptr) {
     Doubly_Linked_List<int> l1;
-    Doubly_Linked_Node<int>* node = nullptr;
+    Node<int>* node = nullptr;
     ASSERT_THROW(l1.erase(node), std::logic_error);
 }
 
@@ -277,7 +252,7 @@ TEST(TestDoublyLinkedList, erase_with_node_work_correctly) {
     l1.push_back(4);
     l1.push_back(5);
 
-    Doubly_Linked_Node<int>* first_node = l1.head();
+    Node<int>* first_node = l1.head();
     l1.erase(first_node);
 
     EXPECT_EQ(l1.size(), 4);
@@ -288,7 +263,7 @@ TEST(TestDoublyLinkedList, erase_with_node_work_correctly) {
     EXPECT_EQ(l1.tail()->prev->value, 4);
     EXPECT_EQ(l1.tail()->value, 5);
 
-    Doubly_Linked_Node<int>* last_node = l1.tail();
+    Node<int>* last_node = l1.tail();
     l1.erase(last_node);
     EXPECT_EQ(l1.size(), 3);
     EXPECT_EQ(l1.head()->value, 2);
@@ -297,7 +272,7 @@ TEST(TestDoublyLinkedList, erase_with_node_work_correctly) {
     EXPECT_EQ(l1.tail()->prev->value, 3);
     EXPECT_EQ(l1.tail()->value, 4);
 
-    Doubly_Linked_Node<int>* second_node = l1.head()->next;
+    Node<int>* second_node = l1.head()->next;
     l1.erase(second_node);
     EXPECT_EQ(l1.size(), 2);
     EXPECT_EQ(l1.head()->value, 2);
@@ -307,24 +282,24 @@ TEST(TestDoublyLinkedList, erase_with_node_work_correctly) {
 
     l1.pop_back();
 
-    Doubly_Linked_Node<int>* remaining_node = l1.head();
+    Node<int>* remaining_node = l1.head();
     l1.erase(remaining_node);
     EXPECT_EQ(l1.size(), 0);
     EXPECT_EQ(l1.head(), nullptr);
     EXPECT_EQ(l1.tail(), nullptr);
 }
 
-TEST(DoublyLinkedList, erase_with_pos_throw_exception_when_pos_is_negative) {
+TEST(TestDoublyLinkedList, erase_with_pos_throw_exception_when_pos_is_negative) {
     Doubly_Linked_List<int> l1;
     ASSERT_THROW(l1.erase(-1), std::logic_error);
 }
 
-TEST(DoublyLinkedList, erase_with_pos_throw_exception_when_pos_is_greater_size_list) {
+TEST(TestDoublyLinkedList, erase_with_pos_throw_exception_when_pos_is_greater_size_list) {
     Doubly_Linked_List<int> l1;
     ASSERT_THROW(l1.erase(1), std::logic_error);
 }
 
-TEST(DoublyLinkedList, erase_with_pos_work_correctly) {
+TEST(TestDoublyLinkedList, erase_with_pos_work_correctly) {
     Doubly_Linked_List<int> l1;
     l1.push_back(1);
     l1.push_back(2);
@@ -365,26 +340,6 @@ TEST(DoublyLinkedList, erase_with_pos_work_correctly) {
     EXPECT_EQ(l1.tail(), nullptr);
 }
 
-TEST(DoublyLinkedList, find_throw_exception_when_val_not_found) {
-    Doubly_Linked_List<int> list;
-    list.push_back(10);
-    list.push_back(20);
-    ASSERT_THROW(list.find(99), std::logic_error);
-}
-
-TEST(DoublyLinkedList, find_work_correctly) {
-    Doubly_Linked_List<int> list;
-    list.push_back(10);
-    list.push_back(20);
-    Doubly_Linked_Node<int>* result1 = list.find(20);
-    EXPECT_EQ(result1, list.head()->next);
-
-    Doubly_Linked_Node<int>* result2 = list.find(10);
-    EXPECT_EQ(result2, list.head());
-    EXPECT_EQ(result2, list.tail()->prev);
-}
-
-
 TEST(TestDoublyLinkedListIterator, can_read_correctly) {
     Doubly_Linked_List<int> list;
     for (int i = 0;i < 10;i++) {
@@ -398,7 +353,7 @@ TEST(TestDoublyLinkedListIterator, can_read_correctly) {
     }
 
     expected_val = 10;
-    Doubly_Linked_Node<int>* tail_node = list.tail();
+    Node<int>* tail_node = list.tail();
     Doubly_Linked_List<int>::Iterator it(tail_node);
 
     while (true) {
@@ -423,13 +378,13 @@ TEST(TestDoublyLinkedListIterator, can_write_correctly) {
     }
 
     int expected_val = 5;
-    Doubly_Linked_List<int>::Iterator it = list.tail(); 
+    Doubly_Linked_List<int>::Iterator it = list.tail();
     while (true) {
         EXPECT_EQ(*it, expected_val);
         expected_val--;
 
-        if (!(it != list.begin())) break;  
-        --it;  
+        if (!(it != list.begin())) break;
+        --it;
     }
     EXPECT_EQ(expected_val, 0);
 }
@@ -445,8 +400,8 @@ TEST(TestDoublyLinkedListIterator, empty_list_work_correctly) {
 
     EXPECT_NO_THROW({
         Doubly_Linked_List<int>::Iterator it = list.end();
-        --it; 
-        it--;  
+        --it;
+        it--;
         EXPECT_EQ(it, list.end());
         });
 }

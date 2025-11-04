@@ -6,22 +6,24 @@ struct Node
 {
 	T value;
 	Node<T>* next;
-	Node(T value_= T(), Node<T>* next_ = nullptr);
+    Node<T>* prev;
+	Node(T value_= T(), Node<T>* next_ = nullptr,Node<T>* prev_ = nullptr);
 
 };
 
 template <class T>
-Node<T>::Node(T value_, Node<T>* next_) : value(value_), next(next_) {}
+Node<T>::Node(T value_, Node<T>* next_,Node<T>* prev_) : value(value_), next(next_),prev(prev_) {}
 
 template <class T>
 class List {
+protected:
 	Node<T>* _head; 
 	Node<T>* _tail;
 	int _count;
 public:
 	List();
 	List(const List& other);
-	~List();
+	virtual ~List();
 
 	inline int size() const;
 	inline Node<T>* head() const;
@@ -29,15 +31,15 @@ public:
 
 	inline bool is_empty() const;
 
-	void push_front(const T& val) noexcept;
-	void push_back(const T& val) noexcept;
-	void insert(int pos,const T&val);
-	void insert(Node<T>* node, const T& val);
+	virtual void push_front(const T& val) noexcept;
+	virtual void push_back(const T& val) noexcept;
+	virtual void insert(int pos,const T&val);
+	virtual void insert(Node<T>* node, const T& val);
 
-	void pop_front();
-	void pop_back();
-	void erase(int pos);
-	void erase(Node<T>* node);
+	virtual void pop_front();
+	virtual void pop_back();
+	virtual void erase(int pos);
+	virtual void erase(Node<T>* node);
 
 	Node<T>* find(const T& val) const;
 
