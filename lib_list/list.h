@@ -152,7 +152,7 @@ void List<T>::push_back(const T& val) noexcept {
 template <class T>
 void List<T>::insert(Node<T>* node, const T& val) {
 	if (node == nullptr)
-		throw std::logic_error("List is empty");
+		throw std::logic_error("position  to insert was nullptr");
 	Node<T>* new_node = new Node<T>(val,node->next);
 	node->next = new_node;
 	if (_tail == node)
@@ -277,7 +277,7 @@ Node<T>* List<T>::find(const T& val) const {
 			return cur;
 		cur = cur->next;
 	}
-	throw std::logic_error("Value not found in the list");
+	return nullptr;
 }
 
 #endif

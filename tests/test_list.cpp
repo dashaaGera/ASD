@@ -351,7 +351,7 @@ TEST(TestList, find_throw_exception_when_val_not_found) {
     List<int> list;
     list.push_back(10);
     list.push_back(20);
-    ASSERT_THROW(list.find(99), std::logic_error);
+    EXPECT_EQ(list.find(99), nullptr);
 }
 
 TEST(TestList, find_work_correctly) {
