@@ -176,4 +176,6 @@ TEST(TestStack, top_after_clear_throws_exception) {
     s.push(1);
     s.clear();
     EXPECT_THROW(s.top(), std::logic_error);
+    s.push(1);
+    EXPECT_EQ(s.top(), 1);
 }
