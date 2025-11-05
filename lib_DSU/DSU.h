@@ -8,8 +8,8 @@ public:
 	DSU(size_t size);
 	~DSU();
 	inline size_t size() const;
-	inline int parent_index(int) const;
-	inline int rank_index(int) const;
+	inline int* parent() const;
+	inline int* rank() const;
 	void unite(int, int);
 	int find(int);
 };
@@ -18,11 +18,11 @@ inline size_t DSU::size() const {
 	return _size;
 }
 
-inline int DSU::parent_index(int i) const {
-	return _parent[i];
+inline int* DSU::parent() const {
+	return _parent;
 }
-inline int DSU::rank_index(int i) const {
-	return _rank[i];
+inline int* DSU::rank() const {
+	return _rank;
 }
 
 #endif  
