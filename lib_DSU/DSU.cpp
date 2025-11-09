@@ -23,19 +23,19 @@ int DSU::find(int x) {
 }
 
 void DSU::unite(int x1, int x2) {
-    int rank_x1 = find(x1);
-    int  rank_x2 = find(x2);
+    int parent_x1 = find(x1);
+    int  parent_x2 = find(x2);
 
-    if (rank_x1 == rank_x2) return;
+    if (parent_x1 == parent_x2) return;
 
-    if (_rank[rank_x1] < _rank[rank_x2]) {
-        _parent[rank_x1] = rank_x2;
+    if (_rank[parent_x1] < _rank[parent_x2]) {
+        _parent[parent_x1] = parent_x2;
     }
-    else if (_rank[rank_x1] > _rank[rank_x2]) {
-        _parent[rank_x2] = rank_x1;
+    else if (_rank[parent_x1] > _rank[parent_x2]) {
+        _parent[parent_x2] = parent_x1;
     }
     else {
-        _parent[rank_x2] = rank_x1;
-        _rank[rank_x1]++;
+        _parent[parent_x2] = parent_x1;
+        _rank[parent_x1]++;
     }
 }
