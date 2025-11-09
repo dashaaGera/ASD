@@ -52,6 +52,41 @@ public:
     const T& operator[](size_t index) const  noexcept;
     friend std::ostream& operator <<<T>(std::ostream& out, const TVector<T>& dmass);
     friend std::istream& operator >><T>(std::istream& in, TVector<T>& dmass);
+
+    class Iterator {
+        T* _ptr;
+    public:
+        Iterator(T* ptr) : _ptr(ptr) {}
+
+        T& operator*() { return *_ptr; }
+
+        Iterator& operator++() {
+            ++_ptr;
+            return *this;
+        }
+
+        Iterator operator++(int) {
+            Iterator temp = *this;
+            ++_ptr;
+            return temp;
+        }
+
+        bool operator==(const Iterator& other) const {
+            return _ptr == other._ptr;
+        }
+
+        bool operator!=(const Iterator& other) const {
+            return _ptr != other._ptr;
+        }
+    };
+
+    Iterator begin() { return Iterator(_data); }
+    Iterator end() {
+        if (_data == nullptr) 
+            return Iterator(nullptr);
+        else 
+            return Iterator(_data + _size);
+    }
 };
 
 template <class T>
@@ -142,12 +177,10 @@ void TVector<T>::resize(size_t size) {
         for (size_t i = 0; i < _size; i++) {
             new_data[i] = _data[i];
         }
-
         delete[] _data;
         _data = new_data;
         _capacity = new_capacity;
     }
-
     _size = size;
 }
 
@@ -172,16 +205,15 @@ void TVector<T>::reset_memory(size_t new_size) {
 
 template <class T>
 void TVector<T>::push_back(T val) {
-    if (!is_full()) {
-        _data[_size] = val;
-        ++_size;
-    }
-    else {
+    if (_capacity == 0 || _size >= _capacity) {
         size_t old_size = _size;
         resize(_size + 1);
         _data[old_size] = val;
     }
-
+    else {
+        _data[_size] = val;
+        ++_size;
+    }
 }
 
 template <class T>
@@ -196,47 +228,45 @@ const T& TVector<T>::operator[](size_t index)const  noexcept {
 
 
 template <class T>
-void  TVector<T>::push_front(T val) {
-    if (!is_full()) {
+void TVector<T>::push_front(T val) {
+    if (_capacity == 0 || _size >= _capacity) {
+        size_t old_size = _size;
+        resize(_size + 1);
+        for (size_t i = old_size; i > 0; --i) {
+            _data[i] = _data[i - 1];
+        }
+        _data[0] = val;
+    }
+    else {
         for (size_t i = _size; i > 0; --i) {
             _data[i] = _data[i - 1];
         }
         _data[0] = val;
         ++_size;
     }
-    else {
-        resize(_size + 1);
-        for (size_t i = _size; i > 0; --i) {
-            _data[i] = _data[i - 1];
-        }
-        _data[0] = val;
-    }
-
 }
 
 template <class T>
 void TVector<T>::insert(size_t pos, T val) {
-
     if (pos > _size) {
         throw std::out_of_range("Insert position out of range");
     }
 
-    if (!is_full()) {
-        for (size_t i = _size; i > pos; --i) {
+    if (_capacity == 0 || _size >= _capacity) {
+        size_t old_size = _size;
+        resize(_size + 1);
+        for (size_t i = old_size; i > pos; --i) {
             _data[i] = _data[i - 1];
         }
         _data[pos] = val;
-
-        ++_size;
     }
     else {
-        resize(_size + 1);
         for (size_t i = _size; i > pos; --i) {
             _data[i] = _data[i - 1];
         }
         _data[pos] = val;
+        ++_size;
     }
-
 }
 
 template <class T>
@@ -323,6 +353,7 @@ template <class T>
 std::istream& operator>>(std::istream& in, TVector<T>& dmass) {
     size_t size;
     in >> size;
+    dmass = TVector<T>(size);
     for (size_t i = 0; i < size; i++) {
         in >> dmass[i];
     }

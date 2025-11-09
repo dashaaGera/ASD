@@ -353,3 +353,59 @@ TEST(TestTVector, output_operator) {
     EXPECT_EQ(os.str(), "1 2 3 4 5 ");
 }
 
+TEST(TestTVector, input_operator) {
+    TVector<int> v;
+    std::stringstream is("5 1 2 3 4 5");
+    is >> v;
+
+    EXPECT_EQ(v.size(), 5);
+    EXPECT_EQ(v[0], 1);
+    EXPECT_EQ(v[1], 2);
+    EXPECT_EQ(v[2], 3);
+    EXPECT_EQ(v[3], 4);
+    EXPECT_EQ(v[4], 5);
+}
+
+TEST(TestIterator, can_read_correctly) {
+    TVector<int> vec; 
+    for (int i = 1; i <= 10; i++) { 
+        vec.push_back(i);
+    }
+
+    int expected_val = 1;
+    for (TVector<int>::Iterator it = vec.begin(); it != vec.end(); it++) {
+        EXPECT_EQ(*it, expected_val);
+        expected_val++;
+    }
+}
+
+TEST(TestIterator, can_write_correctly) {
+    TVector<int> vec; 
+    for (int i = 0; i < 5; i++) {  
+        vec.push_back(0);
+    }
+
+    int val = 1;
+    for (TVector<int>::Iterator it = vec.begin(); it != vec.end(); it++) {
+        *it = val;
+        val++;
+    }
+
+    int expected_val = 1;
+    for (TVector<int>::Iterator it = vec.begin(); it != vec.end(); it++) {
+        EXPECT_EQ(*it, expected_val);
+        expected_val++;
+    }
+}
+
+TEST(TestIterator, empty_vector_work_correctly) {
+    TVector<int> vec;  
+
+    EXPECT_NO_THROW({
+        for (TVector<int>::Iterator it = vec.begin(); it != vec.end(); it++) {
+            *it = 0; 
+        }
+        });
+
+    EXPECT_TRUE(vec.is_empty());
+}
