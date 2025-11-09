@@ -18,63 +18,29 @@ public:
     virtual void erase(int pos) override;
     virtual void erase(Node<T>* node) override;
     
-    class Iterator {
-        Node<T>* current;  
+    class Iterator : public List<T>::Iterator {
     public:
-        Iterator() : current(nullptr) {}
-        Iterator(Node<T>* pos) : current(pos) {}
-        Iterator(const Iterator& other) : current(other.current) {}
+        Iterator() : List<T>::Iterator() {}
+        Iterator(Node<T>* pos) : List<T>::Iterator(pos) {}
+        Iterator(const Iterator& other) : List<T>::Iterator(other) {}
 
-        Iterator& operator=(const Iterator& other) {
-            if (this != &other)
-                current = other.current;
-            return *this;
-        }
-
-        T& operator*() {
-            return current->value;
-        }
-
-        bool operator !=(const Iterator& other) const {
-            return current != other.current;
-        }
-
-        bool operator==(const Iterator& other) const {
-            return current == other.current;
-        }
-
-        Iterator& operator++() {
-            if (current != nullptr) {
-                current = current->next;
-            }
-            return *this;
-        }
-
-        Iterator operator++(int) {
-            Iterator tmp = *this;
-            if (current != nullptr) {
-                current = current->next;
-            }
-            return tmp;
-        }
         Iterator& operator--() {
-            if (current != nullptr) {
-                current = current->prev;
+            if (this->current != nullptr) {
+                this->current = this->current->prev;
             }
             return *this;
         }
+
         Iterator operator--(int) {
             Iterator tmp = *this;
-            if (current != nullptr) {
-                current = current->prev;
+            if (this->current != nullptr) {
+                this->current = this->current->prev;
             }
             return tmp;
         }
-
     };
-
-    Iterator begin() { return Iterator(this->_head); }
-    Iterator end() { return Iterator(nullptr); }
+    Iterator begin()  { return Iterator(this->_head); }
+    Iterator end()  { return Iterator(nullptr); }
 };
 
 template <class T>

@@ -44,6 +44,7 @@ public:
 	Node<T>* find(const T& val) const;
 
 	class Iterator {
+	protected:
 		Node<T>* current;
 	public:
 		Iterator() :current(nullptr){}
@@ -61,6 +62,10 @@ public:
 		}
 		bool operator !=(const Iterator& other) {
 			return current != other.current;
+		}
+
+		bool operator==(const Iterator& other) const {
+			return current == other.current;
 		}
 		Iterator operator++(int) {
 			Iterator tmp = *this;
