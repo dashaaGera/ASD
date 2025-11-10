@@ -406,3 +406,40 @@ TEST(TestIterator, empty_list_work_correctly) {
         }
         });
 }
+
+TEST(TestList, assign_empty_list) {
+    List<int> list1;
+    List<int> list2;
+    list2.push_back(1);
+    list2.push_back(2);
+
+    list2 = list1;
+
+    EXPECT_EQ(list2.size(), 0);
+    EXPECT_EQ(list2.is_empty(), true);
+    EXPECT_EQ(list2.head(), nullptr);
+    EXPECT_EQ(list2.tail(), nullptr);
+}
+
+TEST(TestList, assign_no_empty_list) {
+    List<int> list1;
+    list1.push_back(1);
+    list1.push_back(2);
+    list1.push_back(3);
+
+    List<int> list2;
+    list2 = list1;
+
+    EXPECT_EQ(list2.size(), 3);
+    EXPECT_EQ(list2.is_empty(), false);
+
+    auto it = list2.begin();
+    EXPECT_EQ(*it, 1);
+    ++it;
+    EXPECT_EQ(*it, 2);
+    ++it;
+    EXPECT_EQ(*it, 3);
+    ++it;
+    EXPECT_EQ(it, list2.end());
+}
+

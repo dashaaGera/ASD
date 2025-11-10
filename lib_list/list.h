@@ -41,6 +41,8 @@ public:
 	virtual void erase(int pos);
 	virtual void erase(Node<T>* node);
 
+	List<T>& operator=(const List<T>& other);
+
 	Node<T>* find(const T& val) const;
 
 	class Iterator {
@@ -79,8 +81,8 @@ public:
 
 	};
 
-	Iterator begin() { return Iterator(_head); }
-	Iterator end() { return Iterator(nullptr); }
+	Iterator begin() const { return Iterator(_head); }
+	Iterator end() const { return Iterator(nullptr); }
 
 };
 
@@ -283,6 +285,35 @@ Node<T>* List<T>::find(const T& val) const {
 		cur = cur->next;
 	}
 	return nullptr;
+}
+
+template <class T>
+List<T>& List<T>::operator=(const List<T>& other) {
+	if (this != &other) {
+
+		while (_head != nullptr) {
+			Node<T>* temp = _head;
+			_head = _head->next;
+			delete temp;
+		}
+		_tail = nullptr;
+		_count = 0;
+
+		if (other._head != nullptr) {
+			_head = new Node<T>(other._head->value);
+			Node<T>* current = _head;
+			Node<T>* other_current = other._head->next;
+
+			while (other_current != nullptr) {
+				current->next = new Node<T>(other_current->value);
+				current = current->next;
+				other_current = other_current->next;
+			}
+			_tail = current;
+			_count = other._count;
+		}
+	}
+	return *this;
 }
 
 #endif

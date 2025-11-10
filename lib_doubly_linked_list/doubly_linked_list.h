@@ -39,8 +39,8 @@ public:
             return tmp;
         }
     };
-    Iterator begin()  { return Iterator(this->_head); }
-    Iterator end()  { return Iterator(nullptr); }
+    Iterator begin() const  { return Iterator(this->_head); }
+    Iterator end() const { return Iterator(nullptr); }
 };
 
 template <class T>
