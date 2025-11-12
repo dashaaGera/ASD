@@ -7,7 +7,7 @@ class Stack {
     List<T> _list;
 
 public:
-    Stack() = default;
+    Stack();
     Stack(const Stack& other);
 
     inline T top() const;
@@ -18,6 +18,8 @@ public:
     void pop();
     void clear() noexcept;
 };
+template <class T>
+Stack<T>::Stack() : _list() {}
 
 template <class T>
 Stack<T>::Stack(const Stack& other) : _list(other._list) {}

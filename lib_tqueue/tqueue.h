@@ -7,7 +7,7 @@ class Queue {
     List<T> _list;
 
 public:
-    Queue() = default;
+    Queue();
     Queue(const Queue& other);
 
     inline T head() const;
@@ -19,6 +19,9 @@ public:
     void clear() noexcept;
 
 };
+
+template <class T>
+Queue<T>::Queue() : _list() {}
 
 template <class T>
 Queue<T>::Queue(const Queue& other) : _list(other._list) {}
