@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../lib_algorithms/algorithms.h"
+#include "../lib_algorithms_for_DSU/algorithms_for_DSU.h"
 TEST(TestCountIslands, count_islands_work_correctly_in_array_of_zeros) {
     int n = 3;
     int** arr = new int* [n];

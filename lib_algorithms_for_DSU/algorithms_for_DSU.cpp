@@ -1,4 +1,4 @@
-#include "../lib_algorithms/algorithms.h"
+#include "../lib_algorithms_for_DSU/algorithms_for_DSU.h"
 
 int count_islands(int** arr, size_t rows,size_t cols) {
     DSU dsu(rows * cols);
