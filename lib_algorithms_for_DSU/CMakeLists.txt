@@ -1,0 +1,2 @@
+create_project_lib(DSUAlgorithms)
+add_depend(DSUAlgorithms DSU lib_DSU)
