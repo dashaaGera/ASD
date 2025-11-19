@@ -1,0 +1,445 @@
+#include <gtest/gtest.h>
+#include "../lib_list/list.h"
+
+TEST(TestNode, can_create_with_default_constructor_correctly) {
+    ASSERT_NO_THROW(Node<int> n1);
+}
+
+TEST(TestNode, can_create_with_init_constructor_correctly) {
+    Node<int> n;
+    EXPECT_EQ(n.value, 0);
+    EXPECT_EQ(n.next, nullptr);
+    EXPECT_EQ(n.prev, nullptr);
+
+    Node<int> n1(4);
+    EXPECT_EQ(n1.value, 4);
+    EXPECT_EQ(n1.next, nullptr);
+    EXPECT_EQ(n1.prev, nullptr);
+
+    Node<int> n2(7, &n1);
+    EXPECT_EQ(n2.value, 7);
+    EXPECT_EQ(n2.next, &n1);
+    EXPECT_EQ(n2.prev, nullptr); 
+
+    Node<int> n3(10, &n2, &n1);
+    EXPECT_EQ(n3.value, 10);
+    EXPECT_EQ(n3.next, &n2);
+    EXPECT_EQ(n3.prev, &n1);
+
+    Node<int> n4(5);
+    Node<int> n5(8, &n4, &n3);
+
+    EXPECT_EQ(n5.value, 8);
+    EXPECT_EQ(n5.next, &n4);
+    EXPECT_EQ(n5.prev, &n3);
+    EXPECT_EQ(n5.prev->prev, &n1);
+
+    EXPECT_EQ(n5.next->value, 5); 
+    EXPECT_EQ(n5.prev->value, 10); 
+}
+
+TEST(TestList, can_create_with_default_constructor_correctly) {
+    ASSERT_NO_THROW(List<int> l1);
+}
+
+TEST(TestList, can_create_with_init_constructor_correctly) {
+    List<int> l1;
+    EXPECT_EQ(l1.head(), nullptr);
+    EXPECT_EQ(l1.tail(), nullptr);
+    EXPECT_EQ(l1.size(), 0);
+}
+
+TEST(TestList, copy_constructor_works_corretly) {
+    List<int> original;
+    original.push_back(1);
+    original.push_back(2);
+    original.push_back(3);
+
+    List<int> copy(original);
+
+    EXPECT_EQ(copy.size(), 3);
+    EXPECT_EQ(copy.head()->value, 1);
+    EXPECT_EQ(copy.head()->next->value, 2);
+    EXPECT_EQ(copy.tail()->value, 3);
+}
+
+TEST(TestList, nodes_store_in_different_places_when_copying) {
+    List<int> original;
+    original.push_back(1);
+    original.push_back(2);
+    original.push_back(3);
+
+    List<int> copy(original);
+
+    EXPECT_NE(copy.head(), original.head());
+    EXPECT_NE(copy.head()->next, original.head()->next);
+    EXPECT_NE(copy.tail(), original.tail());
+
+    original.push_back(4);
+    EXPECT_NE(copy.size(), original.size());
+}
+
+TEST(TestList, is_empty_work_correctly) {
+    List<int> l1;
+    EXPECT_TRUE(l1.is_empty());
+}
+
+TEST(TestList, push_front_work_correctly) {
+    List<int> l1;
+    EXPECT_TRUE(l1.is_empty());
+    l1.push_front(6);
+
+    EXPECT_FALSE(l1.is_empty());
+    EXPECT_NE(l1.tail(), nullptr);
+    EXPECT_NE(l1.head(), nullptr);
+    EXPECT_EQ(l1.head(), l1.tail());
+    EXPECT_EQ(l1.size(), 1);
+    EXPECT_EQ(l1.head()->value, 6);
+
+    l1.push_front(8);
+    EXPECT_NE(l1.tail(), nullptr);
+    EXPECT_NE(l1.head(), nullptr);
+    EXPECT_EQ(l1.size(), 2);
+    EXPECT_EQ(l1.head()->value, 8);
+}
+
+TEST(TestList, push_back_in_empty_list_work_correctly) {
+    List<int> l1;
+    EXPECT_TRUE(l1.is_empty());
+    l1.push_back(6);
+
+    EXPECT_FALSE(l1.is_empty());
+    EXPECT_NE(l1.tail(), nullptr);
+    EXPECT_NE(l1.head(), nullptr);
+    EXPECT_EQ(l1.head(), l1.tail());
+    EXPECT_EQ(l1.size(), 1);
+    EXPECT_EQ(l1.head()->value, 6);
+
+}
+
+TEST(TestList, push_back_work_correctly) {
+    List<int> l1;
+    EXPECT_TRUE(l1.is_empty());
+    l1.push_back(6);
+    EXPECT_FALSE(l1.is_empty());
+    l1.push_back(3);
+    EXPECT_FALSE(l1.is_empty());
+
+    EXPECT_NE(l1.tail(), nullptr);
+    EXPECT_NE(l1.head(), nullptr);
+    EXPECT_EQ(l1.size(), 2);
+    EXPECT_EQ(l1.tail()->value, 3);
+    EXPECT_EQ(l1.tail()->next, nullptr);
+}
+
+
+TEST(TestList, insert_with_node_throw_exception_in_empty_list) {
+    List<int> l1;
+    EXPECT_TRUE(l1.is_empty());
+    ASSERT_THROW(l1.insert(nullptr, 10), std::logic_error);
+}
+
+
+TEST(TestList, insert_with_node_work_correctly) {
+    List<int> l1;
+    l1.push_back(3);
+    l1.push_back(6);
+    Node<int>* first_node = l1.head();
+    ASSERT_NO_THROW(l1.insert(first_node, 10));
+
+    EXPECT_EQ(l1.size(), 3);
+    EXPECT_EQ(l1.head()->value, 3);
+    EXPECT_EQ(l1.head()->next->value, 10);
+    EXPECT_EQ(l1.head()->next->next->value, 6);
+    EXPECT_EQ(l1.tail()->value, 6);
+
+    Node<int>* second_node = l1.head()->next;
+    ASSERT_NO_THROW(l1.insert(second_node, 5));
+
+    EXPECT_EQ(l1.size(), 4);
+    EXPECT_EQ(l1.head()->value, 3);
+    EXPECT_EQ(l1.head()->next->value, 10);
+    EXPECT_EQ(l1.head()->next->next->value, 5);
+    EXPECT_EQ(l1.head()->next->next->next->value, 6);
+    EXPECT_EQ(l1.tail()->value, 6);
+
+
+}
+
+TEST(TestList, insert_with_pos_throw_exception_when_pos_is_negative) {
+    List<int> l1;
+    ASSERT_THROW(l1.insert(-1, 10), std::logic_error);
+}
+
+
+TEST(TestList, insert_with_pos_throw_exception_when_pos_is_greater_size_list) {
+    List<int> l1;
+    ASSERT_THROW(l1.insert(1, 10), std::logic_error);
+}
+
+TEST(TestList, insert_with_pos_work_correctly) {
+    List<int> l1;
+    l1.insert(0, 5);
+    EXPECT_EQ(l1.size(), 1);
+    EXPECT_EQ(l1.head()->value, 5);
+    EXPECT_EQ(l1.tail()->value, 5);
+
+    l1.insert(1, 4);
+    EXPECT_EQ(l1.size(), 2);
+    EXPECT_EQ(l1.head()->value, 5);
+    EXPECT_EQ(l1.head()->next->value, 4);
+    EXPECT_EQ(l1.tail()->value, 4);
+
+    l1.insert(1, 3);
+    EXPECT_EQ(l1.size(), 3);
+    EXPECT_EQ(l1.head()->value, 5);
+    EXPECT_EQ(l1.head()->next->value, 3);
+    EXPECT_EQ(l1.head()->next->next->value, 4);
+    EXPECT_EQ(l1.tail()->value, 4);
+
+}
+
+TEST(TestList, pop_front_throw_exception_when_list_is_empty) {
+    List<int> l1;
+    ASSERT_THROW(l1.pop_front(), std::logic_error);
+}
+TEST(TestList, pop_front_work_correctly) {
+    List<int> l1;
+    l1.push_front(6);
+    l1.push_front(8);
+
+    l1.pop_front();
+    EXPECT_EQ(l1.size(), 1);
+    EXPECT_EQ(l1.head()->value, 6);
+
+    l1.pop_front();
+    EXPECT_EQ(l1.tail(), nullptr);
+    EXPECT_EQ(l1.head(), nullptr);
+    EXPECT_EQ(l1.size(), 0);
+
+    l1.push_front(5);
+    EXPECT_EQ(l1.size(), 1);
+    EXPECT_EQ(l1.head()->value, 5);
+
+}
+
+TEST(TestList, pop_back_throw_exception_when_list_is_empty) {
+    List<int> l1;
+    ASSERT_THROW(l1.pop_back(), std::logic_error);
+}
+TEST(TestList, pop_back_work_correctly) {
+    List<int> l1;
+    l1.push_front(6);
+    l1.push_front(8);
+
+    l1.pop_back();
+    EXPECT_EQ(l1.size(), 1);
+    EXPECT_EQ(l1.head()->value, 8);
+    EXPECT_EQ(l1.tail()->value, 8);
+
+    l1.pop_back();
+    EXPECT_EQ(l1.tail(), nullptr);
+    EXPECT_EQ(l1.head(), nullptr);
+    EXPECT_EQ(l1.size(), 0);
+
+    l1.push_front(5);
+    EXPECT_EQ(l1.size(), 1);
+    EXPECT_EQ(l1.head()->value, 5);
+
+}
+
+TEST(TestList, erase_with_node_throw_exception_when_node_indicates_nullptr) {
+    List<int> l1;
+    Node<int>* node = nullptr;
+    ASSERT_THROW(l1.erase(node), std::logic_error);
+}
+
+
+TEST(TestList, erase_with_node_work_correctly) {
+    List<int> l1;
+    l1.push_back(1);
+    l1.push_back(2);
+    l1.push_back(3);
+    l1.push_back(4);
+    l1.push_back(5);
+
+    Node<int>* first_node = l1.head();
+    l1.erase(first_node);
+
+    EXPECT_EQ(l1.size(), 4);
+    EXPECT_EQ(l1.head()->value, 2);
+    EXPECT_EQ(l1.head()->next->value, 3);
+    EXPECT_EQ(l1.head()->next->next->value, 4);
+    EXPECT_EQ(l1.head()->next->next->next->value, 5);
+    EXPECT_EQ(l1.tail()->value, 5);
+
+    Node<int>* last_node = l1.tail();
+    l1.erase(last_node);
+    EXPECT_EQ(l1.size(), 3);
+    EXPECT_EQ(l1.head()->value, 2);
+    EXPECT_EQ(l1.head()->next->value, 3);
+    EXPECT_EQ(l1.head()->next->next->value, 4);
+    EXPECT_EQ(l1.tail()->value, 4);
+
+    Node<int>* second_node = l1.head()->next;
+    l1.erase(second_node);
+    EXPECT_EQ(l1.size(), 2);
+    EXPECT_EQ(l1.head()->value, 2);
+    EXPECT_EQ(l1.head()->next->value, 4);
+    EXPECT_EQ(l1.tail()->value, 4);
+
+    l1.pop_back();
+
+    Node<int>* remaining_node = l1.head();
+    l1.erase(remaining_node);
+    EXPECT_EQ(l1.size(), 0);
+    EXPECT_EQ(l1.head(), nullptr);
+    EXPECT_EQ(l1.tail(), nullptr);
+}
+
+
+TEST(TestList, erase_with_pos_throw_exception_when_pos_is_negative) {
+    List<int> l1;
+    ASSERT_THROW(l1.erase(-1), std::logic_error);
+}
+
+TEST(TestList, erase_with_pos_throw_exception_when_pos_is_greater_size_list) {
+    List<int> l1;
+    ASSERT_THROW(l1.erase(1), std::logic_error);
+}
+
+TEST(TestList, erase_with_pos_work_correctly) {
+    List<int> l1;
+    l1.push_back(1);
+    l1.push_back(2);
+    l1.push_back(3);
+    l1.push_back(4);
+    l1.push_back(5);
+
+    l1.erase(0);
+    EXPECT_EQ(l1.size(), 4);
+    EXPECT_EQ(l1.head()->value, 2);
+    EXPECT_EQ(l1.head()->next->value, 3);
+    EXPECT_EQ(l1.head()->next->next->value, 4);
+    EXPECT_EQ(l1.tail()->value, 5);
+
+    l1.erase(3);
+    EXPECT_EQ(l1.size(), 3);
+    EXPECT_EQ(l1.head()->value, 2);
+    EXPECT_EQ(l1.head()->next->value, 3);
+    EXPECT_EQ(l1.head()->next->next->value, 4);
+    EXPECT_EQ(l1.tail()->value, 4);
+
+    l1.erase(1);
+    EXPECT_EQ(l1.size(), 2);
+    EXPECT_EQ(l1.head()->value, 2);
+    EXPECT_EQ(l1.head()->next->value, 4);
+    EXPECT_EQ(l1.tail()->value, 4);
+
+    l1.erase(1);
+    EXPECT_EQ(l1.size(), 1);
+    EXPECT_EQ(l1.head()->value, 2);
+    EXPECT_EQ(l1.tail()->value, 2);
+
+    l1.erase(0);
+    EXPECT_EQ(l1.size(), 0);
+    EXPECT_EQ(l1.head(), nullptr);
+    EXPECT_EQ(l1.tail(), nullptr);
+}
+
+TEST(TestList, find_throw_exception_when_val_not_found) {
+    List<int> list;
+    list.push_back(10);
+    list.push_back(20);
+    EXPECT_EQ(list.find(99), nullptr);
+}
+
+TEST(TestList, find_work_correctly) {
+    List<int> list;
+    list.push_back(10);
+    list.push_back(20);
+    Node<int>* result1 = list.find(20);
+    EXPECT_EQ(result1, list.head()->next);
+
+    Node<int>* result2 = list.find(10);
+    EXPECT_EQ(result2, list.head());
+}
+
+TEST(TestIterator, can_read_correctly) {
+    List<int> list;
+    for (int i = 0;i < 10;i++) {
+        list.push_back(i + 1);
+    }
+
+    int expected_val = 1;
+    for (List<int>::Iterator it = list.begin(); it != list.end(); it++) {
+        EXPECT_EQ(*it, expected_val);
+        expected_val++;
+    }
+}
+
+TEST(TestIterator, can_write_correctly) {
+    List<int> list;
+    for (int i = 0; i < 5; i++) {
+        list.push_back(0);
+    }
+
+    int val = 1;
+    for (List<int>::Iterator it = list.begin(); it != list.end(); it++) {
+        *it = val;
+        val++;
+    }
+
+    int expected_val = 1;
+    for (List<int>::Iterator it = list.begin(); it != list.end(); it++) {
+        EXPECT_EQ(*it, expected_val);
+        expected_val++;
+    }
+}
+
+TEST(TestIterator, empty_list_work_correctly) {
+    List<int> list;
+
+    EXPECT_NO_THROW({
+        for (List<int>::Iterator it = list.begin(); it != list.end(); it++) {
+            *it = 0;
+        }
+        });
+}
+
+TEST(TestList, assign_empty_list) {
+    List<int> list1;
+    List<int> list2;
+    list2.push_back(1);
+    list2.push_back(2);
+
+    list2 = list1;
+
+    EXPECT_EQ(list2.size(), 0);
+    EXPECT_EQ(list2.is_empty(), true);
+    EXPECT_EQ(list2.head(), nullptr);
+    EXPECT_EQ(list2.tail(), nullptr);
+}
+
+TEST(TestList, assign_no_empty_list) {
+    List<int> list1;
+    list1.push_back(1);
+    list1.push_back(2);
+    list1.push_back(3);
+
+    List<int> list2;
+    list2 = list1;
+
+    EXPECT_EQ(list2.size(), 3);
+    EXPECT_EQ(list2.is_empty(), false);
+
+    auto it = list2.begin();
+    EXPECT_EQ(*it, 1);
+    ++it;
+    EXPECT_EQ(*it, 2);
+    ++it;
+    EXPECT_EQ(*it, 3);
+    ++it;
+    EXPECT_EQ(it, list2.end());
+}
+
