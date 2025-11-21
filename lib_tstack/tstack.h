@@ -3,12 +3,12 @@
 #define LIB_T_STACK_H_
 
 template <class T>
-class Stack {
+class TStack {
     List<T> _list;
 
 public:
-    Stack();
-    Stack(const Stack& other);
+    TStack();
+    TStack(const TStack& other);
 
     inline T top() const;
     inline int size() const noexcept;
@@ -19,48 +19,45 @@ public:
     void clear() noexcept;
 };
 template <class T>
-Stack<T>::Stack() : _list() {}
+TStack<T>::TStack() : _list() {}
 
 template <class T>
-Stack<T>::Stack(const Stack& other) : _list(other._list) {}
+TStack<T>::TStack(const TStack& other) : _list(other._list) {}
 
 template <class T>
-inline T Stack<T>::top() const {
+inline T TStack<T>::top() const {
     if (is_empty())
         throw std::logic_error("Stack is empty");
     return _list.tail()->value;
 }
 
 template <class T>
-inline int Stack<T>::size() const noexcept {
+inline int TStack<T>::size() const noexcept {
     return _list.size();
 }
 
 template <class T>
-inline bool Stack<T>::is_empty() const noexcept {
+inline bool TStack<T>::is_empty() const noexcept {
     return _list.is_empty();
 }
 
 template <class T>
-void Stack<T>::push(const T& val) {
+void TStack<T>::push(const T& val) {
     _list.push_back(val);
 }
 
 template <class T>
-void Stack<T>::pop() {
+void TStack<T>::pop() {
     if (is_empty())
         throw std::logic_error("Stack is empty");
     _list.pop_back();
 }
 
 template <class T>
-void Stack<T>::clear() noexcept {
+void TStack<T>::clear() noexcept {
     while (!is_empty()) {
         pop();
     }
 }
-
-
-
 
 #endif
