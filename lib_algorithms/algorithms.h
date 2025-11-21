@@ -34,15 +34,48 @@ bool has_cycle_reverse_pointers(const List<T>& list) {
     Node<T>* next = nullptr;
 
     while (curr != nullptr) {
-        next = curr->next;
-        curr->next = prev;
-        prev = curr;
-        curr = next;
+        next = curr->next; //save pointer on next node
+        curr->next = prev; //reverse pointer for curr node
+        prev = curr; //move pointer on curr node
+        curr = next; // jump next node befote reverse pointer
         if (curr == list.head()) {
             return true;
         }
     }
     return false;
 }
+
+template <typename T>
+Node<T>* has_cycle_problem_node(const List<T>& list) {
+    if (list.head() == nullptr || list.head()->next == nullptr)
+        return nullptr; 
+
+    Node<T>* slow = list.head();
+    Node<T>* fast = list.head();
+
+    bool has_cycle = false;
+
+    while (fast != nullptr && fast->next != nullptr) {
+        slow = slow->next;
+        fast = fast->next->next;
+
+        if (slow == fast) {
+            has_cycle = true;
+            break;
+        }
+    }
+
+    if (!has_cycle)
+        return nullptr;
+
+    slow = list.head();
+    while (slow != fast) {
+        slow = slow->next;
+        fast = fast->next;
+    }
+
+    return slow;
+}
+
 
 #endif

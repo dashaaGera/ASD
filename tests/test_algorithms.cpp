@@ -66,6 +66,13 @@ TEST(TestCycleList, has_cycle_hare_and_turtle_work_correctly_in_no_empty_list_wi
     l2.tail()->next = l2.head();
     EXPECT_EQ(has_cycle_hare_and_turtle(l2), true);
     l2.pop_back();
+
+    List<int> l3;
+    l3.push_back(1);
+    l3.push_back(2);
+    l3.tail()->next = l3.tail();
+    EXPECT_EQ(has_cycle_hare_and_turtle(l3), true);
+    l3.pop_back();
 }
 
 TEST(TestCycleList, has_cycle_reverse_pointers_work_correctly_in_empty_list) {
@@ -100,5 +107,60 @@ TEST(TestCycleList, has_cycle_reverse_pointers_work_correctly_in_no_empty_list_w
     l2.tail()->next = l2.head();
     EXPECT_EQ(has_cycle_reverse_pointers(l2), true);
 
+    List<int> l3;
+    l3.push_back(1);
+    l3.push_back(2);
+    l3.tail()->next = l3.tail();
+    EXPECT_EQ(has_cycle_reverse_pointers(l3), true);
+
 }
 
+TEST(TestCycleList, has_cycle_problem_node_work_correctly_in_empty_list) {
+    List<int> l1;
+    EXPECT_EQ(has_cycle_problem_node(l1), nullptr);
+}
+
+TEST(TestCycleList, has_cycle_problem_node_work_correctly_in_no_empty_list_without_cycles) {
+    List<int> l1;
+    l1.push_back(1);
+    l1.push_back(2);
+    l1.push_back(3);
+    EXPECT_EQ(has_cycle_problem_node(l1), nullptr);
+}
+
+TEST(TestCycleList, has_cycle_problem_node_work_correctly_in_no_empty_list_with_cycles) {
+    List<int> l1;
+    l1.push_back(1);
+    l1.push_back(2);
+    l1.push_back(3);
+    l1.push_back(4);
+    l1.push_back(5);
+    Node<int>* cycle_node = l1.head()->next->next; //3
+    l1.tail()->next = cycle_node;
+    Node<int>* result = has_cycle_problem_node(l1);
+    EXPECT_NE(result, nullptr);
+    EXPECT_EQ(result, cycle_node); 
+    l1.pop_back();
+
+    List<int> l2;
+    l2.push_back(1);
+    l2.push_back(2);
+    l2.push_back(3);
+    l2.push_back(4);
+    l2.push_back(5);
+    l2.tail()->next = l2.head();
+    Node<int>* result2 = has_cycle_problem_node(l2);
+    EXPECT_NE(result2, nullptr);
+    EXPECT_EQ(result2, l2.head()); 
+    l2.pop_back();
+
+    List<int> l3;
+    l3.push_back(1);
+    l3.push_back(2);
+    l3.tail()->next = l3.tail();
+
+    Node<int>* result3 = has_cycle_problem_node(l3);
+    EXPECT_NE(result3, nullptr);
+    EXPECT_EQ(result3, l3.tail()); 
+    l3.pop_back();
+}
