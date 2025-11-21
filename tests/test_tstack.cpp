@@ -1,19 +1,19 @@
 #include <gtest/gtest.h>
 #include "../lib_tstack/tstack.h"
 
-TEST(TestStack, copy_stack_correctly) {
-    Stack<int> original;
+TEST(TestTStack, copy_tstack_correctly) {
+    TStack<int> original;
     original.push(1);
     original.push(2);
     original.push(3);
 
-    Stack<int> copy(original);
+    TStack<int> copy(original);
     EXPECT_EQ(original.size(), copy.size());
     EXPECT_EQ(original.top(), copy.top());
 }
 
-TEST(TestStack, push_pop_work_correctly) {
-    Stack<int> s;
+TEST(TestTStack, push_pop_work_correctly_in_tstack) {
+    TStack<int> s;
 
     s.push(100);
     EXPECT_EQ(s.top(), 100);
@@ -41,26 +41,26 @@ TEST(TestStack, push_pop_work_correctly) {
     EXPECT_EQ(s.size(), 0);
 }
 
-TEST(TestStack, pop_throws_exception) {
-    Stack<int> s;
+TEST(TestTStack, pop_throws_exception_in_tstack) {
+    TStack<int> s;
     EXPECT_ANY_THROW(s.pop());
 }
 
 
-TEST(TestStack, is_empty_returns_true_for_empty_stack) {
-    Stack<int> s;
+TEST(TestTStack, is_empty_returns_true_for_empty_tstack) {
+    TStack<int> s;
     EXPECT_TRUE(s.is_empty());
 
 }
 
-TEST(TestStack, is_empty_returns_false_after_push) {
-    Stack<int> s;
+TEST(TestTStack, is_empty_returns_false_after_push) {
+    TStack<int> s;
     s.push(100);
     EXPECT_FALSE(s.is_empty());
 }
 
-TEST(TestStack, is_empty_returns_true_after_clear) {
-    Stack<int> s;
+TEST(TestTStack, is_empty_returns_true_after_clear) {
+    TStack<int> s;
     s.push(7);
     EXPECT_FALSE(s.is_empty());
 
@@ -68,8 +68,8 @@ TEST(TestStack, is_empty_returns_true_after_clear) {
     EXPECT_TRUE(s.is_empty());
 }
 
-TEST(TestStack, is_empty_returns_true_after_pop_all) {
-    Stack<int> s;
+TEST(TestTStack, is_empty_returns_true_after_pop_all) {
+    TStack<int> s;
     s.push(7);
     s.push(9);
     EXPECT_FALSE(s.is_empty());
@@ -79,8 +79,8 @@ TEST(TestStack, is_empty_returns_true_after_pop_all) {
 }
 
 
-TEST(TestStack, can_clear_correctly) {
-    Stack<int> s;
+TEST(TestTStack, can_clear_correctly) {
+    TStack<int> s;
     s.push(1);
     s.push(2);
     EXPECT_FALSE(s.is_empty());
@@ -90,8 +90,8 @@ TEST(TestStack, can_clear_correctly) {
     EXPECT_THROW(s.top(), std::logic_error);
 }
 
-TEST(TestStack, top_returns_correct_value) {
-    Stack<int> s;
+TEST(TestTStack, top_returns_correct_value) {
+    TStack<int> s;
     s.push(1);
     s.push(2);
     s.push(3);
@@ -102,18 +102,18 @@ TEST(TestStack, top_returns_correct_value) {
     EXPECT_EQ(s.top(), 1);
 }
 
-TEST(TestStack, top_throws_exception_when_empty_stack) {
-    Stack<int> s;
+TEST(TestTStack, top_throws_exception_when_empty_stack) {
+    TStack<int> s;
     EXPECT_THROW(s.top(), std::logic_error);
 
-    Stack<int> s1;
+    TStack<int> s1;
     s1.push(3);
     s1.pop();
     EXPECT_THROW(s1.top(), std::logic_error);
 }
 
-TEST(TestStack, top_after_clear_throws_exception) {
-    Stack<int> s;
+TEST(TestTStack, top_after_clear_throws_exception) {
+    TStack<int> s;
     s.push(1);
     s.clear();
     EXPECT_THROW(s.top(), std::logic_error);
