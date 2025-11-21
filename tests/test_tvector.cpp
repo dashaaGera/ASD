@@ -366,7 +366,7 @@ TEST(TestTVector, input_operator) {
     EXPECT_EQ(v[4], 5);
 }
 
-TEST(TestIterator, can_read_correctly) {
+TEST(TestIteratorTVector, can_read_correctly) {
     TVector<int> vec; 
     for (int i = 1; i <= 10; i++) { 
         vec.push_back(i);
@@ -379,7 +379,7 @@ TEST(TestIterator, can_read_correctly) {
     }
 }
 
-TEST(TestIterator, can_write_correctly) {
+TEST(TestIteratorTVector, can_write_correctly) {
     TVector<int> vec; 
     for (int i = 0; i < 5; i++) {  
         vec.push_back(0);
@@ -398,7 +398,7 @@ TEST(TestIterator, can_write_correctly) {
     }
 }
 
-TEST(TestIterator, empty_vector_work_correctly) {
+TEST(TestIteratorTVector, empty_vector_work_correctly) {
     TVector<int> vec;  
 
     EXPECT_NO_THROW({
