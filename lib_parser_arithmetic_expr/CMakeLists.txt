@@ -1,0 +1,3 @@
+create_project_lib(ParserArithmeticExpr)
+add_depend(ParserArithmeticExpr Stack lib_stack)
+add_depend(ParserArithmeticExpr List lib_list)

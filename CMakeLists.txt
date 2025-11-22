@@ -21,6 +21,11 @@ add_subdirectory(lib_doubly_linked_list)
 add_subdirectory(lib_tstack) 
 add_subdirectory(lib_tqueue)     # подключаем дополнительный CMakeLists.txt из подкаталога с именем lib_easy_example
 add_subdirectory(lib_algorithms)
+add_subdirectory(lib_my_math)
+add_subdirectory(lib_parser_arithmetic_expr)
+add_subdirectory(lib_arithmetic_expr)
+
+add_subdirectory(lib_calculator_arithmetic_expr)
 
 add_subdirectory(main)                # подключаем дополнительный CMakeLists.txt из подкаталога с именем main
 

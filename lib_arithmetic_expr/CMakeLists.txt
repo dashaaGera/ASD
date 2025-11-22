@@ -1,0 +1,3 @@
+create_project_lib(ArithmeticExpr)
+add_depend(ArithmeticExpr ParserArithmeticExpr lib_parser_arithmetic_expr)
+add_depend(ArithmeticExpr MyMath lib_my_math)
