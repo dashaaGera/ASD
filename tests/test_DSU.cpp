@@ -89,7 +89,4 @@ TEST(TestDSU, all_functions__work_correctly) {
     EXPECT_EQ(d.find(3), 1);
     EXPECT_EQ(d.find(2), 1);
   
-
- 
-
 }
