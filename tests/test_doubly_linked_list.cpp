@@ -356,11 +356,16 @@ TEST(TestDoublyLinkedListIterator, can_read_correctly) {
     Node<int>* tail_node = list.tail();
     Doubly_Linked_List<int>::Iterator it(tail_node);
 
-    while (true) {
+    //while (true) {
+    //    EXPECT_EQ(*it, expected_val);
+    //    if (!(it != list.begin())) break;
+    //    expected_val--;
+    //    --it;
+    //}
+
+    for (auto  it = list.rbegin(); it != list.rend(); it--) {
         EXPECT_EQ(*it, expected_val);
-        if (!(it != list.begin())) break;
         expected_val--;
-        --it;
     }
 
 }
