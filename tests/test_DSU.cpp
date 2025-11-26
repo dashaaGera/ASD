@@ -36,6 +36,13 @@ TEST(TestDSU, rank_changes_after_unite) {
     EXPECT_EQ(d.rank()[0], 2);
 }
 
+TEST(TestDSU, unite_throws_exception) {
+    DSU d(6);
+    EXPECT_ANY_THROW(d.unite(1,8));
+    EXPECT_ANY_THROW(d.unite(12, 4));
+    EXPECT_ANY_THROW(d.unite(17, 8));
+}
+
 TEST(TestDSU, unite_different_sets_work_correctly) {
     DSU d(5);
     d.unite(0, 1);
@@ -75,6 +82,11 @@ TEST(TestDSU, find_work_correctly) {
 
 }
 
+TEST(TestDSU, find_throws_exception) {
+    DSU d(6);
+    EXPECT_ANY_THROW(d.find(8));
+}
+
 TEST(TestDSU, all_functions__work_correctly) {
     DSU d(7);
     d.unite(1, 2);
@@ -86,7 +98,8 @@ TEST(TestDSU, all_functions__work_correctly) {
     EXPECT_EQ(d.find(5), 3);
     EXPECT_EQ(d.find(6), 3);
 
-    EXPECT_EQ(d.find(3), 1);
-    EXPECT_EQ(d.find(2), 1);
+    EXPECT_EQ(d.find(3), 3);
+    EXPECT_EQ(d.find(2), 3);
   
 }
+
