@@ -44,6 +44,14 @@ TEST(TestCycleList, has_cycle_hare_and_turtle_work_correctly_in_no_empty_list_wi
     l1.push_back(2);
     l1.push_back(3);
     EXPECT_EQ(has_cycle_hare_and_turtle(l1), false);
+
+    List<int> l2;
+    l2.push_back(1);
+    l2.push_back(2);
+    l2.push_back(3);
+    l2.push_back(4);
+
+    EXPECT_EQ(has_cycle_hare_and_turtle(l2), false);
 }
 
 TEST(TestCycleList, has_cycle_hare_and_turtle_work_correctly_in_no_empty_list_with_cycles) {
@@ -97,6 +105,7 @@ TEST(TestCycleList, has_cycle_reverse_pointers_work_correctly_in_no_empty_list_w
     l1.push_back(5);
     l1.tail()->next = l1.head()->next->next;
     EXPECT_EQ(has_cycle_reverse_pointers(l1), true);
+    l1.pop_back();
 
     List<int> l2;
     l2.push_back(1);
@@ -106,12 +115,14 @@ TEST(TestCycleList, has_cycle_reverse_pointers_work_correctly_in_no_empty_list_w
     l2.push_back(5);
     l2.tail()->next = l2.head();
     EXPECT_EQ(has_cycle_reverse_pointers(l2), true);
+    l2.pop_back();
 
     List<int> l3;
     l3.push_back(1);
     l3.push_back(2);
     l3.tail()->next = l3.tail();
     EXPECT_EQ(has_cycle_reverse_pointers(l3), true);
+    l3.pop_back();
 
 }
 

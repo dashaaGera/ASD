@@ -32,6 +32,7 @@ bool has_cycle_reverse_pointers(const List<T>& list) {
     Node<T>* curr = list.head();
     Node<T>* prev = nullptr;
     Node<T>* next = nullptr;
+    bool is_cycle = false;
 
     while (curr != nullptr) {
         next = curr->next; //save pointer on next node
@@ -39,10 +40,22 @@ bool has_cycle_reverse_pointers(const List<T>& list) {
         prev = curr; //move pointer on curr node
         curr = next; // jump next node befote reverse pointer
         if (curr == list.head()) {
-            return true;
+            is_cycle = true;
         }
     }
-    return false;
+
+    curr = list.head();
+
+    while (curr != nullptr) {
+        next = curr->next; //save pointer on next node
+        curr->next = prev; //reverse pointer for curr node
+        prev = curr; //move pointer on curr node
+        curr = next; // jump next node befote reverse pointer
+        if (curr == list.head()) {
+            break;
+        }
+    }
+    return is_cycle;
 }
 
 template <typename T>
