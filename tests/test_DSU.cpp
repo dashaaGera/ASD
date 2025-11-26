@@ -74,3 +74,22 @@ TEST(TestDSU, find_work_correctly) {
     EXPECT_EQ(d.find(3), 7);
 
 }
+
+TEST(TestDSU, all_functions__work_correctly) {
+    DSU d(7);
+    d.unite(1, 2);
+    d.unite(3, 4);
+    d.unite(5, 6);
+    d.unite(4, 6);
+    d.unite(2, 6);
+    EXPECT_EQ(d.find(4), 3);
+    EXPECT_EQ(d.find(5), 3);
+    EXPECT_EQ(d.find(6), 3);
+
+    EXPECT_EQ(d.find(3), 1);
+    EXPECT_EQ(d.find(2), 1);
+  
+
+ 
+
+}
