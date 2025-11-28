@@ -236,28 +236,13 @@ TEST(TestParser, parse_operator_work_corretly) {
     EXPECT_FALSE(Parser::parse_operator(expr5, pos, lexems, LexemeType::Constant));
 }
 
-TEST(TestParser, parse_brackets_and_abs_work_corretly) {
+TEST(TestParser, parse_abs_work_corretly) {
     List<Lexem> lexems;
     size_t pos;
 
-    std::string expr1 = "(";
-    pos = 0;
-    EXPECT_TRUE(Parser::parse_brackets_and_brackets_of_abs(expr1, pos, lexems, LexemeType::OpenBracket));
-    EXPECT_EQ(pos, 1);
-    EXPECT_EQ(lexems.tail()->value.name, "(");
-    EXPECT_EQ(lexems.tail()->value.type, LexemeType::OpenBracket);
-
-    lexems = List<Lexem>();
-    std::string expr2 = "]";
-    pos = 0;
-    EXPECT_TRUE(Parser::parse_brackets_and_brackets_of_abs(expr2, pos, lexems, LexemeType::Constant));
-    EXPECT_EQ(lexems.tail()->value.name, "]");
-    EXPECT_EQ(lexems.tail()->value.type, LexemeType::CloseBracket);
-
-    lexems = List<Lexem>();
     std::string expr3 = "|";
     pos = 0;
-    EXPECT_TRUE(Parser::parse_brackets_and_brackets_of_abs(expr3, pos, lexems, LexemeType::OpenBracket));
+    EXPECT_TRUE(Parser::parse_abs(expr3, pos, lexems, LexemeType::OpenBracket));
     EXPECT_EQ(pos, 1);
     EXPECT_EQ(lexems.tail()->value.name, "|");
     EXPECT_EQ(lexems.tail()->value.type, LexemeType::OpenedAbs);
@@ -267,42 +252,8 @@ TEST(TestParser, parse_brackets_and_abs_work_corretly) {
     lexems.push_back(Lexem("+", LexemeType::Operator, DBL_MAX, 1));
     std::string expr4 = "|";
     pos = 0;
-    EXPECT_TRUE(Parser::parse_brackets_and_brackets_of_abs(expr4, pos, lexems, LexemeType::Operator));
+    EXPECT_TRUE(Parser::parse_abs(expr4, pos, lexems, LexemeType::Operator));
     EXPECT_EQ(lexems.tail()->value.type, LexemeType::OpenedAbs);
-
-    lexems = List<Lexem>();
-    pos = 0;
-    std::string expr = "{ | x | }";
-
-    EXPECT_TRUE(Parser::parse_brackets_and_brackets_of_abs(expr, pos, lexems, LexemeType::OpenBracket));
-    EXPECT_EQ(lexems.tail()->value.name, "{");
-    EXPECT_EQ(pos, 1);
-
-    Parser::skip_spaces(expr, pos);
-
-    EXPECT_TRUE(Parser::parse_brackets_and_brackets_of_abs(expr, pos, lexems, LexemeType::OpenBracket));
-    EXPECT_EQ(lexems.tail()->value.type, LexemeType::OpenedAbs);
-    EXPECT_EQ(pos, 3);
-
-    Parser::skip_spaces(expr, pos);
-
-    EXPECT_TRUE(Parser::parse_variable_or_function(expr, pos, lexems));
-    EXPECT_EQ(lexems.tail()->value.name, "x");
-    EXPECT_EQ(lexems.tail()->value.type, LexemeType::Variable);
-    EXPECT_EQ(pos, 5);
-
-    Parser::skip_spaces(expr, pos);
-
-    EXPECT_TRUE(Parser::parse_brackets_and_brackets_of_abs(expr, pos, lexems, LexemeType::Variable));
-    EXPECT_EQ(lexems.tail()->value.type, LexemeType::ClosedAbs);
-    EXPECT_EQ(pos, 7);
-
-    Parser::skip_spaces(expr, pos);
-
-    EXPECT_TRUE(Parser::parse_brackets_and_brackets_of_abs(expr, pos, lexems, LexemeType::ClosedAbs));
-    EXPECT_EQ(lexems.tail()->value.name, "}");
-    EXPECT_EQ(pos, 9);
-    EXPECT_EQ(lexems.size(), 5);
 }
 
 
@@ -335,13 +286,13 @@ TEST(TestLexemSequence, after_variable_no_correct_sequences) {
     EXPECT_THROW(Parser::check_lexem_sequence(LexemeType::Variable, LexemeType::OpenedAbs, "x", 1), std::logic_error);
 }
 
-TEST(TestLexemSequence, after_ñonstant_correct_sequences) {
+TEST(TestLexemSequence, after_ï¿½onstant_correct_sequences) {
     EXPECT_NO_THROW(Parser::check_lexem_sequence(LexemeType::Constant, LexemeType::Operator, "5", 1));
     EXPECT_NO_THROW(Parser::check_lexem_sequence(LexemeType::Constant, LexemeType::CloseBracket, "5", 1));
     EXPECT_NO_THROW(Parser::check_lexem_sequence(LexemeType::Constant, LexemeType::ClosedAbs, "5", 1));
 }
 
-TEST(TestLexemSequence, after_ñonstant_no_correct_sequences) {
+TEST(TestLexemSequence, after_ï¿½onstant_no_correct_sequences) {
     EXPECT_THROW(Parser::check_lexem_sequence(LexemeType::Constant, LexemeType::Variable, "8", 1), std::logic_error);
     EXPECT_THROW(Parser::check_lexem_sequence(LexemeType::Constant, LexemeType::Constant, "8", 1), std::logic_error);
     EXPECT_THROW(Parser::check_lexem_sequence(LexemeType::Constant, LexemeType::Function, "8", 1), std::logic_error);
@@ -376,13 +327,13 @@ TEST(TestLexemSequence, after_operator_no_correct_sequences) {
     EXPECT_THROW(Parser::check_lexem_sequence(LexemeType::Operator, LexemeType::ClosedAbs, "+", 1), std::logic_error);
 }
 
-TEST(TestLexemSequence, after_ñlose_bracket_correct_sequences) {
+TEST(TestLexemSequence, after_ï¿½lose_bracket_correct_sequences) {
     EXPECT_NO_THROW(Parser::check_lexem_sequence(LexemeType::CloseBracket, LexemeType::Operator, ")", 1));
     EXPECT_NO_THROW(Parser::check_lexem_sequence(LexemeType::CloseBracket, LexemeType::CloseBracket, ")", 1));
     EXPECT_NO_THROW(Parser::check_lexem_sequence(LexemeType::CloseBracket, LexemeType::ClosedAbs, ")", 1));
 }
 
-TEST(TestLexemSequence, after_ñlose_bracket_no_correct_sequences) {
+TEST(TestLexemSequence, after_ï¿½lose_bracket_no_correct_sequences) {
     EXPECT_THROW(Parser::check_lexem_sequence(LexemeType::CloseBracket, LexemeType::Variable, ")", 1), std::logic_error);
     EXPECT_THROW(Parser::check_lexem_sequence(LexemeType::CloseBracket, LexemeType::Constant, ")", 1), std::logic_error);
     EXPECT_THROW(Parser::check_lexem_sequence(LexemeType::CloseBracket, LexemeType::Function, ")", 1), std::logic_error);

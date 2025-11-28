@@ -34,7 +34,7 @@ namespace Parser {
     bool parse_number(const std::string& expr, size_t& pos, List<Lexem>& lexems, LexemeType lastType);
     bool parse_variable_or_function(const std::string& expr, size_t& pos, List<Lexem>& lexems);
     bool parse_operator(const std::string& expr, size_t& pos, List<Lexem>& lexems, LexemeType lastType);
-    bool parse_brackets_and_brackets_of_abs(const std::string& expr, size_t& pos, List<Lexem>& lexems, LexemeType lastType);
+    bool parse_abs(const std::string& expr, size_t& pos, List<Lexem>& lexems, LexemeType lastType);
 
     void check_lexem_sequence(LexemeType prevType, LexemeType currentType, const std::string& expr, size_t pos);
     List<Lexem> parse(const std::string& expression);

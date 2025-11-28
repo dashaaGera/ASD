@@ -139,9 +139,9 @@ bool Parser::parse_operator(const std::string& expr, size_t& pos, List<Lexem>& l
 }
 
 
-bool Parser::parse_brackets_and_brackets_of_abs(const std::string& expr, size_t& pos, List<Lexem>& lexems, LexemeType lastType) {
+bool Parser::parse_abs(const std::string& expr, size_t& pos, List<Lexem>& lexems, LexemeType lastType) {
     char current = expr[pos];
-
+    /*
     if (current == '(' || current == '{' || current == '[') {
         lexems.push_back(Lexem(std::string(1, current), LexemeType::OpenBracket));
         pos++;
@@ -153,6 +153,7 @@ bool Parser::parse_brackets_and_brackets_of_abs(const std::string& expr, size_t&
         pos++;
         return true;
     }
+    */
 
     // abs 
     if (current == '|') {
@@ -260,7 +261,7 @@ List<Lexem> Parser::parse(const std::string& expression) {
     size_t pos = 0;
     size_t length = expression.length();
     LexemeType last_type = LexemeType::OpenBracket;
-
+    Stack<int> last_opening_bracket_pos(100);
     while (pos < length) {
         skip_spaces(expression, pos);
         if (pos >= length) break;
@@ -269,6 +270,7 @@ List<Lexem> Parser::parse(const std::string& expression) {
         //opened brackets
         if (expression[pos] == '(' || expression[pos] == '{' || expression[pos] == '[') {
             bracket_stack.push(expression[pos]);
+            last_opening_bracket_pos.push(pos);
             lexems.push_back(Lexem(std::string(1, expression[pos]), LexemeType::OpenBracket));
             pos++;
             parsed = true;
@@ -282,6 +284,17 @@ List<Lexem> Parser::parse(const std::string& expression) {
             char open_bracket = bracket_stack.top();
             char close_bracket = expression[pos];
 
+            int abs_bracket_counter = 0;
+            int last_abs_pos;
+            for (int i = last_opening_bracket_pos.top(); i < pos; i++) {
+                if (expression[i] == '|') {
+                    abs_bracket_counter++;
+                    last_abs_pos = i;
+                }
+            }
+            if (abs_bracket_counter % 2 != 0) {
+                throw std::logic_error(create_error(expression, last_abs_pos, "Unmatched abs bracket"));
+            }
             // pairing brackets
             if ((open_bracket == '(' && close_bracket != ')') ||
                 (open_bracket == '{' && close_bracket != '}') ||
@@ -290,13 +303,14 @@ List<Lexem> Parser::parse(const std::string& expression) {
             }
 
             bracket_stack.pop();
+            last_opening_bracket_pos.pop();
             lexems.push_back(Lexem(std::string(1, expression[pos]), LexemeType::CloseBracket));
             pos++;
             parsed = true;
         }
         // abs
         else if (expression[pos] == '|') {
-            parsed = parse_brackets_and_brackets_of_abs(expression, pos, lexems, last_type);
+            parsed = parse_abs(expression, pos, lexems, last_type);
         }
         else {
             parsed =
