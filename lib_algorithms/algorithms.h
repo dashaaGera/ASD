@@ -26,12 +26,13 @@ bool has_cycle_hare_and_turtle(const List<T>& list) {
 }
 
 template<typename T>
-bool has_cycle_reverse_pointers(const List<T>& list) {
+bool has_cycle_reverse_pointers(List<T>& list) {
     if (list.is_empty()) return false;
 
     Node<T>* curr = list.head();
     Node<T>* prev = nullptr;
     Node<T>* next = nullptr;
+    Node<T>* original_head = list.head();
     bool is_cycle = false;
 
     while (curr != nullptr) {
@@ -39,21 +40,21 @@ bool has_cycle_reverse_pointers(const List<T>& list) {
         curr->next = prev; //reverse pointer for curr node
         prev = curr; //move pointer on curr node
         curr = next; // jump next node befote reverse pointer
-        if (curr == list.head()) {
+        if (curr == original_head) {
             is_cycle = true;
+            break;
         }
     }
 
-    curr = list.head();
+    // Restore original list structure by reversing again
+    curr = prev; // prev now points to the last node we processed
+    prev = nullptr;
 
     while (curr != nullptr) {
-        next = curr->next; //save pointer on next node
-        curr->next = prev; //reverse pointer for curr node
-        prev = curr; //move pointer on curr node
-        curr = next; // jump next node befote reverse pointer
-        if (curr == list.head()) {
-            break;
-        }
+        next = curr->next; // save pointer to next node
+        curr->next = prev; // reverse pointer back
+        prev = curr; // move pointer to current node
+        curr = next; // move to next node
     }
     return is_cycle;
 }

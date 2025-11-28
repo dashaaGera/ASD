@@ -65,7 +65,7 @@ TEST(TestCycleList, has_cycle_hare_and_turtle_work_correctly_in_no_empty_list_wi
     EXPECT_EQ(has_cycle_hare_and_turtle(l1), true);
     l1.pop_back();
 
-    List<int> l2;
+   List<int> l2;
     l2.push_back(1);
     l2.push_back(2);
     l2.push_back(3);
