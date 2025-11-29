@@ -28,7 +28,7 @@ template <class T>
 inline T TStack<T>::top() const {
     if (is_empty())
         throw std::logic_error("Stack is empty");
-    return _list.tail()->value;
+    return _list.head()->value;
 }
 
 template <class T>
@@ -43,20 +43,20 @@ inline bool TStack<T>::is_empty() const noexcept {
 
 template <class T>
 void TStack<T>::push(const T& val) {
-    _list.push_back(val);
+    _list.push_front(val);
 }
 
 template <class T>
 void TStack<T>::pop() {
     if (is_empty())
         throw std::logic_error("Stack is empty");
-    _list.pop_back();
+    _list.pop_front();
 }
 
 template <class T>
 void TStack<T>::clear() noexcept {
     while (!is_empty()) {
-        pop();
+        _list.pop_front();
     }
 }
 

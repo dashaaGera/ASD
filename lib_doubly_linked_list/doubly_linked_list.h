@@ -41,6 +41,8 @@ public:
     };
     Iterator begin() const  { return Iterator(this->_head); }
     Iterator end() const { return Iterator(nullptr); }
+    Iterator rbegin() const { return Iterator(this->_tail); }
+    Iterator rend() const { return Iterator(nullptr); }
 };
 
 template <class T>

@@ -59,7 +59,7 @@ void Queue<T>::pop() {
 template <class T>
 void Queue<T>::clear() noexcept {
     while (!is_empty()) {
-        pop();
+        _list.pop_front();
     }
 }
 

@@ -71,6 +71,26 @@ public:
             return temp;
         }
 
+        Iterator& operator--() {
+            --_ptr;
+            return *this;
+        }
+
+        Iterator operator--(int) {
+            Iterator temp = *this;
+            --_ptr;
+            return temp;
+        }
+
+        Iterator& operator -=(int step) {
+            _ptr -= step;
+            return *this;
+        }
+
+        Iterator& operator +=(int step) {
+            _ptr += step;
+            return *this;
+        }
         bool operator==(const Iterator& other) const {
             return _ptr == other._ptr;
         }
@@ -81,11 +101,15 @@ public:
     };
 
     Iterator begin() { return Iterator(_data); }
+    Iterator rbegin() { return Iterator(_data + _size-1); }
     Iterator end() {
         if (_data == nullptr) 
             return Iterator(nullptr);
         else 
             return Iterator(_data + _size);
+    }
+    Iterator rend() {
+        return Iterator(_data-1);
     }
 };
 
@@ -217,12 +241,16 @@ void TVector<T>::push_back(T val) {
 }
 
 template <class T>
-T& TVector<T>::operator[](size_t index) noexcept {
+T& TVector<T>::operator[](size_t index) {
+    if (index >= _size)
+        throw std::invalid_argument("reaching out of bounds");
     return _data[index];
 }
 
 template <class T>
-const T& TVector<T>::operator[](size_t index)const  noexcept {
+const T& TVector<T>::operator[](size_t index) const {
+    if (index >= _size)
+        throw std::invalid_argument("reaching out of bounds");
     return _data[index];
 }
 
