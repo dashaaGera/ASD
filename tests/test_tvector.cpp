@@ -379,6 +379,47 @@ TEST(TestIteratorTVector, can_read_correctly) {
     }
 }
 
+TEST(TestIteratorTVector, can_read_correctly_reverse) {
+    TVector<int> vec;
+    for (int i = 1; i <= 10; i++) {
+        vec.push_back(i);
+    }
+
+    int expected_val = 10;
+    for (auto it = vec.rbegin(); it != vec.rend(); it--) {
+        EXPECT_EQ(*it, expected_val);
+        expected_val--;
+    }
+}
+
+TEST(TestIteratorTVector, can_read_correctly_random_index) {
+    TVector<int> vec;
+    for (int i = 1; i <= 10; i++) {
+        vec.push_back(i);
+    }
+
+    auto it = vec.begin();
+    it += 3;
+    int expected_val = 4;
+    EXPECT_EQ(*it, expected_val);
+}
+
+TEST(TestIteratorTVector, can_read_correctly_reverse_random_index) {
+    TVector<int> vec;
+    for (int i = 1; i <= 10; i++) {
+        vec.push_back(i);
+    }
+
+    auto it = vec.rbegin();
+    it -= 3;
+    int expected_val = 7;
+    EXPECT_EQ(*it, expected_val);
+
+}
+
+
+
+
 TEST(TestIteratorTVector, can_write_correctly) {
     TVector<int> vec; 
     for (int i = 0; i < 5; i++) {  
