@@ -241,12 +241,16 @@ void TVector<T>::push_back(T val) {
 }
 
 template <class T>
-T& TVector<T>::operator[](size_t index) noexcept {
+T& TVector<T>::operator[](size_t index) {
+    if (index >= _size)
+        throw std::invalid_argument("reaching out of bounds");
     return _data[index];
 }
 
 template <class T>
-const T& TVector<T>::operator[](size_t index)const  noexcept {
+const T& TVector<T>::operator[](size_t index) const {
+    if (index >= _size)
+        throw std::invalid_argument("reaching out of bounds");
     return _data[index];
 }
 
