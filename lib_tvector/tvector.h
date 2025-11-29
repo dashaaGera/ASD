@@ -47,9 +47,9 @@ public:
     size_t find_pos(T val);
     T find_val(size_t pos);
 
-    T& operator[](size_t index)  noexcept;
+    T& operator[](size_t index) ;
     TVector& operator=(const TVector& other);
-    const T& operator[](size_t index) const  noexcept;
+    const T& operator[](size_t index) const;
     friend std::ostream& operator <<<T>(std::ostream& out, const TVector<T>& dmass);
     friend std::istream& operator >><T>(std::istream& in, TVector<T>& dmass);
 
