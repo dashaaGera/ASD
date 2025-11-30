@@ -105,7 +105,6 @@ TEST(TestCycleList, has_cycle_reverse_pointers_work_correctly_in_no_empty_list_w
     l1.push_back(5);
     l1.tail()->next = l1.head()->next->next;
     EXPECT_EQ(has_cycle_reverse_pointers(l1), true);
-    l1.pop_back();
 
     List<int> l2;
     l2.push_back(1);
@@ -115,15 +114,16 @@ TEST(TestCycleList, has_cycle_reverse_pointers_work_correctly_in_no_empty_list_w
     l2.push_back(5);
     l2.tail()->next = l2.head();
     EXPECT_EQ(has_cycle_reverse_pointers(l2), true);
-    l2.pop_back();
 
     List<int> l3;
     l3.push_back(1);
     l3.push_back(2);
     l3.tail()->next = l3.tail();
     EXPECT_EQ(has_cycle_reverse_pointers(l3), true);
-    l3.pop_back();
 
+    destroy_list_cycle(l1);
+    destroy_list_cycle(l2);
+    destroy_list_cycle(l3);
 }
 
 TEST(TestCycleList, has_cycle_problem_node_work_correctly_in_empty_list) {
@@ -174,4 +174,37 @@ TEST(TestCycleList, has_cycle_problem_node_work_correctly_in_no_empty_list_with_
     EXPECT_NE(result3, nullptr);
     EXPECT_EQ(result3, l3.tail()); 
     l3.pop_back();
+}
+
+TEST(TestCycleList, restores_reversed_list_correctly) {
+    List<int> l1;
+    l1.push_back(1);
+    l1.push_back(2);
+    l1.push_back(3);
+    l1.push_back(4);
+    l1.push_back(5);
+    Node<int>* l_head = l1.head();
+    Node<int>* cycle_node = l1.head()->next->next;
+    l1.tail()->next = cycle_node;
+    if (has_cycle_reverse_pointers(l1)) {
+        Node<int>* result = has_cycle_problem_node(l1);
+        EXPECT_EQ(result, cycle_node);
+        destroy_list_cycle(l1);
+    }
+
+    List<int> l2;
+    l2.push_back(1);
+    l2.push_back(2);
+    l2.push_back(3);
+    l2.push_back(4);
+    l2.push_back(5);
+
+    Node<int>* l1_iter = l1.head();
+    Node<int>* l2_iter = l2.head();
+    while (l1_iter != nullptr || l2_iter != nullptr)
+    {
+        EXPECT_EQ(l1_iter->value, l2_iter->value);
+        l1_iter = l1_iter->next;
+        l2_iter = l2_iter->next;
+    }
 }
