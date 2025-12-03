@@ -283,7 +283,7 @@ double Expression::calculate() {
     }
 
     if (values.top_index() != 0) {
-        throw std::logic_error("Invalid expression - multiple values left");
+        throw std::logic_error("Unknow error");
     }
 
     return values.top();
