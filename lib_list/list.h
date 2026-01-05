@@ -91,16 +91,22 @@ List<T>::List():_head(nullptr),_tail(nullptr),_count(0){}
 
 template <class T>
 List<T>::List(const List& other) : _head(nullptr), _tail(nullptr), _count(0) {
-	_head = new Node<T>(*other._head);
-	Node<T>* tmpNode = _head;
-	Node<T>* tmpNode1 = _head->next;
-	while (tmpNode1 != nullptr) {
-		tmpNode->next = new Node<T>(tmpNode1->value);
-		tmpNode = tmpNode->next;
-		tmpNode1 = tmpNode1->next;
+	if (other.is_empty()) 
+		return;
+	_head = new Node<T>(other._head->value);
+	_count = 1;
+
+	Node<T>* current = _head;
+	Node<T>* other_current = other._head->next;
+
+	while (other_current != nullptr) {
+		current->next = new Node<T>(other_current->value);
+		current = current->next;
+		other_current = other_current->next;
+		_count++;
 	}
-	_tail = tmpNode;
-	_count = other.size();
+
+	_tail = current;
 }
 
 template <class T>
@@ -290,7 +296,6 @@ Node<T>* List<T>::find(const T& val) const {
 template <class T>
 List<T>& List<T>::operator=(const List<T>& other) {
 	if (this != &other) {
-
 		while (_head != nullptr) {
 			Node<T>* temp = _head;
 			_head = _head->next;
@@ -298,22 +303,24 @@ List<T>& List<T>::operator=(const List<T>& other) {
 		}
 		_tail = nullptr;
 		_count = 0;
-
-		if (other._head != nullptr) {
+		if (!other.is_empty()) {
 			_head = new Node<T>(other._head->value);
 			Node<T>* current = _head;
 			Node<T>* other_current = other._head->next;
+			_count = 1;
 
 			while (other_current != nullptr) {
 				current->next = new Node<T>(other_current->value);
 				current = current->next;
 				other_current = other_current->next;
+				_count++;
 			}
 			_tail = current;
-			_count = other._count;
 		}
 	}
 	return *this;
 }
 
 #endif
+
+
