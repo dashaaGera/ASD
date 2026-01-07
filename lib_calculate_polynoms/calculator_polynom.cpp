@@ -1,8 +1,22 @@
 #include <iostream>
 #include <iomanip>
+#include <limits>
+#include <cstdlib>
 #include "../lib_polynom/polynom.h"
 #include "../lib_monom/monom.h"
 
+void clear_screen() {
+#ifdef _WIN32
+    std::system("cls");
+#else
+    std::system("clear");
+#endif
+}
+
+void wait_for_enter() {
+    std::cout << "\nPress Enter to continue...";
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+}
 
 void print_menu() {
     std::cout << "\nMenu\n";
@@ -18,9 +32,7 @@ void print_menu() {
     std::cout << "Choice: ";
 }
 
-
 int main() {
-
     Polynom current_poly;
     Polynom second_poly;
 
@@ -29,27 +41,22 @@ int main() {
     while (choice != 0) {
         print_menu();
         std::cin >> choice;
-        std::cin.ignore();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        clear_screen();
 
         switch (choice) {
         case 1: {
             std::cout << "Enter polynom: ";
-            std::string input;
-            std::getline(std::cin, input);
-
-            try {
-                current_poly = Polynom::parse(input);
-                std::cout << "Your polynom: " << current_poly << std::endl;
-            }
-            catch (const std::exception& e) {
-                std::cout << "Error: " << e.what() << std::endl;
-            }
+            std::cin >> current_poly;
+            std::cout << "Your polynom: " << current_poly << std::endl;
+            wait_for_enter();
             break;
         }
 
         case 2: {
             std::cout << "\nPolynom:\n";
             std::cout << "P = " << current_poly << std::endl;
+            wait_for_enter();
             break;
         }
 
@@ -58,30 +65,33 @@ int main() {
             std::cout << "Enter x y z (separated by space): ";
 
             double x, y, z;
-            std::cin >> x >> y >> z;
-            std::cin.ignore();
-
-            try {
-                double result = current_poly.evaluate(x, y, z);
-                std::cout << "P(" << x << "," << y << "," << z << ") = "
-                    << std::fixed << std::setprecision(6)
-                    << result << std::endl;
+            if (std::cin >> x >> y >> z) {
+                try {
+                    double result = current_poly.evaluate(x, y, z);
+                    std::cout << "P(" << x << "," << y << "," << z << ") = "
+                        << std::fixed << std::setprecision(6)
+                        << result << std::endl;
+                }
+                catch (const std::exception& e) {
+                    std::cout << "Error: " << e.what() << std::endl;
+                }
             }
-            catch (const std::exception& e) {
-                std::cout << "Error: " << e.what() << std::endl;
+            else {
+                std::cout << "Error: invalid input for coordinates" << std::endl;
+                std::cin.clear();
             }
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            wait_for_enter();
             break;
         }
 
         case 4: {
-            std::cout << "Curremt polynom: " << current_poly << std::endl;
+            std::cout << "Current polynom: " << current_poly << std::endl;
             std::cout << "Enter second polynom: ";
 
-            std::string input;
-            std::getline(std::cin, input);
+            std::cin >> second_poly;
 
             try {
-                second_poly = Polynom::parse(input);
                 Polynom sum = current_poly + second_poly;
                 std::cout << "Result: " << current_poly << " + "
                     << second_poly << " = " << sum << std::endl;
@@ -89,18 +99,17 @@ int main() {
             catch (const std::exception& e) {
                 std::cout << "Error: " << e.what() << std::endl;
             }
+            wait_for_enter();
             break;
         }
 
         case 5: {
             std::cout << "Current polynom: " << current_poly << std::endl;
-            std::cout << "Enter second polynom:  ";
+            std::cout << "Enter second polynom: ";
 
-            std::string input;
-            std::getline(std::cin, input);
+            std::cin >> second_poly;
 
             try {
-                second_poly = Polynom::parse(input);
                 Polynom diff = current_poly - second_poly;
                 std::cout << "Result: " << current_poly << " - "
                     << second_poly << " = " << diff << std::endl;
@@ -108,18 +117,17 @@ int main() {
             catch (const std::exception& e) {
                 std::cout << "Error: " << e.what() << std::endl;
             }
+            wait_for_enter();
             break;
         }
 
         case 6: {
             std::cout << "Current polynom: " << current_poly << std::endl;
-            std::cout << "Enter second polynom:  ";
+            std::cout << "Enter second polynom: ";
 
-            std::string input;
-            std::getline(std::cin, input);
+            std::cin >> second_poly;
 
             try {
-                second_poly = Polynom::parse(input);
                 Polynom prod = current_poly * second_poly;
                 std::cout << "Result: " << current_poly << " * "
                     << second_poly << " = " << prod << std::endl;
@@ -127,6 +135,7 @@ int main() {
             catch (const std::exception& e) {
                 std::cout << "Error: " << e.what() << std::endl;
             }
+            wait_for_enter();
             break;
         }
 
@@ -135,17 +144,22 @@ int main() {
             std::cout << "Enter scalar: ";
 
             double scalar;
-            std::cin >> scalar;
-            std::cin.ignore();
-
-            try {
-                Polynom result = current_poly * scalar;
-                std::cout << "Result: " << current_poly << " * "
-                    << scalar << " = " << result << std::endl;
+            if (std::cin >> scalar) {
+                try {
+                    Polynom result = current_poly * scalar;
+                    std::cout << "Result: " << current_poly << " * "
+                        << scalar << " = " << result << std::endl;
+                }
+                catch (const std::exception& e) {
+                    std::cout << "Error: " << e.what() << std::endl;
+                }
             }
-            catch (const std::exception& e) {
-                std::cout << "Error: " << e.what() << std::endl;
+            else {
+                std::cout << "Error: invalid scalar value" << std::endl;
+                std::cin.clear();
             }
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            wait_for_enter();
             break;
         }
 
@@ -154,20 +168,24 @@ int main() {
             std::cout << "Enter scalar: ";
 
             double scalar;
-            std::cin >> scalar;
-            std::cin.ignore();
-
-            try {
-                Polynom result = current_poly / scalar;
-                std::cout << "Result: " << current_poly << " * "
-                    << scalar << " = " << result << std::endl;
+            if (std::cin >> scalar) {
+                try {
+                    Polynom result = current_poly / scalar;
+                    std::cout << "Result: " << current_poly << " / "
+                        << scalar << " = " << result << std::endl;
+                }
+                catch (const std::exception& e) {
+                    std::cout << "Error: " << e.what() << std::endl;
+                }
             }
-            catch (const std::exception& e) {
-                std::cout << "Error: " << e.what() << std::endl;
+            else {
+                std::cout << "Error: invalid scalar value" << std::endl;
+                std::cin.clear();
             }
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            wait_for_enter();
             break;
         }
-
 
         case 0: {
             std::cout << "\nExit\n";
@@ -176,10 +194,11 @@ int main() {
 
         default: {
             std::cout << "Wrong choice!\n";
+            wait_for_enter();
             break;
         }
         }
     }
 
     return 0;
-} 
+}

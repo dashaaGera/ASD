@@ -175,10 +175,10 @@ std::ostream& operator<<(std::ostream& os, const Monom& m) {
 }
 
 std::istream& operator>>(std::istream& is, Monom& m) {
-    double coeff;
-    int px, py, pz;
-    is >> coeff >> px >> py >> pz;
-    m = Monom(coeff, px, py, pz);
+    std::string str;
+    if (is >> str) 
+        m = Monom::parse(str);
+
     return is;
 }
 

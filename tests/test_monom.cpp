@@ -185,12 +185,13 @@ TEST(TestMonom, output_operator) {
 
 TEST(TestMonom, input_operator) {
     Monom m;
-    std::stringstream is("1.5 2 3 4");
-    is >> m;
-    EXPECT_EQ(m.coeff(), 1.5);
+    std::stringstream is1("-.5x^2y^3z^4");
+    is1 >> m;
+    EXPECT_EQ(m.coeff(), -0.5);
     EXPECT_EQ(m.power_x(), 2);
     EXPECT_EQ(m.power_y(), 3);
     EXPECT_EQ(m.power_z(), 4);
+
 }
 
 TEST(TestMonom, comparison_operators) {

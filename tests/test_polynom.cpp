@@ -245,28 +245,46 @@ TEST(TestPolynom, output_operator_for_empty_polynom) {
 
 TEST(TestPolynom, input_operator) {
     Polynom p;
-    std::stringstream is("3 2.0 1 0 0 3.0 0 1 0 -4.0 0 0 0");
-    is >> p;
-    Polynom expected{ {2.0, 1, 0, 0}, {3.0, 0, 1, 0}, {-4.0, 0, 0, 0} };
-    EXPECT_EQ(p, expected);
+    std::stringstream is1("3y+ 2x  - 4");
+    is1 >> p;
+    Polynom expected1{ {2.0, 1, 0, 0}, {3.0, 0, 1, 0}, {-4.0, 0, 0, 0} };
+    EXPECT_EQ(p, expected1);
+
+    std::stringstream is2("x^2 + 2xy + y^2");
+    is2 >> p;
+    Polynom expected2{ {1.0, 2, 0, 0}, {2.0, 1, 1, 0}, {1.0, 0, 2, 0} };
+    EXPECT_EQ(p, expected2);
+
+    std::stringstream is3("-3.5x^2y^3 + 2z - 1");
+    is3 >> p;
+    Polynom expected3{ {-3.5, 2, 3, 0}, {2.0, 0, 0, 1}, {-1.0, 0, 0, 0} };
+    EXPECT_EQ(p, expected3);
 }
 
 TEST(TestPolynom, monoms_are_sorted_correctly) {
-    Polynom p{ {1.0, 0, 2, 3}, {2.0, 0, 2, 0}, {1.0, 1, 1, 0}, {6.0, 0, 0, 0} };
+    std::stringstream is("6 + x^1y^1 + 2y^2 + 1y^2z^3");
+    Polynom p;
+    is >> p;
 
     std::stringstream os;
     os << p;
     std::string result = os.str();
+
     size_t xy_pos = result.find("x^1y^1");
     size_t y2z3_pos = result.find("y^2z^3");
     size_t y2_pos = result.find("2y^2");
-
+    size_t const_pos = result.find("6");
     EXPECT_TRUE(xy_pos != std::string::npos);
     EXPECT_TRUE(y2z3_pos != std::string::npos);
     EXPECT_TRUE(y2_pos != std::string::npos);
+    EXPECT_TRUE(const_pos != std::string::npos);
 
     if (xy_pos != std::string::npos && y2z3_pos != std::string::npos) {
-        EXPECT_TRUE(xy_pos < y2z3_pos);
+        EXPECT_TRUE(y2z3_pos > xy_pos);
+    }
+
+    if (const_pos != std::string::npos && xy_pos != std::string::npos) {
+        EXPECT_TRUE(const_pos > xy_pos);
     }
 }
 

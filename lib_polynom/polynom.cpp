@@ -346,17 +346,9 @@ std::ostream& operator<<(std::ostream& os, const Polynom& p) {
 }
 
 std::istream& operator>>(std::istream& is, Polynom& p) {
-    int num_monoms;
-    is >> num_monoms;
-
-    p = Polynom();  
-    for (int i = 0; i < num_monoms; i++) {
-        Monom m;
-        is >> m; 
-        p._terms.push_back(m);
-    }
-
-    p._simplify();
+    std::string line;
+    if (std::getline(is, line)) 
+        p = Polynom::parse(line);
     return is;
 }
 
