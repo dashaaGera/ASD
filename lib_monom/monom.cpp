@@ -214,6 +214,19 @@ Monom Monom::parse(const std::string& str) {
     std::string s;
     for (char c : str) {
         if (!std::isspace(c)) {
+            // correct varible
+            bool valid_char = std::isdigit(c) ||
+                c == '.' ||
+                c == '+' ||
+                c == '-' ||
+                c == 'x' || c == 'X' ||
+                c == 'y' || c == 'Y' ||
+                c == 'z' || c == 'Z' ||
+                c == '^';
+
+            if (!valid_char) {
+                throw std::invalid_argument("Invalid character in monomial: " + std::string(1, c));
+            }
             s += c;
         }
     }

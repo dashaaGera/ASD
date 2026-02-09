@@ -47,9 +47,15 @@ int main() {
         switch (choice) {
         case 1: {
             std::cout << "Enter polynom: ";
-            std::cin >> current_poly;
-            std::cout << "Your polynom: " << current_poly << std::endl;
-            wait_for_enter();
+            try {
+                std::cin >> current_poly;
+                std::cout << "Your polynom: " << current_poly << std::endl;
+            }
+            catch (const std::exception& e) {
+                std::cout << "Error: " << e.what() << std::endl;
+                std::cout << "Allowed variables: x, y, z" << std::endl;
+            }
+                wait_for_enter();
             break;
         }
 

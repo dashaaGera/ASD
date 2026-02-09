@@ -33,188 +33,173 @@ TEST(TestPolynom, can_create_with_copy_constructor) {
 }
 
 TEST(TestPolynom, can_add_monom_to_polynom) {
-    Polynom p{ {2.0, 1, 0, 0}, {3.0, 0, 1, 0} };
-    Monom m{ 4.0, 0, 1, 0 };
+    Polynom p("2x + 3y");
+    Monom m("4y");
     Polynom result = p + m;
-    Polynom expected{ {2.0, 1, 0, 0}, {7.0, 0, 1, 0} };
+    Polynom expected("2x + 7y");
     EXPECT_EQ(result, expected);
 }
 
 TEST(TestPolynom, can_add_monom_to_polynom_with_new_monom) {
-    Polynom p{ {2.0, 1, 0, 0}, {3.0, 0, 1, 0} };
-    Monom m{ 4.0, 0, 0, 1 };
+    Polynom p("2x + 3y");
+    Monom m("4z");
     Polynom result = p + m;
-    Polynom expected{ {2.0, 1, 0, 0}, {3.0, 0, 1, 0}, {4.0, 0, 0, 1} };
+    Polynom expected("2x + 3y + 4z");
     EXPECT_EQ(result, expected);
 }
 
 TEST(TestPolynom, can_sub_monom_from_polynom) {
-    Polynom p{ {2.0, 1, 0, 0}, {3.0, 0, 1, 0} };
-    Monom m{ 1.0, 1, 0, 0 };
+    Polynom p("2x + 3y");
+    Monom m("x");
     Polynom result = p - m;
-    Polynom expected{ {1.0, 1, 0, 0}, {3.0, 0, 1, 0} };
+    Polynom expected("1x + 3y");
     EXPECT_EQ(result, expected);
 }
 
 TEST(TestPolynom, can_mul_polynom_by_monom) {
-    Polynom p{ {2.0, 1, 0, 0}, {3.0, 0, 1, 0} };
-    Monom m{ 2.0, 1, 0, 0 };
+    Polynom p("2x + 3y");
+    Monom m("2x");
     Polynom result = p * m;
-    Polynom expected{ {4.0, 2, 0, 0}, {6.0, 1, 1, 0} };
+    Polynom expected("4x^2 + 6xy");
     EXPECT_EQ(result, expected);
 }
 
 TEST(TestPolynom, can_add_2_polynoms) {
-    Polynom p1{ {2.0, 1, 0, 0}, {3.0, 0, 1, 0} };
-    Polynom p2{ {1.0, 1, 0, 0}, {-2.0, 0, 1, 0} };
+    Polynom p1("2x + 3y");
+    Polynom p2("x - 2y");
     Polynom result = p1 + p2;
-    Polynom expected{ {3.0, 1, 0, 0}, {1.0, 0, 1, 0} };
+    Polynom expected("3x + y");
     EXPECT_EQ(result, expected);
 }
 
 TEST(TestPolynom, can_sub_2_polynoms) {
-    Polynom p1{ {2.0, 1, 0, 0}, {3.0, 0, 1, 0} };
-    Polynom p2{ {1.0, 1, 0, 0}, {2.0, 0, 1, 0} };
+    Polynom p1("2x + 3y");
+    Polynom p2("1x + 2y");
     Polynom result = p1 - p2;
-    Polynom expected{ {1.0, 1, 0, 0}, {1.0, 0, 1, 0} };
+    Polynom expected("1x + 1y");
     EXPECT_EQ(result, expected);
 }
 
 TEST(TestPolynom, can_mul_2_polynoms) {
-    Polynom p1{ {2.0, 2, 1, 0}, {4.0, 5, 6, 7} }; 
-    Polynom p2{ {3.0, 0, 1, 0}, {1.0, 7, 0, 0} };  
-    Polynom p3= p1 * p2;
+    Polynom p1("2x^2y + 4x^5y^6z^7");
+    Polynom p2("3y + x^7");
+    Polynom result = p1 * p2;
 
-    Polynom expected{
-        {4.0, 12, 6, 7},   
-        {2.0, 9, 1, 0},    
-        {12.0, 5, 7, 7},   
-        {6.0, 2, 2, 0}     
-    };
-
-    EXPECT_EQ(p3, expected);
+    Polynom expected("6x^2y^2 + 12x^5y^7z^7 + 2x^9y + 4x^12y^6z^7");
+    EXPECT_EQ(result, expected);
 }
+
 TEST(TestPolynom, can_mul_polynom_by_scalar) {
-    Polynom p{ {2.0, 1, 0, 0}, {3.0, 0, 1, 0} };
+    Polynom p("2x + 3y");
     Polynom result = p * 2.0;
-    Polynom expected{ {4.0, 1, 0, 0}, {6.0, 0, 1, 0} };
+    Polynom expected("4x + 6y");
     EXPECT_EQ(result, expected);
 }
 
 TEST(TestPolynom, can_mul_scalar_by_polynom) {
-    Polynom p{ {2.0, 1, 0, 0}, {3.0, 0, 1, 0} };
+    Polynom p("2x + 3y");
     Polynom result = 2.0 * p;
-    Polynom expected{ {4.0, 1, 0, 0}, {6.0, 0, 1, 0} };
+    Polynom expected("4x + 6y");
     EXPECT_EQ(result, expected);
 }
 
 TEST(TestPolynom, can_div_polynom_by_scalar) {
-    Polynom p{ {4.0, 1, 0, 0}, {6.0, 0, 1, 0} };
+    Polynom p("4x + 6y");
     Polynom result = p / 2.0;
-    Polynom expected{ {2.0, 1, 0, 0}, {3.0, 0, 1, 0} };
+    Polynom expected("2x + 3y");
     EXPECT_EQ(result, expected);
 }
 
 TEST(TestPolynom, can_not_div_polynom_by_zero) {
-    Polynom p{ {2.0, 1, 0, 0}, {3.0, 0, 1, 0} };
+    Polynom p("2x + 3y");
     ASSERT_THROW(p / 0.0, std::logic_error);
 }
 
 TEST(TestPolynom, unary_minus_on_polynom) {
-    Polynom p{ {2.0, 1, 0, 0}, {3.0, 0, 1, 0} };
+    Polynom p("2x + 3y");
     Polynom result = -p;
-    Polynom expected{ {-2.0, 1, 0, 0}, {-3.0, 0, 1, 0} };
+    Polynom expected("-2x - 3y");
     EXPECT_EQ(result, expected);
 }
 
-
 TEST(TestPolynom, can_add_assign_polynom) {
-    Polynom p1{ {2.0, 1, 0, 0}, {3.0, 0, 1, 0} };
-    Polynom p2{ {1.0, 1, 0, 0}, {-2.0, 0, 1, 0} };
+    Polynom p1("2x + 3y");
+    Polynom p2("1x - 2y");
     p1 += p2;
-    Polynom expected{ {3.0, 1, 0, 0}, {1.0, 0, 1, 0} };
+    Polynom expected("3x + 1y");
     EXPECT_EQ(p1, expected);
 }
 
 TEST(TestPolynom, can_sub_assign_polynom) {
-    Polynom p1{ {2.0, 1, 0, 0}, {3.0, 0, 1, 0} };
-    Polynom p2{ {1.0, 1, 0, 0}, {2.0, 0, 1, 0} };
+    Polynom p1("2x + 3y");
+    Polynom p2("1x + 2y");
     p1 -= p2;
-    Polynom expected{ {1.0, 1, 0, 0}, {1.0, 0, 1, 0} };
-    EXPECT_EQ(p1, expected);
-}
-
-TEST(TestPolynom, can_mul_assign_polynom) {
-    Polynom p1{ {2.0, 2, 1, 0} ,{4.0,5,6,7} };  
-    Polynom p2{ {3.0, 0, 1, 0},{1.0,7,0,0} };  
-    p1 *= p2;
-    Polynom expected{ {4.0,12,6,7},{2.0,9,1,0} ,{ 12.0,5,7,7 },{6.0,2,2,0} };
+    Polynom expected("1x + 1y");
     EXPECT_EQ(p1, expected);
 }
 
 TEST(TestPolynom, can_mul_assign_scalar) {
-    Polynom p{ {2.0, 1, 0, 0}, {3.0, 0, 1, 0} };
+    Polynom p("2x + 3y");
     p *= 2.0;
-    Polynom expected{ {4.0, 1, 0, 0}, {6.0, 0, 1, 0} };
+    Polynom expected("4x + 6y");
     EXPECT_EQ(p, expected);
 }
 
 TEST(TestPolynom, can_div_assign_scalar) {
-    Polynom p{ {4.0, 1, 0, 0}, {6.0, 0, 1, 0} };
+    Polynom p("4x + 6y");
     p /= 2.0;
-    Polynom expected{ {2.0, 1, 0, 0}, {3.0, 0, 1, 0} };
+    Polynom expected("2x + 3y");
     EXPECT_EQ(p, expected);
 }
 
 TEST(TestPolynom, can_add_assign_monom) {
-    Polynom p{ {2.0, 1, 0, 0}, {3.0, 0, 1, 0} };
-    Monom m{ 4.0, 0, 1, 0 };
+    Polynom p("2x + 3y");
+    Monom m("4y");
     p += m;
-    Polynom expected{ {2.0, 1, 0, 0}, {7.0, 0, 1, 0} };
+    Polynom expected("2x + 7y");
     EXPECT_EQ(p, expected);
 }
 
 TEST(TestPolynom, can_sub_assign_monom) {
-    Polynom p{ {2.0, 1, 0, 0}, {3.0, 0, 1, 0} };
-    Monom m{ 1.0, 1, 0, 0 };
+    Polynom p("2x + 3y");
+    Monom m("1x");
     p -= m;
-    Polynom expected{ {1.0, 1, 0, 0}, {3.0, 0, 1, 0} };
+    Polynom expected("1x + 3y");
     EXPECT_EQ(p, expected);
 }
 
 TEST(TestPolynom, can_mul_assign_monom) {
-    Polynom p{ {2.0, 1, 0, 0}, {3.0, 0, 1, 0} };
-    Monom m{ 2.0, 1, 0, 0 };
+    Polynom p("2x + 3y");
+    Monom m("2x");
     p *= m;
-    Polynom expected{ {4.0, 2, 0, 0}, {6.0, 1, 1, 0} };
+    Polynom expected("4x^2 + 6xy");
     EXPECT_EQ(p, expected);
 }
 
 TEST(TestPolynom, 2_polynoms_are_equal) {
-    Polynom p1{ {2.0, 1, 0, 0}, {3.0, 0, 1, 0} };
-    Polynom p2{ {2.0, 1, 0, 0}, {3.0, 0, 1, 0} };
+    Polynom p1("2x + 3y");
+    Polynom p2("2x + 3y");
     EXPECT_TRUE(p1 == p2);
     EXPECT_FALSE(p1 != p2);
 }
 
 TEST(TestPolynom, 2_polynoms_are_not_equal) {
-    Polynom p1{ {2.0, 1, 0, 0}, {3.0, 0, 1, 0} };
-    Polynom p2{ {2.0, 1, 0, 0}, {4.0, 0, 2, 0} };
+    Polynom p1("2x + 3y");
+    Polynom p2("2x + 4y^2");
     EXPECT_TRUE(p1 != p2);
     EXPECT_FALSE(p1 == p2);
 }
 
 TEST(TestPolynom, polynoms_with_different_order_are_equal_after_simplify) {
-    Polynom p1{ {2.0, 1, 0, 0}, {3.0, 0, 1, 0} };
-    Polynom p2{ {3.0, 0, 1, 0}, {2.0, 1, 0, 0} };
+    Polynom p1("2x + 3y");
+    Polynom p2("3y + 2x");
     EXPECT_EQ(p1, p2);
 }
 
-
 TEST(TestPolynom, can_evaluate_polynom) {
-    Polynom p{ {2.0, 1, 0, 0}, {3.0, 0, 1, 0} }; 
+    Polynom p("2x + 3y");
     double result = p.evaluate(2.0, 3.0, 0.0);
-    EXPECT_DOUBLE_EQ(result, 2.0 * 2.0 + 3.0 * 3.0); 
+    EXPECT_DOUBLE_EQ(result, 2.0 * 2.0 + 3.0 * 3.0);
 }
 
 TEST(TestPolynom, can_evaluate_empty_polynom) {
@@ -224,9 +209,9 @@ TEST(TestPolynom, can_evaluate_empty_polynom) {
 }
 
 TEST(TestPolynom, can_evaluate_polynom_with_all_variables) {
-    Polynom p{ {2.0, 1, 0, 0}, {3.0, 0, 1, 0}, {4.0, 0, 0, 1} }; 
+    Polynom p("2x + 3y + 4z");
     double result = p.evaluate(1.0, 2.0, 3.0);
-    EXPECT_DOUBLE_EQ(result, 2.0 * 1.0 + 3.0 * 2.0 + 4.0 * 3.0); 
+    EXPECT_DOUBLE_EQ(result, 2.0 * 1.0 + 3.0 * 2.0 + 4.0 * 3.0);
 }
 
 TEST(TestPolynom, output_operator) {
@@ -289,67 +274,63 @@ TEST(TestPolynom, monoms_are_sorted_correctly) {
 }
 
 TEST(TestPolynom, left_addition_monom_polynom) {
-    Polynom p{ {2.0, 1, 0, 0}, {3.0, 0, 1, 0} };
-    Monom m{ 4.0, 0, 0, 1 };
+    Polynom p("2x + 3y");
+    Monom m("4z");
     Polynom result = m + p;
     Polynom expected = p + m;
     EXPECT_EQ(result, expected);
 }
 
 TEST(TestPolynom, left_subtraction_monom_polynom) {
-    Polynom p{ {2.0, 1, 0, 0}, {3.0, 0, 1, 0} };
-    Monom m{ 4.0, 0, 0, 1 };
+    Polynom p("2x + 3y");
+    Monom m("4z");
     Polynom result = m - p;
-    Polynom expected{  {-2.0, 1, 0, 0}, {-3.0, 0, 1, 0} ,{4.0, 0, 0, 1}};
+    Polynom expected("-2x - 3y + 4z");
     EXPECT_EQ(result, expected);
 }
 
 TEST(TestPolynom, left_multiplication_monom_polynom) {
-    Polynom p{ {2.0, 1, 0, 0}, {3.0, 0, 1, 0} };
-    Monom m{ 2.0, 1, 0, 0 };
+    Polynom p("2x + 3y");
+    Monom m("2x");
     Polynom result = m * p;
-    Polynom expected = p * m;
+    Polynom expected("4x^2 + 6xy");
     EXPECT_EQ(result, expected);
 }
 
-
 TEST(TestPolynom, addition_with_empty_polynom) {
-    Polynom p1{ {2.0, 1, 0, 0}, {3.0, 0, 1, 0} };
+    Polynom p1("2x + 3y");
     Polynom p2;
     Polynom result = p1 + p2;
     EXPECT_EQ(result, p1);
 }
 
 TEST(TestPolynom, multiplication_by_zero_scalar) {
-    Polynom p{ {2.0, 1, 0, 0}, {3.0, 0, 1, 0} };
+    Polynom p("2x + 3y");
     Polynom result = p * 0.0;
-    EXPECT_TRUE(result.is_empty());
+    EXPECT_TRUE(result == Polynom()); 
+
     p *= 0.0;
-    EXPECT_TRUE(p.is_empty());
+    EXPECT_TRUE(p == Polynom()); 
 }
 
 TEST(TestPolynom, multiplication_by_zero_monom) {
-    Polynom p{ {2.0, 1, 0, 0}, {3.0, 0, 1, 0} };
-    Monom m{ 0.0, 1, 0, 0 };
+    Polynom p("2x + 3y");
+    Monom m("0x");
     Polynom result = p * m;
-    EXPECT_TRUE(result.is_empty());
+    EXPECT_TRUE(result == Polynom()); 
 
     p *= m;
-    EXPECT_TRUE(p.is_empty());
+    EXPECT_TRUE(p == Polynom());  
 }
 
-
 TEST(PolynomParseTest, three_monoms_with_spaces_no_iterators) {
-    Polynom p = Polynom::parse("-3z+yx^2+2y");
-    Monom m1(1.0, 2, 1, 0);   
-    Monom m2(2.0, 0, 1, 0);  
-    Monom m3(-3.0, 0, 0, 1);  
+    Polynom p("-3z + x^2y + 2y");
     Polynom expected;
-    expected += m1;
-    expected += m2;
-    expected += m3;
+    expected += Monom("x^2y");   
+    expected += Monom("2y");  
+    expected += Monom("-3z"); 
 
-    EXPECT_TRUE(p == expected);
+    EXPECT_EQ(p, expected);
 
 
     Polynom p1 = Polynom::parse(".5");
