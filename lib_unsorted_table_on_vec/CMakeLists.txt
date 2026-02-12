@@ -1,0 +1,4 @@
+create_project_lib(UnsortedTableOnVec)
+add_depend(UnsortedTableOnVec ITable lib_itable)
+add_depend(UnsortedTableOnVec Tvector lib_tvector)
+
