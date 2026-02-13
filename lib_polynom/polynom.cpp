@@ -2,13 +2,14 @@
 #include <sstream>
 #include <stdexcept>
 
-
-Polynom::Polynom() {}
+int Polynom::_counter = 1;
+Polynom::Polynom() { _name = "pol" + std::to_string(_counter++); }
 
 Polynom::Polynom(const Monom& m) {
     if (m.coeff() != 0) {
         _terms.push_back(m);
     }
+    _name = "pol" + std::to_string(_counter++);
 }
 
 Polynom::Polynom(const std::string& str) {
@@ -23,6 +24,7 @@ Polynom::Polynom(std::initializer_list<Monom> list) {
         }
     }
     _simplify();
+    _name = "pol" + std::to_string(_counter++);
 }
 
 //1 monom
@@ -31,14 +33,16 @@ Polynom::Polynom(std::initializer_list<double> list) {
     if (m.coeff() != 0) {
         _terms.push_back(m);
     }
+    _name = "pol" + std::to_string(_counter++);
 }
 
-Polynom::Polynom(const Polynom& other) : _terms(other._terms) {}
+Polynom::Polynom(const Polynom& other) : _terms(other._terms), _name("pol" + std::to_string(_counter++)) {}
 
 
 Polynom& Polynom::operator=(const Polynom& other) {
     if (this != &other) {
         _terms = other._terms;
+        _name = "pol" + std::to_string(_counter++);
     }
     return *this;
 }

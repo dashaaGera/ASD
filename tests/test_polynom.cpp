@@ -5,31 +5,41 @@ TEST(TestPolynom, can_create_with_default_constructor_correctly) {
     Polynom p;
     EXPECT_TRUE(p.is_empty());
     EXPECT_EQ(p.size(), 0);
+    EXPECT_EQ(p.get_name(), "pol1");
 }
 
 TEST(TestPolynom, can_create_with_monom_constructor) {
+    Polynom::reset_counter();
     Monom m{ 2.5, 1, 2, 3 };
     Polynom p(m);
     EXPECT_FALSE(p.is_empty());
     EXPECT_EQ(p.size(), 1);
     EXPECT_EQ(p.get_terms().head()->value.coeff(), 2.5);
+    EXPECT_EQ(p.get_name(), "pol1");
 }
 
 TEST(TestPolynom, can_create_with_initializer_list_of_monoms) {
+    Polynom::reset_counter();
     Polynom p{ {2.0, 1, 0, 0}, {3.0, 0, 1, 0}, {-4.0, 0, 0, 0} };
     EXPECT_EQ(p.size(), 3);
+    EXPECT_EQ(p.get_name(), "pol1");
 }
 
 TEST(TestPolynom, can_create_with_initializer_list_of_numbers) {
+    Polynom::reset_counter();
     Polynom p{ 2.5, 1, 2, 3 };
     EXPECT_EQ(p.size(), 1);
     EXPECT_EQ(p.get_terms().head()->value.coeff(), 2.5);
+    EXPECT_EQ(p.get_name(), "pol1");
 }
 
 TEST(TestPolynom, can_create_with_copy_constructor) {
+    Polynom::reset_counter();
     Polynom p1{ {2.0, 1, 0, 0}, {3.0, 0, 1, 0} };
     Polynom p2(p1);
     EXPECT_EQ(p1, p2);
+    EXPECT_EQ(p2.get_name(), "pol2");
+    EXPECT_EQ(p1.get_name(), "pol1");
 }
 
 TEST(TestPolynom, can_add_monom_to_polynom) {

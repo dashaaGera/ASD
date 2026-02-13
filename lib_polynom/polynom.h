@@ -7,7 +7,9 @@
 
 class Polynom {
 private:
-    List<Monom> _terms;  
+    List<Monom> _terms; 
+    std::string _name;    
+    static int _counter;
     void _simplify();
     void _sort_terms();
 
@@ -24,6 +26,8 @@ public:
     const List<Monom>& get_terms() const { return _terms; }
     bool is_empty() const { return _terms.is_empty(); }
     int size() const { return _terms.size(); }
+    std::string get_name() const { return _name; }
+    void set_name(const std::string& name) { _name = name; }
 
     Polynom operator+(const Polynom& other) const;  
     Polynom operator-(const Polynom& other) const;  
@@ -56,6 +60,7 @@ public:
     friend std::istream& operator>>(std::istream& is, Polynom& p);
 
     static Polynom parse(const std::string& str);
+    static void reset_counter() { _counter = 1; }
 };
 
 Polynom operator*(double scalar, const Polynom& p);
