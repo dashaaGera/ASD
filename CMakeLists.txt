@@ -22,7 +22,9 @@ add_subdirectory(lib_tstack)
 add_subdirectory(lib_tqueue)
 add_subdirectory(lib_itable)
 add_subdirectory(lib_unsorted_table_on_vec) 
-add_subdirectory(lib_sorted_table_on_vec)      # подключаем дополнительный CMakeLists.txt из подкаталога с именем 
+add_subdirectory(lib_unsorted_table_on_list) 
+add_subdirectory(lib_sorted_table_on_vec) 
+add_subdirectory(lib_skip_list)      # подключаем дополнительный CMakeLists.txt из подкаталога с именем 
 add_subdirectory(lib_algorithms)
 
 add_subdirectory(main)                # подключаем дополнительный CMakeLists.txt из подкаталога с именем main
