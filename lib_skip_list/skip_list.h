@@ -71,21 +71,25 @@ SkipList<TKey, TValue>::~SkipList() {
     }
 }
 
+
 template <typename TKey, typename TValue>
 SkipNode<TKey, TValue>* SkipList<TKey, TValue>::find(const TKey& key) {
     SkipNode<TKey, TValue>* current = heads.head()->value;
-    for (int i = current_level; i >= 0; --i) {
+
+    for (int level = current_level; level >= 0; --level) {
         // forward when next elem < key
-        while (current->next[i] != nullptr &&
-            current->next[i]->data.first < key) {
-            current = current->next[i]; 
+        while (current->next[level] &&
+            current->next[level]->data.first < key) {
+            current = current->next[level];
+        }
+        if (current->next[level] &&
+            current->next[level]->data.first == key) {
+            return current->next[level];
         }
         // get down,when elem>key
-    } 
-    current = current->next[0];
-    if (current != nullptr && current->data.first == key)
-        return current;
-    return nullptr;  
+    }
+
+    return nullptr;
 }
 
 

@@ -4,7 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <random>
-TEST(SkipNodeTest, ñonstructor_skip_node_work_correctly) {
+TEST(SkipNodeTest, constructor_skip_node_work_correctly) {
     SkipNode<int, std::string> node(10, "ten", 3);
 
     EXPECT_EQ(node.data.first, 10);
@@ -38,7 +38,7 @@ TEST(SkipListTest, insert_one_element) {
     EXPECT_EQ(node->data.second, "five");
 }
 
-TEST(SkipListTest, InsertMultipleElements) {
+TEST(SkipListTest, insert_more_elements) {
     SkipList<int, std::string> list;
     std::vector<int> keys = { 5, 3, 7, 1, 9, 2, 8, 4, 6 };
 
