@@ -1,4 +1,4 @@
-#include "../lib_list/list.h"
+﻿#include "../lib_list/list.h"
 #include <iostream>
 #include <limits>
 template <typename TKey, typename TValue>
@@ -42,6 +42,7 @@ public:
     SkipNode<TKey, TValue>* find(const TKey& key);
     void insert(const TKey& key, const TValue& value);
     bool is_empty() const { return heads.is_empty() || heads.head()->value->next[0] == nullptr; };
+    void print() const;
 }; 
 
 template <typename TKey, typename TValue>
@@ -134,5 +135,37 @@ void SkipList<TKey, TValue>::insert(const TKey& key, const TValue& value) {
     }
 
     delete[] prev_at_level;
+}
+
+template <typename TKey, typename TValue>
+void SkipList<TKey, TValue>::print() const {
+    if (is_empty()) {
+        std::cout << "[]" << std::endl;
+        return;
+    }
+
+    std::cout << "SkipList(levels="
+        << current_level + 1 << "):\n";
+
+    for (int level = current_level; level >= 0; --level) {
+        std::cout << "  L" << level << ": ";
+
+        SkipNode<TKey, TValue>* current = heads.head()->value->next[level];
+        while (current != nullptr) {
+            std::cout << current->data.first;
+            if (current->next[level]) std::cout << " ->";
+            current = current->next[level];
+        }
+        std::cout << "\n";
+    }
+
+    std::cout << "  Values: ";
+    SkipNode<TKey, TValue>* val_current = heads.head()->value->next[0];
+    while (val_current != nullptr) {
+        std::cout << val_current->data.first << ":" << val_current->data.second;
+        if (val_current->next[0]) std::cout << ", ";
+        val_current = val_current->next[0];
+    }
+    std::cout << "\n" << std::endl;
 }
 
