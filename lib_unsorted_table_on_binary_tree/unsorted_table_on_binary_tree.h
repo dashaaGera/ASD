@@ -20,15 +20,22 @@ public:
 };
 
 template <typename TKey, typename TValue>
-void UnsortedTableOnBinaryTree<TKey, TValue>::insert(const TKey& Key, const TValue& Val) {
+bool UnsortedTableOnBinaryTree<TKey, TValue>::consist(const TKey& Key) const noexcept {
     try {
-        TValue existingValue = _tree.find(Key);
-        _tree.erase(Key);
-        _tree.insert(Key, Val);
+        _tree.find(Key);
+        return true;
     }
     catch (const std::logic_error&) {
-        _tree.insert(Key, Val);
+        return false;
     }
+}
+
+template <typename TKey, typename TValue>
+void UnsortedTableOnBinaryTree<TKey, TValue>::insert(const TKey& Key, const TValue& Val) {
+    if(consist(Key))
+        _tree.erase(Key);
+     _tree.insert(Key, Val);
+    
 }
 
 template <typename TKey, typename TValue>
@@ -50,17 +57,6 @@ std::ostream& UnsortedTableOnBinaryTree<TKey, TValue>::print(std::ostream& out) 
 template <typename TKey, typename TValue>
 bool UnsortedTableOnBinaryTree<TKey, TValue>::is_empty() const noexcept {
     return _tree.is_empty();
-}
-
-template <typename TKey, typename TValue>
-bool UnsortedTableOnBinaryTree<TKey, TValue>::consist(const TKey& Key) const noexcept {
-    try {
-        _tree.find(Key);
-        return true;
-    }
-    catch (const std::logic_error&) {
-        return false;
-    }
 }
 
 template <typename TKey, typename TValue>
