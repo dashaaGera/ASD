@@ -1,0 +1,3 @@
+create_project_lib(UnsortedTableOnBinaryTree)
+add_depend(UnsortedTableOnVec ITable lib_itable)
+add_depend(UnsortedTableOnList BinaryTree lib_binary_tree)
