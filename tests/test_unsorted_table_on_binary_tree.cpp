@@ -33,7 +33,7 @@ TEST(TestUnsortedTableOnBinaryTree, func_consist_work_correctly) {
 
 }
 
-TEST(UnsortedTableOnBinaryTree, find_work_corretly) {
+TEST(TestUnsortedTableOnBinaryTree, find_work_corretly) {
     UnsortedTableOnBinaryTree<int, std::string> table;
 
     table.insert(1, "one");
