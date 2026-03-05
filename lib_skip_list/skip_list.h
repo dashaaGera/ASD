@@ -111,9 +111,8 @@ void SkipList<TKey, TValue>::insert(const TKey& key, const TValue& value) {
 
     current = current->next[0];
     if (current && current->data.first == key) {
-        current->data.second = value;
         delete[] prev_at_level;
-        return;
+        throw std::logic_error("elem exist in the skip_list");
     }
 
     size_t new_height = generate_level();

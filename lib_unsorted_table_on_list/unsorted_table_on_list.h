@@ -31,8 +31,7 @@ template <typename TKey, typename TValue>
 void UnsortedTableOnList<TKey, TValue>::insert(const TKey& Key, const TValue& Val) {
     for (auto it = _rows.begin(); it != _rows.end(); ++it) {
         if ((*it).first == Key) {
-            (*it).second = Val;
-            return;
+            throw std::logic_error("elem exist in the table");
         }
     }
     _rows.push_back(std::make_pair(Key, Val));

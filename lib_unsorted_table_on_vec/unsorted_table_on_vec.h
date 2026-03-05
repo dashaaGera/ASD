@@ -27,8 +27,7 @@ template <typename TKey, typename TValue>
 void UnsortedTableOnVec <typename TKey, typename TValue>::insert(const TKey& Key, const TValue& Val) {
 	for (size_t i = 0; i < _rows.size(); ++i) {
 		if (_rows[i].first == Key) {
-			_rows[i].second = Val;  
-			return;
+			throw std::logic_error("elem exist in the table");
 		}
 	}
 	_rows.push_back(std::make_pair(Key, Val));

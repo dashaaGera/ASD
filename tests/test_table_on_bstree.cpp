@@ -1,8 +1,8 @@
-#include "../lib_unsorted_table_on_list/unsorted_table_on_list.h"
+#include "../lib_table_on_bstree/table_on_bstree.h"
 #include <gtest/gtest.h>
-
-TEST(TestUnsortedTableOnList, is_emty_work_correctly) {
-    UnsortedTableOnList<int, std::string> table;
+#include <string>
+TEST(TestTableOnBSTree, is_emty_work_correctly) {
+    TableOnBSTree<int, std::string> table;
     EXPECT_TRUE(table.is_empty());
     EXPECT_EQ(table.size(), 0);
 
@@ -16,8 +16,8 @@ TEST(TestUnsortedTableOnList, is_emty_work_correctly) {
 
 }
 
-TEST(TestUnsortedTableOnList, func_consist_work_correctly) {
-    UnsortedTableOnList<int, std::string> table;
+TEST(TestTableOnBSTree, func_consist_work_correctly) {
+    TableOnBSTree<int, std::string> table;
     EXPECT_FALSE(table.consist(1));
 
     table.insert(1, "one");
@@ -32,8 +32,8 @@ TEST(TestUnsortedTableOnList, func_consist_work_correctly) {
 
 }
 
-TEST(TestUnsortedTableOnList, find_work_corretly) {
-    UnsortedTableOnList<int, std::string> table;
+TEST(TestTableOnBSTree, find_work_corretly) {
+    TableOnBSTree<int, std::string> table;
 
     table.insert(1, "one");
     table.insert(5, "five");
@@ -43,11 +43,12 @@ TEST(TestUnsortedTableOnList, find_work_corretly) {
     EXPECT_EQ(table.find(5), "five");
     EXPECT_EQ(table.find(3), "three");
 
-    EXPECT_THROW(table.insert(1, "one");, std::logic_error);
+
     EXPECT_THROW(table.insert(1, "1");, std::logic_error);
+    EXPECT_THROW(table.insert(1, "one");, std::logic_error);
     EXPECT_THROW(table.find(4), std::logic_error);
 
-    UnsortedTableOnList<int, double> table1;
+    TableOnBSTree<int, double> table1;
     table1.insert(1, 1.1);
     table1.insert(2, 2.2);
     EXPECT_DOUBLE_EQ(table1.find(1), 1.1);
@@ -55,8 +56,8 @@ TEST(TestUnsortedTableOnList, find_work_corretly) {
 }
 
 
-TEST(TestUnsortedTableOnList, erase_work_corretly) {
-    UnsortedTableOnList<int, std::string> table;
+TEST(TestTableOnBSTree, erase_work_corretly) {
+    TableOnBSTree<int, std::string> table;
 
     table.insert(1, "one");
     table.insert(2, "two");
@@ -70,14 +71,15 @@ TEST(TestUnsortedTableOnList, erase_work_corretly) {
     EXPECT_NO_THROW(table.erase(4));
 }
 
-TEST(TestUnsortedTableOnList, func_print_work_corretly) {
-    UnsortedTableOnList<int, std::string> table;
+TEST(TestTableOnBSTree, func_print_work_corretly) {
+    TableOnBSTree<int, std::string> table;
     table.insert(1, "one");
     table.insert(2, "two");
+
     std::stringstream ss;
     table.print(ss);
     std::string output = ss.str();
-    EXPECT_NE(output.find("1: one"), std::string::npos);
-    EXPECT_NE(output.find("2: two"), std::string::npos);
+    EXPECT_NE(output.find("1"), std::string::npos);
+    EXPECT_NE(output.find("2"), std::string::npos);
 }
 

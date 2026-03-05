@@ -42,11 +42,8 @@ TEST(TestUnsortedTableOnVec, find_work_corretly) {
     EXPECT_EQ(table.find(1), "one");
     EXPECT_EQ(table.find(5), "five");
     EXPECT_EQ(table.find(3), "three");
-
-    table.insert(1, "1");
-    EXPECT_EQ(table.find(1), "1");
-
     EXPECT_THROW(table.find(4), std::logic_error);
+    EXPECT_THROW(table.insert(1, "1");, std::logic_error);
  
     UnsortedTableOnVec<int, double> table1;
     table1.insert(1, 1.1);

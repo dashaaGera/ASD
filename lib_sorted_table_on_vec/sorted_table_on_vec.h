@@ -50,8 +50,7 @@ template <typename TKey, typename TValue>
 void SortedTableOnVec<TKey, TValue>::insert(const TKey& Key, const TValue& Val) {
     size_t pos = binary_search(Key);
     if (pos < _rows.size() && _rows[pos].first == Key) {
-        _rows[pos].second = Val;
-        return;
+        throw std::logic_error("elem exist in the table");
     }
     _rows.insert(pos, std::make_pair(Key, Val));
 }

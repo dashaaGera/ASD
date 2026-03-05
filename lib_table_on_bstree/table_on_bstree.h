@@ -1,14 +1,14 @@
 #include "../lib_itable/itable.h"
-#include "../lib_binary_tree/binary_tree.h"
+#include "../lib_bstree/bstree.h"
 #include <iostream>
 #include <stdexcept>
 template <typename TKey, typename TValue>
-class UnsortedTableOnBinaryTree : public ITable<TKey, TValue> {
-    Tree<TKey, TValue> _tree;
+class TableOnBSTree : public ITable<TKey, TValue> {
+    BSTree<TKey, TValue> _tree;
 
 public:
-    UnsortedTableOnBinaryTree() {};
-    ~UnsortedTableOnBinaryTree() {};
+    TableOnBSTree() {};
+    ~TableOnBSTree() {};
 
     void insert(const TKey& Key, const TValue& Val) override;
     TValue find(const TKey& Key) const override;
@@ -20,7 +20,7 @@ public:
 };
 
 template <typename TKey, typename TValue>
-bool UnsortedTableOnBinaryTree<TKey, TValue>::consist(const TKey& Key) const noexcept {
+bool TableOnBSTree<TKey, TValue>::consist(const TKey& Key) const noexcept {
     try {
         _tree.find(Key);
         return true;
@@ -31,35 +31,35 @@ bool UnsortedTableOnBinaryTree<TKey, TValue>::consist(const TKey& Key) const noe
 }
 
 template <typename TKey, typename TValue>
-void UnsortedTableOnBinaryTree<TKey, TValue>::insert(const TKey& Key, const TValue& Val) {
-    if(consist(Key))
+void TableOnBSTree<TKey, TValue>::insert(const TKey& Key, const TValue& Val) {
+    if (consist(Key))
         throw std::logic_error("elem exist in the table");
-     _tree.insert(Key, Val);
-    
+    _tree.insert(Key, Val);
+
 }
 
 template <typename TKey, typename TValue>
-TValue UnsortedTableOnBinaryTree<TKey, TValue>::find(const TKey& Key) const {
+TValue TableOnBSTree<TKey, TValue>::find(const TKey& Key) const {
     return _tree.find(Key);
 }
 
 template <typename TKey, typename TValue>
-void UnsortedTableOnBinaryTree<TKey, TValue>::erase(const TKey& Key) {
+void TableOnBSTree<TKey, TValue>::erase(const TKey& Key) {
     _tree.erase(Key);
 }
 
 template <typename TKey, typename TValue>
-std::ostream& UnsortedTableOnBinaryTree<TKey, TValue>::print(std::ostream& out) const noexcept {
-    _tree.print_width();  
+std::ostream& TableOnBSTree<TKey, TValue>::print(std::ostream& out) const noexcept {
+    out<< _tree.to_string();
     return out;
 }
 
 template <typename TKey, typename TValue>
-bool UnsortedTableOnBinaryTree<TKey, TValue>::is_empty() const noexcept {
+bool TableOnBSTree<TKey, TValue>::is_empty() const noexcept {
     return _tree.is_empty();
 }
 
 template <typename TKey, typename TValue>
-int UnsortedTableOnBinaryTree<TKey, TValue>::size() const {
+int TableOnBSTree<TKey, TValue>::size() const {
     return _tree.size();
 }

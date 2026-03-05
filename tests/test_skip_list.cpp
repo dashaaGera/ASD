@@ -57,11 +57,11 @@ TEST(SkipListTest, insert_duplicate) {
     SkipList<int, std::string> list;
 
     list.insert(5, "five");
-    list.insert(5, "FIVE");  
+    EXPECT_THROW(list.insert(5, "FIVE");, std::logic_error);
     auto node = list.find(5);
     ASSERT_NE(node, nullptr);
     EXPECT_EQ(node->data.first, 5);
-    EXPECT_EQ(node->data.second, "FIVE"); 
+    EXPECT_EQ(node->data.second, "five"); 
 }
 
 
