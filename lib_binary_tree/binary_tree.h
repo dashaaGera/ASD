@@ -179,7 +179,7 @@ void Tree<TKey, TValue>::insert(const TKey& Key, const TValue& Val) {
 
 template <typename TKey, typename TValue>
 void Tree<TKey, TValue>::erase(const TKey& Key) {
-    if (is_empty()) return;
+    if (is_empty()) return; 
 
     if (_root->left == nullptr && _root->right == nullptr) {
         if (_root->value.first == Key) {
@@ -190,73 +190,56 @@ void Tree<TKey, TValue>::erase(const TKey& Key) {
         return;
     }
 
-    // find erase node and last node 
-    TreeNode<TKey, TValue>* nodeToDelete = nullptr;
-    TreeNode<TKey, TValue>* lastNode = nullptr;
-    TreeNode<TKey, TValue>* lastNodeParent = nullptr;
+    Queue<TreeNode<TKey, TValue>*> q;
+    q.push(_root);
 
-    Queue<TreeNode<TKey, TValue>*> nodeQueue;
-    Queue<TreeNode<TKey, TValue>*> parentQueue;
+    TreeNode<TKey, TValue>* nodeToDelete = nullptr; 
+    TreeNode<TKey, TValue>* lastNode = nullptr;   
+    while (!q.is_empty()) {
+        TreeNode<TKey, TValue>* cur = q.head();
+        q.pop();
 
-    nodeQueue.push(_root);
-    parentQueue.push(nullptr);
+        if (cur->value.first == Key) nodeToDelete = cur;
 
-    while (!nodeQueue.is_empty()) {
-        TreeNode<TKey, TValue>* curr = nodeQueue.head();
-        TreeNode<TKey, TValue>* parent = parentQueue.head();
+        if (cur->left) q.push(cur->left);
+        if (cur->right) q.push(cur->right);
 
-        nodeQueue.pop();
-        parentQueue.pop();
-
-        lastNode = curr;
-        lastNodeParent = parent;
-
-        if (curr->value.first == Key) {
-            nodeToDelete = curr;
-        }
-
-        if (curr->left != nullptr) {
-            nodeQueue.push(curr->left);
-            parentQueue.push(curr);
-        }
-        if (curr->right != nullptr) {
-            nodeQueue.push(curr->right);
-            parentQueue.push(curr);
-        }
+        lastNode = cur; 
     }
 
-    if (nodeToDelete == nullptr) return;
+    if (nodeToDelete==nullptr) return; 
+    nodeToDelete->value = lastNode->value;
+    
+    //find parent last node
+    q.push(_root);
+    while (!q.is_empty()) {
+        TreeNode<TKey, TValue>* cur = q.head();
+        q.pop();
 
-    if (nodeToDelete == lastNode) {
-        if (lastNodeParent == nullptr) {
-            delete _root;
-            _root = nullptr;
-        }
-        else {
-            if (lastNodeParent->left == lastNode) {
-                lastNodeParent->left = nullptr;
+        if (cur->left) {
+            if (cur->left == lastNode) {
+                delete cur->left;
+                cur->left = nullptr;
+                break;
             }
             else {
-                lastNodeParent->right = nullptr;
+                q.push(cur->left);
             }
-            delete lastNode;
         }
-        _count--;
-        return;
+
+        if (cur->right) {
+            if (cur->right == lastNode) {
+                delete cur->right;
+                cur->right = nullptr;
+                break;
+            }
+            else {
+                q.push(cur->right);
+            }
+        }
     }
 
-    nodeToDelete->value = lastNode->value;
-
-    
-        if (lastNodeParent->left == lastNode) {
-            lastNodeParent->left = nullptr;
-        }
-        else {
-            lastNodeParent->right = nullptr;
-        }
-        delete lastNode;
-        _count--;
-    
+    _count--;
 }
 
 template <typename TKey, typename TValue>
