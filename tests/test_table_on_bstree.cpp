@@ -83,3 +83,4 @@ TEST(TestTableOnBSTree, func_print_work_corretly) {
     EXPECT_NE(output.find("2"), std::string::npos);
 }
 
+

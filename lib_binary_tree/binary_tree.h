@@ -26,6 +26,9 @@ class Tree {
     void print_depth_current_left_right_rec(TreeNode<TKey, TValue>* curr) const;
     void print_depth_left_right_current_rec(TreeNode<TKey, TValue>* curr) const;
     void clear_tree(TreeNode< TKey, TValue >* curr);
+    TreeNode<TKey, TValue>* find_node(const TKey& key) const;
+    TreeNode<TKey, TValue>* find_last_node() const;
+    TreeNode<TKey, TValue>* find_parent(TreeNode<TKey, TValue>* node) const;
 public:
     Tree();
     ~Tree();
@@ -147,128 +150,120 @@ void Tree<TKey, TValue>::print_depth_left_right_current_rec(TreeNode<TKey, TValu
     std::cout << "(" << curr->value.first << ", " << curr->value.second << ") ";
 }
 
-template <typename TKey, typename TValue>
-void Tree<TKey, TValue>::insert(const TKey& Key, const TValue& Val) {
-    TreeNode<TKey, TValue>* node = new  TreeNode<TKey, TValue>(std::make_pair(Key, Val), nullptr, nullptr);
-    if (is_empty()) {
-        _root = node;
-        _count++;
-        return;
-    }
-
-    Queue<TreeNode<TKey, TValue>*> q;
-    q.push(_root);
-    TreeNode<TKey, TValue>* cur = nullptr;
-    while (true) {
-        cur = q.head();
-        q.pop();
-        if (cur->left==nullptr) {
-            cur->left = node;
-            _count++;
-            return;
-        }
-        else if (cur->right==nullptr) {
-            cur->right = node;
-            _count++;
-            return;
-        }
-        q.push(cur->left);
-        q.push(cur->right);
-    }
-}
 
 template <typename TKey, typename TValue>
-void Tree<TKey, TValue>::erase(const TKey& Key) {
-    if (is_empty()) return; 
-
-    if (_root->left == nullptr && _root->right == nullptr) {
-        if (_root->value.first == Key) {
-            delete _root;
-            _root = nullptr;
-            _count--;
-        }
-        return;
-    }
-
-    Queue<TreeNode<TKey, TValue>*> q;
-    q.push(_root);
-
-    TreeNode<TKey, TValue>* nodeToDelete = nullptr; 
-    TreeNode<TKey, TValue>* lastNode = nullptr;   
-    while (!q.is_empty()) {
-        TreeNode<TKey, TValue>* cur = q.head();
-        q.pop();
-
-        if (cur->value.first == Key) nodeToDelete = cur;
-
-        if (cur->left) q.push(cur->left);
-        if (cur->right) q.push(cur->right);
-
-        lastNode = cur; 
-    }
-
-    if (nodeToDelete==nullptr) return; 
-    nodeToDelete->value = lastNode->value;
-    
-    //find parent last node
-    q.push(_root);
-    while (!q.is_empty()) {
-        TreeNode<TKey, TValue>* cur = q.head();
-        q.pop();
-
-        if (cur->left) {
-            if (cur->left == lastNode) {
-                delete cur->left;
-                cur->left = nullptr;
-                break;
-            }
-            else {
-                q.push(cur->left);
-            }
-        }
-
-        if (cur->right) {
-            if (cur->right == lastNode) {
-                delete cur->right;
-                cur->right = nullptr;
-                break;
-            }
-            else {
-                q.push(cur->right);
-            }
-        }
-    }
-
-    _count--;
-}
-
-template <typename TKey, typename TValue>
-TValue Tree<TKey, TValue>::find(const TKey& Key) const {
-    if (is_empty()) {
-        throw std::logic_error("Tree is empty");
-    }
-
+TreeNode<TKey, TValue>* Tree<TKey, TValue>::find_node(const TKey& key) const {
+    if (_root == nullptr) return nullptr;
     Queue<TreeNode<TKey, TValue>*> q;
     q.push(_root);
 
     while (!q.is_empty()) {
         TreeNode<TKey, TValue>* curr = q.head();
         q.pop();
-
-        if (curr->value.first == Key) {
-            return curr->value.second; 
-        }
-
-        if (curr->left != nullptr) {
-            q.push(curr->left);
-        }
-        if (curr->right != nullptr) {
-            q.push(curr->right);
-        }
+        if (curr->value.first == key)
+            return curr;
+        if (curr->left) q.push(curr->left);
+        if (curr->right) q.push(curr->right);
     }
-
-    throw std::logic_error("Key not found");;
+    return nullptr;
 }
 
+template <typename TKey, typename TValue>
+TreeNode<TKey, TValue>* Tree<TKey, TValue>::find_last_node() const {
+    if (_root == nullptr) return nullptr;
+    Queue<TreeNode<TKey, TValue>*> q;
+    q.push(_root);
+    TreeNode<TKey, TValue>* last = nullptr;
 
+    while (!q.is_empty()) {
+        last = q.head();
+        q.pop();
+
+        if (last->left) q.push(last->left);
+        if (last->right) q.push(last->right);
+    }
+
+    return last;
+}
+template <typename TKey, typename TValue>
+TreeNode<TKey, TValue>* Tree<TKey, TValue>::find_parent(TreeNode<TKey, TValue>* node) const {
+    if (_root == nullptr || _root == node) return nullptr;
+
+    Queue<TreeNode<TKey, TValue>*> q;
+    q.push(_root);
+    while (!q.is_empty()) {
+        TreeNode<TKey, TValue>* curr = q.head();
+        q.pop();
+        if (curr->left == node || curr->right == node)
+            return curr;
+
+        if (curr->left) q.push(curr->left);
+        if (curr->right) q.push(curr->right);
+    }
+
+    return nullptr;
+}
+
+template <typename TKey, typename TValue>
+TValue Tree<TKey, TValue>::find(const TKey& Key) const {
+    TreeNode<TKey, TValue>* node = find_node(Key);
+    if (node == nullptr)
+        throw std::logic_error("Key not found");
+
+    return node->value.second;
+}
+
+template <typename TKey, typename TValue>
+void Tree<TKey, TValue>::insert(const TKey& Key, const TValue& Val) {
+    TreeNode<TKey, TValue>* node =
+        new TreeNode<TKey, TValue>(std::make_pair(Key, Val), nullptr, nullptr);
+    if (_root == nullptr) {
+        _root = node;
+        _count++;
+        return;
+    }
+    Queue<TreeNode<TKey, TValue>*> q;
+    q.push(_root);
+    while (!q.is_empty()) {
+        TreeNode<TKey, TValue>* cur = q.head();
+        q.pop();
+        if (cur->left==nullptr) {
+            cur->left = node;
+            break;
+        }
+
+        if (cur->right == nullptr) {
+            cur->right = node;
+            break;
+        }
+
+        q.push(cur->left);
+        q.push(cur->right);
+    }
+
+    _count++;
+}
+
+template <typename TKey, typename TValue>
+void Tree<TKey, TValue>::erase(const TKey& Key) {
+    if (_root == nullptr) return;
+    TreeNode<TKey, TValue>* nodeToDelete = find_node(Key);
+    if (nodeToDelete==nullptr) return;
+    TreeNode<TKey, TValue>* lastNode = find_last_node();
+    nodeToDelete->value = lastNode->value;
+    TreeNode<TKey, TValue>* parent = find_parent(lastNode);
+
+    if (parent!=nullptr) {
+        if (parent->left == lastNode)
+            parent->left = nullptr;
+        else
+            parent->right = nullptr;
+    }
+    else {
+        _root = nullptr;
+    }
+
+    delete lastNode;
+    _count--;
+}
 #endif

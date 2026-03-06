@@ -50,7 +50,7 @@ void TableOnBSTree<TKey, TValue>::erase(const TKey& Key) {
 
 template <typename TKey, typename TValue>
 std::ostream& TableOnBSTree<TKey, TValue>::print(std::ostream& out) const noexcept {
-    out<< _tree.to_string();
+    out<< _tree.to_string_sorted();
     return out;
 }
 

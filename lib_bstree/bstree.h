@@ -24,6 +24,7 @@ class BSTree {
     TreeNode<TKey, TValue>* find_pos(const TKey& Key) const;
     TreeNode<TKey, TValue>* find_max_left(TreeNode<TKey, TValue>* node);
     TreeNode<TKey, TValue>* erase_node(TreeNode<TKey, TValue>* node, const TKey& Key);
+    void to_string_sorted_rec(TreeNode<TKey, TValue>* curr, std::ostringstream& out) const;
 public:
     BSTree();
     ~BSTree();
@@ -34,6 +35,7 @@ public:
     TValue find(const TKey& Key) const;
     int size() const;
     std::string to_string() const;
+    std::string to_string_sorted() const;
     
 };
 template <typename TKey, typename TValue>
@@ -200,3 +202,20 @@ std::string BSTree<TKey, TValue>::to_string() const {
     return out.str();
 }
 
+template <typename TKey, typename TValue>
+std::string BSTree<TKey, TValue>::to_string_sorted() const {
+    std::ostringstream out;
+    to_string_sorted_rec(_root, out);
+    return out.str();
+}
+
+
+template <typename TKey, typename TValue>
+void BSTree<TKey, TValue>::to_string_sorted_rec(TreeNode<TKey, TValue>* curr,
+    std::ostringstream& out) const {
+    if (curr == nullptr)
+        return;
+    to_string_sorted_rec(curr->left, out);
+    out << curr->value.first << " ";
+    to_string_sorted_rec(curr->right, out);
+}

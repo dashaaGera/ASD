@@ -36,10 +36,12 @@ private:
         return level;
     }
 
+    SkipNode<TKey, TValue>** find_predecessors(const TKey& key) const;
+
 public:
     SkipList(size_t max_lvl = 16);
     ~SkipList();
-    SkipNode<TKey, TValue>* find(const TKey& key);
+    SkipNode<TKey, TValue>* find(const TKey& key) const;
     void insert(const TKey& key, const TValue& value);
     bool is_empty() const { return heads.is_empty() || heads.head()->value->next[0] == nullptr; };
     void print() const;
@@ -72,69 +74,68 @@ SkipList<TKey, TValue>::~SkipList() {
     }
 }
 
-
 template <typename TKey, typename TValue>
-SkipNode<TKey, TValue>* SkipList<TKey, TValue>::find(const TKey& key) {
+SkipNode<TKey, TValue>** SkipList<TKey, TValue>::find_predecessors(const TKey& key) const {
+
+    SkipNode<TKey, TValue>** prev_at_level = new SkipNode<TKey, TValue>* [max_level + 1];
+
     SkipNode<TKey, TValue>* current = heads.head()->value;
 
     for (int level = current_level; level >= 0; --level) {
-        // forward when next elem < key
-        while (current->next[level] &&
+
+        while (current->next[level] != nullptr &&
             current->next[level]->data.first < key) {
             current = current->next[level];
         }
-        if (current->next[level] &&
-            current->next[level]->data.first == key) {
-            return current->next[level];
-        }
-        // get down,when elem>key
-    }
 
-    return nullptr;
-}
-
-
-template <typename TKey, typename TValue>
-void SkipList<TKey, TValue>::insert(const TKey& key, const TValue& value) {
-    SkipNode<TKey, TValue>** prev_at_level = new SkipNode<TKey, TValue>* [max_level + 1];
-
-    //find
-    SkipNode<TKey, TValue>* current = heads.head()->value;
-    for (int level = current_level; level >= 0; level--) {
-        while (current->next[level] &&
-            current->next[level]->data.first < key) {
-            current = current->next[level];
-        }
-        // pos, when stop
         prev_at_level[level] = current;
     }
 
-    current = current->next[0];
-    if (current && current->data.first == key) {
+    return prev_at_level;
+}
+
+template <typename TKey, typename TValue>
+SkipNode<TKey, TValue>* SkipList<TKey, TValue>::find(const TKey& key) const {
+    SkipNode<TKey, TValue>** prev_at_level = find_predecessors(key);
+    SkipNode<TKey, TValue>* candidate = prev_at_level[0]->next[0];
+    delete[] prev_at_level;
+    if (candidate != nullptr && candidate->data.first == key) {
+        return candidate;
+    }
+    return nullptr;
+}
+
+template <typename TKey, typename TValue>
+void SkipList<TKey, TValue>::insert(const TKey& key, const TValue& value) {
+
+    SkipNode<TKey, TValue>** prev_at_level = find_predecessors(key);
+    SkipNode<TKey, TValue>* candidate = prev_at_level[0]->next[0];
+
+    if (candidate != nullptr && candidate->data.first == key) {
         delete[] prev_at_level;
-        throw std::logic_error("elem exist in the skip_list");
+        throw std::logic_error("elem consist in skip_list");
     }
 
     size_t new_height = generate_level();
-
     // if insert_node height > curr, update "prev" for new levels
     if (new_height > current_level) {
-        for (size_t level = current_level + 1; level <= new_height; level++) {
-            prev_at_level[level] = heads.head()->value; //insert after head
+        for (size_t i = current_level + 1; i <= new_height; ++i) {
+            prev_at_level[i] = heads.head()->value;
         }
         current_level = new_height;
     }
 
-    SkipNode<TKey, TValue>* insert_node = new SkipNode<TKey, TValue>(key, value, new_height);
+    SkipNode<TKey, TValue>* insert_node =
+        new SkipNode<TKey, TValue>(key, value, new_height);
 
-    // insert
-    for (size_t level = 0; level <= new_height; level++) {
+    for (size_t level = 0; level <= new_height; ++level) {
         insert_node->next[level] = prev_at_level[level]->next[level];
         prev_at_level[level]->next[level] = insert_node;
     }
 
     delete[] prev_at_level;
 }
+
 
 template <typename TKey, typename TValue>
 void SkipList<TKey, TValue>::print() const {

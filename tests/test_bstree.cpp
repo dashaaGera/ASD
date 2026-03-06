@@ -180,14 +180,14 @@ TEST(TestBSTree, to_string_on_empty_bstree_work_correctly) {
     EXPECT_EQ(t1.to_string(), "");
 }
 
-TEST(TestBSTree, to_string_on_no_empty_bstree_work_correctly) {
+TEST(TestBSTree, to_string__sorted_on_no_empty_bstree_work_correctly) {
     BSTree<int, std::string> t1;
-    EXPECT_EQ(t1.to_string(), "");
+    EXPECT_EQ(t1.to_string_sorted(), "");
     t1.insert(5, "five");
     t1.insert(3, "three");
     t1.insert(9, "nine");
     t1.insert(1, "one");
     t1.insert(7, "seven");
-    EXPECT_EQ(t1.to_string(), "5 3 9 1 7 ");
+    EXPECT_EQ(t1.to_string_sorted(), "1 3 5 7 9 ");
 
 }
