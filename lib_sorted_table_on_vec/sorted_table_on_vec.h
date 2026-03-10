@@ -26,22 +26,18 @@ private:
 
 template <typename TKey, typename TValue>
 size_t SortedTableOnVec<TKey, TValue>::binary_search(const TKey& Key) const noexcept {
-    if (_rows.is_empty())
-        return 0;
-
     size_t left = 0;
-    size_t right = _rows.size() - 1;
+    size_t right = _rows.size(); 
 
-    while (left <= right) {
-        size_t mid = (left + right) / 2;
+    while (left < right) {
+        size_t mid = left + (right - left) / 2;
 
-        if (_rows[mid].first == Key)
-            return mid;
         if (_rows[mid].first < Key)
             left = mid + 1;
         else
-            right = mid - 1;
+            right = mid;
     }
+
     return left; 
 }
 

@@ -50,7 +50,7 @@ void UnsortedTableOnBinaryTree<TKey, TValue>::erase(const TKey& Key) {
 
 template <typename TKey, typename TValue>
 std::ostream& UnsortedTableOnBinaryTree<TKey, TValue>::print(std::ostream& out) const noexcept {
-    _tree.print_width();  
+    _tree.print_width(out);
     return out;
 }
 

@@ -72,3 +72,20 @@ TEST(TestUnsortedTableOnBinaryTree, erase_work_corretly) {
     EXPECT_NO_THROW(table.erase(4));
 }
 
+TEST(TestUnsortedTableOnBinaryTree, print_work_corretly) {
+    UnsortedTableOnBinaryTree<int, std::string> table;
+    table.insert(5, "five");
+    table.insert(2, "two");
+    table.insert(8, "eight");
+    table.insert(1, "one");
+    table.insert(3, "three");
+
+    std::stringstream output;
+    table.print(output);
+    std::string result = output.str();
+
+    std::string expected = "(5, five) \n(2, two) (8, eight) \n(1, one) (3, three) \n";
+
+    EXPECT_EQ(result, expected);
+
+}

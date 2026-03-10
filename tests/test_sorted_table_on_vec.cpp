@@ -63,6 +63,7 @@ TEST(TestSortedTableOnVec, erase_work_corretly) {
     table.insert(2, "two");
     table.insert(3, "three");
     table.erase(2);
+    table.erase(4);
     EXPECT_EQ(table.size(), 2);
 
     EXPECT_TRUE(table.consist(1));
@@ -73,12 +74,19 @@ TEST(TestSortedTableOnVec, erase_work_corretly) {
 
 TEST(TestSortedTableOnVec, func_print_work_corretly) {
     SortedTableOnVec<int, std::string> table;
-    table.insert(1, "one");
+
+    table.insert(5, "five");
     table.insert(2, "two");
-    std::stringstream ss;
-    table.print(ss);
-    std::string output = ss.str();
-    EXPECT_NE(output.find("1: one"), std::string::npos);
-    EXPECT_NE(output.find("2: two"), std::string::npos);
+    table.insert(8, "eight");
+    table.insert(1, "one");
+    table.insert(3, "three");
+
+    std::stringstream output;
+    table.print(output);
+    std::string result = output.str();
+
+    std::string expected = "1: one\n2: two\n3: three\n5: five\n8: eight\n";
+    EXPECT_EQ(result, expected);
 }
+
 

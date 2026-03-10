@@ -76,3 +76,81 @@ TEST(TestTree, find_work_correctly) {
     EXPECT_EQ(t1.find(2), "two");
     ASSERT_THROW(t1.find(6), std::logic_error);
 }
+
+TEST(TestTree, print_width_work_correctly) {
+    Tree<int, std::string> tree;
+    tree.insert(5, "five");
+    tree.insert(2, "two");
+    tree.insert(8, "eight");
+    tree.insert(1, "one");
+    tree.insert(3, "three");
+    std::stringstream output;
+    tree.print_width(output);
+
+    std::string expected =
+        "(5, five) \n"
+        "(2, two) (8, eight) \n"
+        "(1, one) (3, three) \n";
+
+    EXPECT_EQ(output.str(), expected);
+}
+
+TEST(TestTree, print_print_depth_current_left_right_work_correctly) {
+    Tree<int, std::string> tree;
+    tree.insert(5, "five");
+    tree.insert(2, "two");
+    tree.insert(8, "eight");
+    tree.insert(1, "one");
+    tree.insert(3, "three");
+    std::stringstream output;
+    tree.print_depth_current_left_right(output);
+
+    std::string expected =
+        "(5, five) "
+        "(2, two) "
+        "(1, one) "
+        "(3, three) "
+        "(8, eight) ";
+
+    EXPECT_EQ(output.str(), expected);
+}
+
+TEST(TestTree, print_print_depth_left_current_right_work_correctly) {
+    Tree<int, std::string> tree;
+    tree.insert(5, "five");
+    tree.insert(2, "two");
+    tree.insert(8, "eight");
+    tree.insert(1, "one");
+    tree.insert(3, "three");
+    std::stringstream output;
+    tree.print_depth_left_current_right(output);
+
+    std::string expected =
+        "(1, one) "
+        "(2, two) "
+        "(3, three) "
+        "(5, five) "
+        "(8, eight) ";
+
+    EXPECT_EQ(output.str(), expected);
+}
+
+TEST(TestTree, print_print_depth_left_right_current_work_correctly) {
+    Tree<int, std::string> tree;
+    tree.insert(5, "five");
+    tree.insert(2, "two");
+    tree.insert(8, "eight");
+    tree.insert(1, "one");
+    tree.insert(3, "three");
+    std::stringstream output;
+    tree.print_depth_left_right_current(output);
+
+    std::string expected =
+        "(1, one) "
+        "(3, three) "
+        "(2, two) "
+        "(8, eight) "
+        "(5, five) ";
+
+    EXPECT_EQ(output.str(), expected);
+}

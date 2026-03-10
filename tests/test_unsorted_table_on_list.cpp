@@ -72,12 +72,15 @@ TEST(TestUnsortedTableOnList, erase_work_corretly) {
 
 TEST(TestUnsortedTableOnList, func_print_work_corretly) {
     UnsortedTableOnList<int, std::string> table;
-    table.insert(1, "one");
+
+    table.insert(5, "five");
     table.insert(2, "two");
-    std::stringstream ss;
-    table.print(ss);
-    std::string output = ss.str();
-    EXPECT_NE(output.find("1: one"), std::string::npos);
-    EXPECT_NE(output.find("2: two"), std::string::npos);
+    table.insert(8, "eight");
+    table.insert(1, "one");
+    std::stringstream output;
+    table.print(output);
+    std::string result = output.str();
+    std::string expected = "5: five\n2: two\n8: eight\n1: one\n";
+    EXPECT_EQ(result, expected);
 }
 

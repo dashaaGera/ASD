@@ -22,9 +22,9 @@ template <typename TKey, typename TValue>
 class Tree {
     TreeNode<TKey, TValue>* _root;
     int _count;
-    void print_depth_left_current_right_rec(TreeNode<TKey, TValue>* curr) const;
-    void print_depth_current_left_right_rec(TreeNode<TKey, TValue>* curr) const;
-    void print_depth_left_right_current_rec(TreeNode<TKey, TValue>* curr) const;
+    void print_depth_left_current_right_rec(TreeNode<TKey, TValue>* curr, std::ostream& out) const;
+    void print_depth_current_left_right_rec(TreeNode<TKey, TValue>* curr, std::ostream& out) const;
+    void print_depth_left_right_current_rec(TreeNode<TKey, TValue>* curr, std::ostream& out) const;
     void clear_tree(TreeNode< TKey, TValue >* curr);
     TreeNode<TKey, TValue>* find_node(const TKey& key) const;
     TreeNode<TKey, TValue>* find_last_node() const;
@@ -35,10 +35,10 @@ public:
     TreeNode<TKey, TValue>* root() const;
     void insert(const TKey& Key, const TValue& Val);
     void erase(const TKey& Key);
-    void print_depth_left_current_right() const ;
-    void print_depth_current_left_right() const;
-    void print_depth_left_right_current() const;
-    void print_width() const;
+    void print_depth_left_current_right(std::ostream& out) const ;
+    void print_depth_current_left_right(std::ostream& out) const;
+    void print_depth_left_right_current(std::ostream& out) const;
+    void print_width(std::ostream& out) const;
     bool is_empty() const;
     TValue find(const TKey& Key) const;
     int size() const;
@@ -74,10 +74,11 @@ template <typename TKey, typename TValue>
 int Tree<TKey, TValue>::size() const {  
     return _count;
 }
+
 template <typename TKey, typename TValue>
-void Tree<TKey, TValue>::print_width()const {
+void Tree<TKey, TValue>::print_width(std::ostream& out) const {
     if (_root == nullptr) {
-        std::cout << "Empty tree" << std::endl;
+        out << "Empty tree\n";
         return;
     }
 
@@ -89,19 +90,23 @@ void Tree<TKey, TValue>::print_width()const {
     while (!q.is_empty()) {
         TreeNode<TKey, TValue>* cur = q.head();
         q.pop();
-        std::cout << "(" << cur->value.first << ", " << cur->value.second << ") ";
-        if (cur->left != nullptr) {
+
+        out << "(" << cur->value.first << ", " << cur->value.second << ") ";
+
+        if (cur->left) {
             q.push(cur->left);
             nodesInNextLevel++;
         }
-        if (cur->right != nullptr) {
+
+        if (cur->right) {
             q.push(cur->right);
             nodesInNextLevel++;
         }
 
         nodesInCurrentLevel--;
+
         if (nodesInCurrentLevel == 0) {
-            std::cout << std::endl;
+            out << "\n";
             nodesInCurrentLevel = nodesInNextLevel;
             nodesInNextLevel = 0;
         }
@@ -109,45 +114,45 @@ void Tree<TKey, TValue>::print_width()const {
 }
 
 template <typename TKey, typename TValue>
-void Tree<TKey, TValue>::print_depth_left_current_right() const {
-    print_depth_left_current_right_rec(_root);
+void Tree<TKey, TValue>::print_depth_left_current_right(std::ostream& out) const {
+    print_depth_left_current_right_rec(_root,out);
 }
 template <typename TKey, typename TValue>
-void Tree<TKey, TValue>::print_depth_current_left_right() const {
-    print_depth_current_left_right_rec(_root);
+void Tree<TKey, TValue>::print_depth_current_left_right(std::ostream& out) const {
+    print_depth_current_left_right_rec(_root,out);
 }
 template <typename TKey, typename TValue>
-void Tree<TKey, TValue>::print_depth_left_right_current() const {
-    print_depth_left_right_current_rec(_root);
+void Tree<TKey, TValue>::print_depth_left_right_current(std::ostream& out) const {
+    print_depth_left_right_current_rec(_root,out);
 }
 
 template <typename TKey, typename TValue>
-void Tree<TKey, TValue>::print_depth_current_left_right_rec(TreeNode<TKey, TValue>* curr) const {
+void Tree<TKey, TValue>::print_depth_current_left_right_rec(TreeNode<TKey, TValue>* curr, std::ostream& out) const {
     if (curr == nullptr)
         return;
-    std::cout << "(" << curr->value.first << ", " << curr->value.second << ") ";
-    print_depth_current_left_right_rec(curr->left);
-    print_depth_current_left_right_rec(curr->right);
+    out << "(" << curr->value.first << ", " << curr->value.second << ") ";
+    print_depth_current_left_right_rec(curr->left,out);
+    print_depth_current_left_right_rec(curr->right,out);
 
 }
 
 template <typename TKey, typename TValue>
-void Tree<TKey, TValue>::print_depth_left_current_right_rec(TreeNode<TKey, TValue>* curr) const {
+void Tree<TKey, TValue>::print_depth_left_current_right_rec(TreeNode<TKey, TValue>* curr, std::ostream& out) const {
     if (curr == nullptr)
         return;
-    print_depth_left_current_right_rec(curr->left);
-    std::cout << "(" << curr->value.first << ", " << curr->value.second << ") ";
-    print_depth_left_current_right_rec(curr->right);
+    print_depth_left_current_right_rec(curr->left, out);
+    out << "(" << curr->value.first << ", " << curr->value.second << ") ";
+    print_depth_left_current_right_rec(curr->right,out);
 
 }
 
 template <typename TKey, typename TValue>
-void Tree<TKey, TValue>::print_depth_left_right_current_rec(TreeNode<TKey, TValue>* curr) const {
+void Tree<TKey, TValue>::print_depth_left_right_current_rec(TreeNode<TKey, TValue>* curr, std::ostream& out) const {
     if (curr == nullptr)
         return;
-    print_depth_left_right_current_rec(curr->left);
-    print_depth_left_right_current_rec(curr->right);
-    std::cout << "(" << curr->value.first << ", " << curr->value.second << ") ";
+    print_depth_left_right_current_rec(curr->left, out);
+    print_depth_left_right_current_rec(curr->right, out);
+    out << "(" << curr->value.first << ", " << curr->value.second << ") ";
 }
 
 
