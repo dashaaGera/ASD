@@ -64,6 +64,7 @@ TEST(TestUnsortedTableOnBinaryTree, erase_work_corretly) {
     table.insert(2, "two");
     table.insert(3, "three");
     table.erase(2);
+    table.erase(9);
     EXPECT_EQ(table.size(), 2);
 
     EXPECT_TRUE(table.consist(1));

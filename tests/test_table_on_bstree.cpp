@@ -63,6 +63,7 @@ TEST(TestTableOnBSTree, erase_work_corretly) {
     table.insert(2, "two");
     table.insert(3, "three");
     table.erase(2);
+    table.erase(9);
     EXPECT_EQ(table.size(), 2);
 
     EXPECT_TRUE(table.consist(1));
@@ -73,14 +74,18 @@ TEST(TestTableOnBSTree, erase_work_corretly) {
 
 TEST(TestTableOnBSTree, func_print_work_corretly) {
     TableOnBSTree<int, std::string> table;
-    table.insert(1, "one");
+    table.insert(5, "five");
     table.insert(2, "two");
+    table.insert(8, "eight");
+    table.insert(1, "one");
+    table.insert(3, "three");
 
-    std::stringstream ss;
-    table.print(ss);
-    std::string output = ss.str();
-    EXPECT_NE(output.find("1"), std::string::npos);
-    EXPECT_NE(output.find("2"), std::string::npos);
+    std::stringstream output;
+    table.print(output);
+    std::string result = output.str();
+
+    std::string expected = "1 2 3 5 8 ";
+    EXPECT_EQ(result, expected);
 }
 
 
