@@ -3,8 +3,7 @@
 #include <iostream>
 #include <stdexcept>
 template <typename TKey, typename TValue>
-class TableOnBSTree : public ITable<TKey, TValue> {
-    BSTree<TKey, TValue> _tree;
+class TableOnBSTree : public Table<TKey, TValue, BSTree<TKey, TValue>> {
 
 public:
     TableOnBSTree() {};
@@ -13,7 +12,7 @@ public:
     void insert(const TKey& Key, const TValue& Val) override;
     TValue find(const TKey& Key) const override;
     void erase(const TKey& Key) override;
-    std::ostream& print(std::ostream& out) const noexcept override;
+    std::ostream& print(std::ostream& out) const noexcept ;
     bool is_empty() const noexcept override;
     bool consist(const TKey& Key) const noexcept override;
     int size() const override;
@@ -22,7 +21,7 @@ public:
 template <typename TKey, typename TValue>
 bool TableOnBSTree<TKey, TValue>::consist(const TKey& Key) const noexcept {
     try {
-        _tree.find(Key);
+        _rows.find(Key);
         return true;
     }
     catch (const std::logic_error&) {
@@ -34,32 +33,32 @@ template <typename TKey, typename TValue>
 void TableOnBSTree<TKey, TValue>::insert(const TKey& Key, const TValue& Val) {
     if (consist(Key))
         throw std::logic_error("elem exist in the table");
-    _tree.insert(Key, Val);
+    _rows.insert(Key, Val);
 
 }
 
 template <typename TKey, typename TValue>
 TValue TableOnBSTree<TKey, TValue>::find(const TKey& Key) const {
-    return _tree.find(Key);
+    return _rows.find(Key);
 }
 
 template <typename TKey, typename TValue>
 void TableOnBSTree<TKey, TValue>::erase(const TKey& Key) {
-    _tree.erase(Key);
+    _rows.erase(Key);
 }
 
 template <typename TKey, typename TValue>
 std::ostream& TableOnBSTree<TKey, TValue>::print(std::ostream& out) const noexcept {
-    out<< _tree.to_string_sorted();
+    out<< _rows.to_string_sorted();
     return out;
 }
 
 template <typename TKey, typename TValue>
 bool TableOnBSTree<TKey, TValue>::is_empty() const noexcept {
-    return _tree.is_empty();
+    return _rows.is_empty();
 }
 
 template <typename TKey, typename TValue>
 int TableOnBSTree<TKey, TValue>::size() const {
-    return _tree.size();
+    return _rows.size();
 }

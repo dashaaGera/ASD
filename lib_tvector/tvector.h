@@ -59,6 +59,7 @@ public:
         Iterator(T* ptr) : _ptr(ptr) {}
 
         T& operator*() { return *_ptr; }
+        const T& operator*() const { return *_ptr; }
 
         Iterator& operator++() {
             ++_ptr;
@@ -101,11 +102,18 @@ public:
     };
 
     Iterator begin() { return Iterator(_data); }
+    Iterator begin() const { return Iterator(_data); }
     Iterator rbegin() { return Iterator(_data + _size-1); }
     Iterator end() {
         if (_data == nullptr) 
             return Iterator(nullptr);
         else 
+            return Iterator(_data + _size);
+    }
+    Iterator end() const{
+        if (_data == nullptr)
+            return Iterator(nullptr);
+        else
             return Iterator(_data + _size);
     }
     Iterator rend() {

@@ -1,6 +1,8 @@
 ﻿#include "../lib_list/list.h"
 #include <iostream>
 #include <limits>
+#include <vector>
+#include <string>
 template <typename TKey, typename TValue>
 struct SkipNode {
     std::pair<TKey, TValue> data;
@@ -144,28 +146,36 @@ void SkipList<TKey, TValue>::print() const {
         return;
     }
 
-    std::cout << "SkipList(levels="
-        << current_level + 1 << "):\n";
+    std::cout << "SkipList(levels=" << current_level + 1 << "):\n";
+
+    std::vector<SkipNode<TKey, TValue>*> zero_level_nodes;
+    std::vector<size_t> widths;
+    for (SkipNode<TKey, TValue>* node = heads.head()->value->next[0]; node; node = node->next[0]) {
+        zero_level_nodes.push_back(node);
+        widths.push_back(std::to_string(node->data.first).length());
+    }
 
     for (int level = current_level; level >= 0; --level) {
         std::cout << "  L" << level << ": ";
 
-        SkipNode<TKey, TValue>* current = heads.head()->value->next[level];
-        while (current != nullptr) {
-            std::cout << current->data.first;
-            if (current->next[level]) std::cout << " ->";
-            current = current->next[level];
+        for (size_t idx = 0; idx < zero_level_nodes.size(); ++idx) {
+            SkipNode<TKey, TValue>* node = zero_level_nodes[idx];
+            if (level <= node->levels) {
+                std::cout << std::setw(widths[idx]) << node->data.first;
+            }
+            else {
+                std::cout << std::setw(widths[idx]) << " ";
+            }
+
+            std::cout << " ->";
         }
         std::cout << "\n";
     }
 
     std::cout << "  Values: ";
-    SkipNode<TKey, TValue>* val_current = heads.head()->value->next[0];
-    while (val_current != nullptr) {
-        std::cout << val_current->data.first << ":" << val_current->data.second;
-        if (val_current->next[0]) std::cout << ", ";
-        val_current = val_current->next[0];
+    for (size_t i = 0; i < zero_level_nodes.size(); ++i) {
+        std::cout << zero_level_nodes[i]->data.first << ":" << zero_level_nodes[i]->data.second;
+        if (i + 1 < zero_level_nodes.size()) std::cout << ", ";
     }
     std::cout << "\n" << std::endl;
 }
-

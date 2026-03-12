@@ -62,6 +62,10 @@ public:
 		T& operator*() {
 			return current->value;
 		}
+
+		const T& operator*() const {
+			return current->value;
+		}
 		bool operator !=(const Iterator& other) {
 			return current != other.current;
 		}

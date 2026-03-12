@@ -3,8 +3,7 @@
 #include <iostream>
 
 template <typename TKey, typename TValue>
-class SortedTableOnVec : public ITable<TKey, TValue> {
-    TVector<std::pair<TKey, TValue>> _rows;
+class SortedTableOnVec : public Table<TKey, TValue, TVector<std::pair<TKey, TValue>>> {
 
 public:
     SortedTableOnVec(){};
@@ -14,7 +13,7 @@ public:
     void insert(const TKey& Key, const TValue& Val) override;
     TValue find(const TKey& Key) const override;
     void erase(const TKey& Key) override;
-    std::ostream& print(std::ostream& out) const noexcept override;
+    //std::ostream& print(std::ostream& out) const noexcept override;
     bool is_empty() const noexcept override;
     bool consist(const TKey& Key) const noexcept override;
     inline int size() const override;
@@ -75,15 +74,6 @@ template <typename TKey, typename TValue>
 bool SortedTableOnVec<TKey, TValue>::consist(const TKey& Key) const noexcept {
     size_t pos = binary_search(Key);
     return (pos < _rows.size() && _rows[pos].first == Key);
-}
-
-
-template <typename TKey, typename TValue>
-std::ostream& SortedTableOnVec<TKey, TValue>::print(std::ostream& out) const noexcept {
-    for (size_t i = 0; i < _rows.size(); ++i) {
-        out << _rows[i].first << ": " << _rows[i].second << std::endl;
-    }
-    return out;
 }
 
 
