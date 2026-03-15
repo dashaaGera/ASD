@@ -139,6 +139,49 @@ void SkipList<TKey, TValue>::insert(const TKey& key, const TValue& value) {
 }
 
 
+//template <typename TKey, typename TValue>
+//void SkipList<TKey, TValue>::print() const {
+//    if (is_empty()) {
+//        std::cout << "[]" << std::endl;
+//        return;
+//    }
+//
+//    std::cout << "SkipList(levels=" << current_level + 1 << "):\n";
+//
+//    std::vector<SkipNode<TKey, TValue>*> zero_level_nodes;
+//    std::vector<size_t> widths;
+//    for (SkipNode<TKey, TValue>* node = heads.head()->value->next[0]; node; node = node->next[0]) {
+//        zero_level_nodes.push_back(node);
+//        widths.push_back(std::to_string(node->data.first).length());
+//    }
+//
+//    for (int level = current_level; level >= 0; --level) {
+//        std::cout << "  L" << level << ": ";
+//
+//        for (size_t idx = 0; idx < zero_level_nodes.size(); ++idx) {
+//            SkipNode<TKey, TValue>* node = zero_level_nodes[idx];
+//            if (level <= node->levels) {
+//                std::cout << std::setw(widths[idx]) << node->data.first;
+//            }
+//            else {
+//                std::cout << std::setw(widths[idx]) << " ";
+//            }
+//
+//            std::cout << " ->";
+//        }
+//        std::cout << "\n";
+//    }
+//
+//    std::cout << "  Values: ";
+//    for (size_t i = 0; i < zero_level_nodes.size(); ++i) {
+//        std::cout << zero_level_nodes[i]->data.first << ":" << zero_level_nodes[i]->data.second;
+//        if (i + 1 < zero_level_nodes.size()) std::cout << ", ";
+//    }
+//    std::cout << "\n" << std::endl;
+//}
+
+
+
 template <typename TKey, typename TValue>
 void SkipList<TKey, TValue>::print() const {
     if (is_empty()) {
@@ -146,36 +189,38 @@ void SkipList<TKey, TValue>::print() const {
         return;
     }
 
-    std::cout << "SkipList(levels=" << current_level + 1 << "):\n";
-
-    std::vector<SkipNode<TKey, TValue>*> zero_level_nodes;
-    std::vector<size_t> widths;
-    for (SkipNode<TKey, TValue>* node = heads.head()->value->next[0]; node; node = node->next[0]) {
-        zero_level_nodes.push_back(node);
-        widths.push_back(std::to_string(node->data.first).length());
-    }
+    std::cout << "SkipList(levels="
+        << current_level + 1 << "):\n";
 
     for (int level = current_level; level >= 0; --level) {
         std::cout << "  L" << level << ": ";
 
-        for (size_t idx = 0; idx < zero_level_nodes.size(); ++idx) {
-            SkipNode<TKey, TValue>* node = zero_level_nodes[idx];
-            if (level <= node->levels) {
-                std::cout << std::setw(widths[idx]) << node->data.first;
+        SkipNode<TKey, TValue>* current = heads.head()->value->next[level];
+        SkipNode<TKey, TValue>* all_data = heads.head()->value->next[0];
+        while (current != nullptr) {
+            if (all_data->data.first == current->data.first) {
+                std::cout << current->data.first;
+                current = current->next[level];
+                all_data = all_data->next[0];
             }
             else {
-                std::cout << std::setw(widths[idx]) << " ";
+                std::string key_str = std::to_string(all_data->data.first);
+                for (size_t i = 0; i < key_str.length(); i++) {
+                    std::cout << " ";
+                }
+                all_data = all_data->next[0];
             }
-
             std::cout << " ->";
         }
         std::cout << "\n";
     }
 
     std::cout << "  Values: ";
-    for (size_t i = 0; i < zero_level_nodes.size(); ++i) {
-        std::cout << zero_level_nodes[i]->data.first << ":" << zero_level_nodes[i]->data.second;
-        if (i + 1 < zero_level_nodes.size()) std::cout << ", ";
+    SkipNode<TKey, TValue>* val_current = heads.head()->value->next[0];
+    while (val_current != nullptr) {
+        std::cout << val_current->data.first << ":" << val_current->data.second;
+        if (val_current->next[0]) std::cout << ", ";
+        val_current = val_current->next[0];
     }
     std::cout << "\n" << std::endl;
 }
