@@ -25,6 +25,7 @@ class Tree {
     void print_depth_left_current_right_rec(TreeNode<TKey, TValue>* curr, std::ostream& out) const;
     void print_depth_current_left_right_rec(TreeNode<TKey, TValue>* curr, std::ostream& out) const;
     void print_depth_left_right_current_rec(TreeNode<TKey, TValue>* curr, std::ostream& out) const;
+    void print_rec(TreeNode<TKey, TValue>* node, int depth) const;
     void clear_tree(TreeNode< TKey, TValue >* curr);
     TreeNode<TKey, TValue>* find_node(const TKey& key) const;
     TreeNode<TKey, TValue>* find_last_node() const;
@@ -38,6 +39,7 @@ public:
     void print_depth_left_current_right(std::ostream& out) const ;
     void print_depth_current_left_right(std::ostream& out) const;
     void print_depth_left_right_current(std::ostream& out) const;
+    void print() const;
     void print_width(std::ostream& out) const;
     bool is_empty() const;
     TValue find(const TKey& Key) const;
@@ -270,5 +272,26 @@ void Tree<TKey, TValue>::erase(const TKey& Key) {
 
     delete lastNode;
     _count--;
+}
+
+template <typename TKey, typename TValue>
+void Tree<TKey, TValue>::print() const {
+    print_rec(_root, 0);
+}
+
+
+template <typename TKey, typename TValue>
+void Tree<TKey, TValue>::print_rec(TreeNode<TKey, TValue>* node, int depth) const
+{
+    if (node == nullptr)
+        return;
+
+    const int amount_skips_for_level = 6;
+
+    print_rec(node->right, depth + 1);
+    for (int i = 0; i < depth * amount_skips_for_level; i++)
+        std::cout << " ";
+    std::cout << "(" << node->value.first << ", " << node->value.second << ")" << std::endl;
+    print_rec(node->left, depth + 1);
 }
 #endif
