@@ -26,6 +26,7 @@ class Tree {
     void print_depth_current_left_right_rec(TreeNode<TKey, TValue>* curr, std::ostream& out) const;
     void print_depth_left_right_current_rec(TreeNode<TKey, TValue>* curr, std::ostream& out) const;
     void print_rec(TreeNode<TKey, TValue>* node, int depth) const;
+    void print_tree_rec(TreeNode<TKey, TValue>* node, std::string prefix,bool isLeft) const;
     void clear_tree(TreeNode< TKey, TValue >* curr);
     TreeNode<TKey, TValue>* find_node(const TKey& key) const;
     TreeNode<TKey, TValue>* find_last_node() const;
@@ -40,6 +41,7 @@ public:
     void print_depth_current_left_right(std::ostream& out) const;
     void print_depth_left_right_current(std::ostream& out) const;
     void print() const;
+    void print_tree() const;
     void print_width(std::ostream& out) const;
     bool is_empty() const;
     TValue find(const TKey& Key) const;
@@ -293,5 +295,36 @@ void Tree<TKey, TValue>::print_rec(TreeNode<TKey, TValue>* node, int depth) cons
         std::cout << " ";
     std::cout << "(" << node->value.first << ", " << node->value.second << ")" << std::endl;
     print_rec(node->left, depth + 1);
+}
+
+
+template <typename TKey, typename TValue>
+void Tree<TKey, TValue>::print_tree() const
+{
+    if (_root == nullptr) {
+        std::cout << "Empty tree\n";
+        return;
+    }
+    print_tree_rec(_root, "", true);
+}
+
+
+template <typename TKey, typename TValue>
+void Tree<TKey, TValue>::print_tree_rec(TreeNode<TKey, TValue>* node,std::string prefix,bool is_last) const{
+    if (!node) return;
+    std::cout << prefix;
+
+    if (!prefix.empty())
+        std::cout << ("|--");
+
+    std::cout << "("<< node->value.first << ", "<< node->value.second<< ")\n";
+
+    std::string new_prefix =prefix + (is_last ? "    " : "|   ");
+
+    if (node->right)
+        print_tree_rec(node->right,new_prefix,node->left == nullptr);
+
+    if (node->left)
+        print_tree_rec(node->left,new_prefix,true);
 }
 #endif

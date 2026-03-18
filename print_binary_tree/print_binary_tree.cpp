@@ -16,5 +16,7 @@ int main() {
         t.insert(10, 'O');
         t.insert(11, 'K');
         t.print();
+        std::cout << "" << std::endl;
+        t.print_tree();
  
 }
