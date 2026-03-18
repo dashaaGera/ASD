@@ -314,12 +314,14 @@ void Tree<TKey, TValue>::print_tree_rec(TreeNode<TKey, TValue>* node,std::string
     if (!node) return;
     std::cout << prefix;
 
-    if (!prefix.empty())
-        std::cout << ("|--");
+    if (!prefix.empty()) {
+        std::cout << (is_last ? "|__" : "|--");
+    }
+        
 
     std::cout << "("<< node->value.first << ", "<< node->value.second<< ")\n";
 
-    std::string new_prefix =prefix + (is_last ? "    " : "|   ");
+    std::string new_prefix = prefix + (is_last ? "    " : "|   ");
 
     if (node->right)
         print_tree_rec(node->right,new_prefix,node->left == nullptr);
