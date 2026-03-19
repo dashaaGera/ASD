@@ -206,11 +206,11 @@ void SkipList<TKey, TValue>::print() const {
             else {
                 std::string key_str = std::to_string(all_data->data.first);
                 for (size_t i = 0; i < key_str.length(); i++) {
-                    std::cout << " ";
+                    std::cout << "-";
                 }
                 all_data = all_data->next[0];
             }
-            std::cout << " ->";
+            std::cout << "->";
         }
         std::cout << "\n";
     }
