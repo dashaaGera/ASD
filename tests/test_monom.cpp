@@ -237,12 +237,17 @@ TEST(TestMonom, comparison_operators) {
 TEST(TestMonom, parse_monom){
 
     ASSERT_THROW(Monom m("p-x"), std::invalid_argument);
-
     Monom m1("2x^2");
     EXPECT_DOUBLE_EQ(m1.coeff(), 2.0);
     EXPECT_EQ(m1.power_x(), 2);
     EXPECT_EQ(m1.power_y(), 0);
     EXPECT_EQ(m1.power_z(), 0);
+
+    Monom m6("5.1.2x");
+    EXPECT_DOUBLE_EQ(m6.coeff(), 5.1);
+    EXPECT_EQ(m6.power_x(), 1);
+    EXPECT_EQ(m6.power_y(), 0);
+    EXPECT_EQ(m6.power_z(), 0);
 
     Monom m2("-3.5y^3");
     EXPECT_DOUBLE_EQ(m2.coeff(), -3.5);

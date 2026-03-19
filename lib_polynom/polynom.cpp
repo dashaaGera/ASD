@@ -5,10 +5,9 @@
 int Polynom::_counter = 1;
 Polynom::Polynom() { _name = "pol" + std::to_string(_counter++); }
 
-Polynom::Polynom(const Monom& m) {
-    if (m.coeff() != 0) {
-        _terms.push_back(m);
-    }
+Polynom::Polynom(const Monom& m)
+{
+    *this = *this + m;
     _name = "pol" + std::to_string(_counter++);
 }
 
@@ -17,22 +16,16 @@ Polynom::Polynom(const std::string& str) {
 }
 
 
-Polynom::Polynom(std::initializer_list<Monom> list) {
-    for (const auto& m : list) {
-        if (m.coeff() != 0) {
-            _terms.push_back(m);
-        }
-    }
-    _simplify();
+Polynom::Polynom(std::initializer_list<Monom> list)
+{
+    for (const auto& m : list)
+        *this = *this + m;
     _name = "pol" + std::to_string(_counter++);
 }
 
-//1 monom
-Polynom::Polynom(std::initializer_list<double> list) {
-    Monom m(list);
-    if (m.coeff() != 0) {
-        _terms.push_back(m);
-    }
+Polynom::Polynom(std::initializer_list<double> list)
+{
+    *this = *this + Monom(list);
     _name = "pol" + std::to_string(_counter++);
 }
 
@@ -47,124 +40,54 @@ Polynom& Polynom::operator=(const Polynom& other) {
     return *this;
 }
 
-void Polynom::_simplify() {
-    if (_terms.is_empty()) return;
+Polynom Polynom::operator+(const Monom& m) const
+{
+    if (m.coeff() == 0)
+        return *this;
 
-    _sort_terms();
+    Polynom result = *this;
+    Node<Monom>* current = result._terms.head();
+    Node<Monom>* prev = nullptr;
 
-    Node<Monom>* current = _terms.head();
-    while (current != nullptr) {
-        // check all next monoms by similar
-        Node<Monom>* runner = current->next;
-        while (runner != nullptr) {
-            if (current->value == runner->value) {
-                try {
-                    current->value = current->value + runner->value;
-                    Node<Monom>* to_delete = runner;
-                    runner = runner->next; // remember next before delete
-                    _terms.erase(to_delete);
-                }
-                catch (...) {
-                    runner = runner->next;
-                }
-            }
-            else {
-                runner = runner->next;
-            }
+    while (current) {
+        if (current->value == m) {
+            current->value += m;
+            if (current->value.coeff() == 0)
+                result._terms.erase(current);
+            return result;
         }
 
-        // if currenr is null
-        if (current->value.coeff() == 0) {
-            Node<Monom>* to_delete = current;
-            current = current->next;
-            _terms.erase(to_delete);
+        if (current->value < m) {
+            if (!prev)
+                result._terms.push_front(m);
+            else
+                result._terms.insert(prev, m);
+
+            return result;
         }
-        else {
-            current = current->next;
-        }
-    }
-}
-void Polynom::_sort_terms() {
-    if (_terms.size() <= 1) return;
 
-    bool swapped;
-    do {
-        swapped = false;
-        Node<Monom>* current = _terms.head();
-
-        while (current != nullptr && current->next != nullptr) {
-            if (current->value < current->next->value) {
-                Monom temp = current->value;
-                current->value = current->next->value;
-                current->next->value = temp;
-                swapped = true;
-            }
-            current = current->next;
-        }
-    } while (swapped);
-}
-
-
-Polynom Polynom::operator+(const Monom& m) const {
-    Polynom result = *this;  
-
-    bool found_similar = false;
-    // find similar monom in polynom
-    for (auto it = result._terms.begin(); it != result._terms.end(); ++it) {
-        if (*it == m) {  
-            try {
-                *it = (*it) + m;  
-                found_similar = true;
-                break;
-            }
-            catch (const std::exception&) {}
-        }
+        prev = current;
+        current = current->next;
     }
 
-    //else
-    if (!found_similar) {
-        result._terms.push_back(m);
-    }
-
-    result._simplify();
+    result._terms.push_back(m);
     return result;
 }
 
-
-Polynom Polynom::operator-(const Monom& m) const {
-    Polynom result = *this;  
-    bool found_similar = false;
-    for (auto it = result._terms.begin(); it != result._terms.end(); ++it) {
-        if (*it == m) {
-            try {
-                *it = (*it) - m;  
-                found_similar = true;
-                break;
-            }
-            catch (const std::exception&) {
-            }
-        }
-    }
-
-    if (!found_similar) {
-        result._terms.push_back(-m);  
-    }
-
-    result._simplify();
-    return result;
+Polynom Polynom::operator-(const Monom& m) const
+{
+    return *this + (-m);
 }
 
+Polynom Polynom::operator*(const Monom& m) const
+{
+    if (m.coeff() == 0)
+        return Polynom();
 
-Polynom Polynom::operator*(const Monom& m) const {
-    if (m.coeff() == 0) {
-        return Polynom(); 
-    }
-    Polynom result = *this;  
+    Polynom result;
+    for (auto it = _terms.begin(); it != _terms.end(); ++it)
+        result += ((*it) * m);
 
-    for (auto it = result._terms.begin(); it != result._terms.end(); ++it) {
-        *it = (*it) * m;  
-    }
-    result._simplify();
     return result;
 }
 
@@ -172,65 +95,55 @@ Polynom Polynom::operator*(const Monom& m) const {
 Polynom Polynom::operator+(const Polynom& other) const {
     Polynom result = *this; 
     for (auto it = other._terms.begin(); it != other._terms.end(); ++it) {
-        result = result + (*it); 
+        result +=(*it); 
     }
-
     return result; 
 }
 
 Polynom Polynom::operator-(const Polynom& other) const {
     Polynom result = *this;  
-
     for (auto it = other._terms.begin(); it != other._terms.end(); ++it) {
-        result = result - (*it);  
+        result -= (*it);  
     }
-
     return result;
 }
 
 
-Polynom Polynom::operator*(const Polynom& other) const {
+Polynom Polynom::operator*(const Polynom& other) const
+{
     Polynom result;
-    for (const auto& monom : _terms) {
-        result += (other * monom);
-    }
-    result._simplify();
+    for (auto it = _terms.begin(); it != _terms.end(); ++it)
+        result += other * (*it);
+
     return result;
 }
 
-Polynom Polynom::operator*(double scalar) const {
-    if (scalar == 0) {
-        return Polynom();  
-    }
-    Polynom result = *this;
-    for (auto it = result._terms.begin(); it != result._terms.end(); ++it) {
-        *it = (*it) * scalar;
-    }
-    result._simplify();
+Polynom Polynom::operator*(double scalar) const
+{
+    if (scalar == 0)
+        return Polynom();
+    Polynom result;
+    for (auto it = _terms.begin(); it != _terms.end(); ++it)
+        result += ((*it) * scalar);
     return result;
 }
 
-Polynom Polynom::operator/(double scalar) const {
-    if (scalar == 0) {
+Polynom Polynom::operator/(double scalar) const
+{
+    if (scalar == 0)
         throw std::logic_error("Division by zero");
-    }
-    Polynom result = *this;  
+    Polynom result;
+    for (auto it = _terms.begin(); it != _terms.end(); ++it)
+        result+= ((*it) / scalar);
 
-    for (auto it = result._terms.begin(); it != result._terms.end(); ++it) {
-        *it = (*it) / scalar; 
-    }
-
-    result._simplify();
     return result;
 }
 
 Polynom Polynom::operator-() const {
     Polynom result = *this;  
-
     for (auto it = result._terms.begin(); it != result._terms.end(); ++it) {
         *it = -(*it);  
     }
-
     return result;  
 }
 
@@ -249,27 +162,15 @@ Polynom& Polynom::operator*=(const Polynom& other) {
     return *this;
 }
 
-Polynom& Polynom::operator*=(double scalar) {
-    if (scalar == 0) {
-        _terms = List<Monom>();  
-        return *this;  
-    }
-
-    for (auto it = _terms.begin(); it != _terms.end(); ++it) {
-        *it = (*it) * scalar;
-    }
-    _simplify();
+Polynom& Polynom::operator*=(double scalar)
+{
+    *this = *this * scalar;
     return *this;
 }
 
-Polynom& Polynom::operator/=(double scalar) {
-    if (scalar == 0) {
-        throw std::logic_error("Division by zero");
-    }
-    for (auto it = _terms.begin(); it != _terms.end(); ++it) {
-        *it = (*it) / scalar;
-    }
-    _simplify();
+Polynom& Polynom::operator/=(double scalar)
+{
+    *this = *this / scalar;
     return *this;
 }
 
@@ -283,15 +184,9 @@ Polynom& Polynom::operator-=(const Monom& m) {
     return *this;
 }
 
-Polynom& Polynom::operator*=(const Monom& m) {
-    if (m.coeff() == 0) {
-        _terms = List<Monom>();  
-        return *this;
-    }
-    for (auto it = _terms.begin(); it != _terms.end(); ++it) {
-        *it = (*it) * m;
-    }
-    _simplify();
+Polynom& Polynom::operator*=(const Monom& m)
+{
+    *this = *this * m;
     return *this;
 }
 
@@ -381,51 +276,32 @@ std::string remove_spaces(const std::string& s) {
  }
 
 
-Polynom Polynom::parse(const std::string& str) {
-    if (str.empty()) {
-        return Polynom();
-    }
-
+Polynom Polynom::parse(const std::string& str)
+{
     std::string s = remove_spaces(str);
-    if (s.empty() || s == "0") {
+    if (s.empty() || s == "0")
         return Polynom();
-    }
+    //sign first monom
+    if (s[0] != '+' && s[0] != '-')
+        s = "+" + s;
 
     Polynom result;
-    std::string current_monom;
+    size_t start = 0;
 
-    if (s[0] != '+' && s[0] != '-') {
-        current_monom = "+";
-    }
-
-    for (size_t i = 0; i < s.size(); i++) {
-        char c = s[i];
-
-        // start new monom
-        if ((c == '+' || c == '-') && i > 0) {
-            if (!current_monom.empty()) {
-                Monom m(current_monom);
-                if (std::abs(m.coeff()) > 1e-12) {
-                    result = result + m;
-                }
-            }
-            current_monom = std::string(1, c); 
-        }
-        else {
-            current_monom += c;
+    for (size_t i = 1; i < s.size(); ++i)
+    {
+        if (s[i] == '+' || s[i] == '-')
+        {
+            std::string token = s.substr(start, i - start);
+            result += Monom(token);
+            start = i;
         }
     }
 
-    // last monom
-    if (!current_monom.empty()) {
-        Monom m(current_monom);
-        if (std::abs(m.coeff()) > 1e-12) {
-            result = result + m;
-        }
-    }
+    result += Monom(s.substr(start));
 
-    result._simplify();
     return result;
 }
+
 
 

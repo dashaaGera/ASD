@@ -192,11 +192,7 @@ bool Monom::operator>(const Monom& other) const {
 }
 
 bool Monom::operator<(const Monom& other) const {
-    for (int i = 0; i < VARS_COUNT; i++) {
-        if (_powers[i] != other._powers[i])
-            return _powers[i] < other._powers[i];
-    }
-    return _coeff < other._coeff;
+    return other > *this;
 }
 
 Monom Monom::parse(const std::string& str) {
@@ -263,12 +259,7 @@ Monom Monom::parse(const std::string& str) {
     }
 
     if (has_coeff && !coeff_str.empty()) {
-        try {
-            coeff = std::stod(coeff_str);
-        }
-        catch (...) {
-            coeff = 1.0;
-        }
+        coeff = std::stod(coeff_str);
     }
 
     if (negative) {

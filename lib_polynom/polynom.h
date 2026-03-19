@@ -10,9 +10,6 @@ private:
     List<Monom> _terms; 
     std::string _name;    
     static int _counter;
-    void _simplify();
-    void _sort_terms();
-
 public:
     Polynom();                                  
     Polynom(const Monom& m);                  
