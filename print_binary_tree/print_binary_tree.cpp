@@ -1,9 +1,10 @@
 #include <iostream>
 #include <string>
 #include "../lib_binary_tree/binary_tree.h"
+
 int main() {
 
-        Tree<int, char> t;
+       Tree<int, char> t;
         t.insert(1, 'R');
         t.insert(2, 'C');
         t.insert(3, 'A');
@@ -18,5 +19,10 @@ int main() {
         t.print();
         std::cout << "" << std::endl;
         t.print_tree();
+
+
+        std::cout << "" << std::endl;
+
+
  
 }
