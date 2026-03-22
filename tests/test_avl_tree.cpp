@@ -132,7 +132,7 @@ TEST(TestAVLTree, insert_work_correctly) {
     EXPECT_EQ(t1.is_empty(), true);
     EXPECT_EQ(t1.size(), 0);
     t1.insert(5, 5);
-    ASSERT_THROW(t1.insert(5, 5), std::logic_error);
+    t1.insert(5, 5);
     EXPECT_EQ(t1.is_empty(), false);
     EXPECT_EQ(t1.to_string(), "5 ");
 

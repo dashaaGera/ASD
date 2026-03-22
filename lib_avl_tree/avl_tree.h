@@ -122,13 +122,9 @@ TValue AVLTree<TKey, TValue>::find(const TKey& Key) const {
 template <typename TKey, typename TValue>
 AVLNode<TKey, TValue>* AVLTree<TKey, TValue>::insert_node(const TKey& Key, const TValue& Val) {
     AVLNode<TKey, TValue>* found = find_pos(Key);
-    if (found && found->value.first == Key) 
-        throw std::logic_error("element already exists in the avltree");
-    if (found && found->left && found->left->value.first == Key) 
-        throw std::logic_error("element already exists in the avltree");
-
-    if (found && found->right && found->right->value.first == Key) 
-        throw std::logic_error("element already exists in the avltree");
+    if ((found && found->left && found->left->value.first == Key) ||
+        (found && found->right && found->right->value.first == Key))
+        throw std::logic_error("elem exist in the bstree");
 
     AVLNode<TKey, TValue>* node = new AVLNode<TKey, TValue>(std::pair<TKey, TValue>(Key, Val));
 
