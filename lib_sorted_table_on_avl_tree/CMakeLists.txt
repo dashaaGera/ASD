@@ -1,0 +1,3 @@
+create_project_lib(SortedTableOnAVLTree)
+add_depend(SortedTableOnAVLTree ITable lib_itable)
+add_depend(SortedTableOnAVLTree AVLTree lib_avl_tree)

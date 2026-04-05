@@ -50,7 +50,9 @@ private:
     void recalc_height(AVLNode<TKey, TValue>* node);
     void restore_balance(AVLNode<TKey, TValue>* node);
     AVLNode<TKey, TValue>* insert_node(const TKey& Key, const TValue& Val);
+    AVLNode<TKey, TValue>* erase_node(AVLNode<TKey, TValue>* node);
     AVLNode<TKey, TValue>* find_pos(const TKey& Key)const;
+    AVLNode<TKey, TValue>* find_max_left(AVLNode<TKey, TValue>* node);
     void print_tree_rec(AVLNode<TKey, TValue>* node, std::string prefix, bool is_last) const;
     void to_string_sorted_rec(AVLNode<TKey, TValue>* curr,
         std::ostringstream& out) const;
@@ -100,6 +102,16 @@ AVLNode<TKey, TValue>* AVLTree<TKey, TValue>::find_pos(const TKey& Key)const {
     return (curr != nullptr) ? curr : prev;
 }
 
+template <typename TKey, typename TValue>
+AVLNode<TKey, TValue>* AVLTree<TKey, TValue>::find_max_left(AVLNode<TKey, TValue>* node) {
+    if (node == nullptr || node->left == nullptr)
+        return nullptr;
+    AVLNode<TKey, TValue>* current = node->left;
+    while (current->right != nullptr) {
+        current = current->right;
+    }
+    return current;
+}
 
 template <typename TKey, typename TValue>
 TValue AVLTree<TKey, TValue>::find(const TKey& Key) const {
@@ -152,39 +164,36 @@ AVLNode<TKey, TValue>* AVLTree<TKey, TValue>::insert_node(const TKey& Key, const
 template <typename TKey, typename TValue>
 void AVLTree<TKey, TValue>::right_rotate(AVLNode<TKey, TValue>* node)
 {
-    //        G
-    //       / \
-    //      P   T3
-    //     / \
-    //    C   T2
-    //       
+    //     GG  GG    
+    //       \ /            GG  GG
+    //        G              \ /
+    //       /      ->        P
+    //      P               /   \        
+    //     / \             C     G
+    //    C   T                 /
+    //                         T
 
     AVLNode<TKey, TValue>* G = node;        
-    AVLNode<TKey, TValue>* P = G->left;     
-    AVLNode<TKey, TValue>* T2 = P->right; 
+    AVLNode<TKey, TValue>* P = G->left;
+    AVLNode<TKey, TValue>* C = P->left;
+    AVLNode<TKey, TValue>* T = P->right; 
+    AVLNode<TKey, TValue>* GG = node->parent;
 
-    P->parent = G->parent;
-    if (!G->parent)
-        _root = P;
-    else if (G->parent->left == G)
-        G->parent->left = P;
-    else
-        G->parent->right = P;
+    G->left = T;
+    if (T) T->parent = G;
 
-    //         G
-    //        / \
-    //      T2  T3
-    G->left = T2;
-    if (T2)
-        T2->parent = G;
-
-    //         P
-    //        / \
-    //       C   G
-    //          / \
-    //         T2 T3
     P->right = G;
     G->parent = P;
+    if (GG) {
+        if (GG->left == G)
+            GG->left = P;
+        else
+            GG->right = P;
+    }
+    else
+        _root = P;
+
+    P->parent = GG;
 
     recalc_height(G);
     recalc_height(P);
@@ -194,38 +203,36 @@ void AVLTree<TKey, TValue>::right_rotate(AVLNode<TKey, TValue>* node)
 template <typename TKey, typename TValue>
 void AVLTree<TKey, TValue>::left_rotate(AVLNode<TKey, TValue>* node)
 {
-    //        G
-    //       / \
-    //      T1  P
-    //         / \
-    //        T2  C
+    //     GG  GG 
+    //      \ /           GG     GG
+    //       G              \   /
+    //        \               P
+    //          P       ->   / \
+    //         / \          G   C
+    //        T   C          \
+    //                        T
 
     AVLNode<TKey, TValue>* G = node;       
     AVLNode<TKey, TValue>* P = G->right;    
-    AVLNode<TKey, TValue>* T2 = P->left;   
+    AVLNode<TKey, TValue>* T = P->left; 
+    AVLNode<TKey, TValue>* GG = G->parent;
 
-    P->parent = G->parent;
-    if (!G->parent)
-        _root = P;
-    else if (G->parent->left == G)
-        G->parent->left = P;
-    else
-        G->parent->right = P;
+    G->right = T;
+    if (T) T->parent = G;
 
-    //         G
-    //        / \
-    //      T1  T2
-    G->right = T2;
-    if (T2)
-        T2->parent = G;
-
-    //         P
-    //        / \
-    //       G   C
-    //      / \
-    //     T1 T2
     P->left = G;
     G->parent = P;
+
+    if (GG) {
+        if (GG->left == G)
+            GG->left = P;
+        else
+            GG->right = P;
+    }
+    else {
+        _root = P;
+    }
+    P->parent = GG;
 
     recalc_height(G);
     recalc_height(P);
@@ -333,6 +340,116 @@ void AVLTree<TKey, TValue>::insert(const TKey& Key, const TValue& Val)
         int balance = calculate_balance(cur);
         if (std::abs(balance) > 1)
             restore_balance(cur);
+        cur = cur->parent;
+    }
+}
+
+//return parent 
+template <typename TKey, typename TValue>
+AVLNode<TKey, TValue>* AVLTree<TKey, TValue>::erase_node(AVLNode<TKey, TValue>* node) {
+   
+    // 1) node is sheet
+    if (node->left == nullptr && node->right == nullptr) {
+        AVLNode<TKey, TValue>* parent = node->parent;
+        if (parent) {
+            if (parent->left == node)
+                parent->left = nullptr;
+            else
+                parent->right = nullptr;
+        }
+        else 
+            _root = nullptr;
+        delete node;
+        _count--;
+
+        return parent;
+    }
+
+    //2) node has only a left child
+    else if (node->left != nullptr && node->right == nullptr) {
+        AVLNode<TKey, TValue>* parent = node->parent;
+        AVLNode<TKey, TValue>* child = node->left;  
+
+        if (parent) {
+            if (parent->left == node)
+                parent->left = child;
+            else
+                parent->right = child;
+        }
+        else {
+            _root = child;
+        }
+        child->parent = parent;
+        delete node;
+        _count--;
+        return parent;
+    }
+
+    //3) node has only a right child
+    else if (node->left == nullptr && node->right != nullptr) {
+        AVLNode<TKey, TValue>* parent = node->parent;
+        AVLNode<TKey, TValue>* child = node->right; 
+
+        if (parent) {
+            if (parent->left == node)
+                parent->left = child;
+            else
+                parent->right = child;
+        }
+        else {
+            _root = child;
+        }
+
+        child->parent = parent;
+        delete node;
+        _count--;
+        return parent;
+    }
+
+    //4) node has both child‰ÛÚ
+
+    else {
+        AVLNode<TKey, TValue>* max_left = find_max_left(node);
+        node->value = max_left->value;
+        AVLNode<TKey, TValue>* parent_of_max_left = max_left->parent;
+
+        AVLNode<TKey, TValue>* left_child = max_left->left;
+
+        if (parent_of_max_left->left == max_left) {
+            parent_of_max_left->left = left_child;
+        }
+        else {
+            parent_of_max_left->right = left_child;
+        }
+
+        if (left_child) {
+            left_child->parent = parent_of_max_left;
+        }
+
+        delete max_left;
+        _count--;
+
+        return parent_of_max_left;
+    }
+}
+
+template <typename TKey, typename TValue>
+void AVLTree<TKey, TValue>::erase(const TKey& Key) {
+    AVLNode<TKey, TValue>* node_to_delete = find_pos(Key);
+    if (!node_to_delete || node_to_delete->value.first != Key)
+        throw std::logic_error("elem not found");
+    AVLNode<TKey, TValue>* real_delete_node_parent = erase_node(node_to_delete);
+    AVLNode<TKey, TValue>* cur = real_delete_node_parent;
+    while (cur) {
+        int balance = calculate_balance(cur);
+        if (std::abs(balance) > 1)
+            restore_balance(cur);
+
+        int old_height = cur->height;
+        recalc_height(cur);
+        if (old_height == cur->height)
+            break;
+
         cur = cur->parent;
     }
 }

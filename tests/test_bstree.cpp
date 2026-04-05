@@ -184,6 +184,7 @@ TEST(TestBSTree, to_string__sorted_on_no_empty_bstree_work_correctly) {
     BSTree<int, std::string> t1;
     EXPECT_EQ(t1.to_string_sorted(), "");
     t1.insert(5, "five");
+    ASSERT_THROW(t1.insert(5, "five");, std::logic_error);
     t1.insert(3, "three");
     t1.insert(9, "nine");
     t1.insert(1, "one");

@@ -107,7 +107,8 @@ TValue BSTree<TKey, TValue>::find(const TKey& Key) const {
 template <typename TKey, typename TValue>
 void BSTree<TKey, TValue>::insert(const TKey& Key, const TValue& Val) {
     TreeNode<TKey, TValue>* found = find_pos(Key);
-    if ((found && found->left && found->left->value.first == Key) ||
+    if ( (found && found->value.first == Key) ||
+        (found && found->left && found->left->value.first == Key) ||
         (found && found->right && found->right->value.first == Key))
         throw std::logic_error("elem exist in the bstree");
     TreeNode<TKey, TValue>* node = new TreeNode<TKey, TValue>(std::pair<TKey, TValue>(Key, Val));

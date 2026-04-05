@@ -69,6 +69,9 @@ TEST(TestAVLTree, insert_work_correctly_case_LL) {
     t1.insert(2, 2);
     EXPECT_EQ(t1.to_string(), "5 3 6 2 4 ");
     EXPECT_EQ(t1.to_string_sorted(), "2 3 4 5 6 ");
+    EXPECT_EQ(t1.root()->height, 3);
+    EXPECT_EQ(t1.root()->left->height, 2);
+    EXPECT_EQ(t1.root()->right->height, 1);
     EXPECT_EQ(t1.size(), 5);
 
 }
@@ -134,6 +137,7 @@ TEST(TestAVLTree, insert_work_correctly) {
     t1.insert(5, 5);
     t1.insert(5, 5);
     EXPECT_EQ(t1.is_empty(), false);
+    EXPECT_EQ(t1.size(), 1);
     EXPECT_EQ(t1.to_string(), "5 ");
 
 }
@@ -145,4 +149,156 @@ TEST(TestAVLTree, find_work_correctly) {
     EXPECT_EQ(t1.find(1), "one");
     EXPECT_EQ(t1.find(2), "two");
     ASSERT_THROW(t1.find(6), std::logic_error);
+}
+
+TEST(TestAVLTree, erase_work_correctly_case_no_balance) {
+    AVLTree<int, std::string> tree;
+    EXPECT_EQ(tree.is_empty(), true);
+    EXPECT_EQ(tree.size(), 0);
+    tree.insert(50, "A");
+    tree.insert(30, "B");
+    tree.insert(70, "C");
+    tree.insert(40, "D");
+    tree.insert(60, "E");
+    tree.insert(80, "F");
+    EXPECT_EQ(tree.is_empty(), false);
+    EXPECT_EQ(tree.size(), 6);
+    EXPECT_EQ(tree.to_string(), "50 30 70 40 60 80 ");
+    tree.erase(30);
+    EXPECT_EQ(tree.size(), 5);
+    EXPECT_EQ(tree.to_string(), "50 40 70 60 80 ");
+    EXPECT_EQ(tree.to_string_sorted(), "40 50 60 70 80 ");
+
+}
+
+TEST(TestAVLTree, erase_work_correctly_case_LL) {
+    AVLTree<int, std::string> tree;
+    EXPECT_EQ(tree.is_empty(), true);
+    EXPECT_EQ(tree.size(), 0);
+    tree.insert(40, "A");
+    tree.insert(30, "B");
+    tree.insert(50, "C");
+    tree.insert(20, "D");
+    tree.insert(35, "E");
+    EXPECT_EQ(tree.is_empty(), false);
+    EXPECT_EQ(tree.size(), 5);
+    EXPECT_EQ(tree.to_string(), "40 30 50 20 35 ");
+    tree.erase(50);
+    EXPECT_EQ(tree.size(), 4);
+    EXPECT_EQ(tree.to_string(), "30 20 40 35 ");
+    EXPECT_EQ(tree.to_string_sorted(), "20 30 35 40 ");
+
+}
+
+TEST(TestAVLTree, erase_work_correctly_case_RR) {
+    AVLTree<int, std::string> tree;
+    EXPECT_EQ(tree.is_empty(), true);
+    EXPECT_EQ(tree.size(), 0);
+    tree.insert(40, "A");
+    tree.insert(30, "B");
+    tree.insert(60, "C");
+    tree.insert(50, "D");
+    tree.insert(70, "E");
+    EXPECT_EQ(tree.is_empty(), false);
+    EXPECT_EQ(tree.size(), 5);
+    EXPECT_EQ(tree.to_string(), "40 30 60 50 70 ");
+    tree.erase(30);
+    EXPECT_EQ(tree.size(), 4);
+    EXPECT_EQ(tree.to_string(), "60 40 70 50 ");
+    EXPECT_EQ(tree.to_string_sorted(), "40 50 60 70 ");
+
+}
+
+TEST(TestAVLTree, erase_work_corretly_case_LR)
+{
+    AVLTree<int, int> t;
+    t.insert(50, 1);
+    t.insert(30, 1);
+    t.insert(70, 1);
+    t.insert(40, 1);
+    EXPECT_EQ(t.size(), 4);
+    EXPECT_EQ(t.to_string(), "50 30 70 40 ");
+    t.erase(70);  
+    EXPECT_EQ(t.size(), 3);
+    EXPECT_EQ(t.to_string(), "40 30 50 ");
+    EXPECT_EQ(t.to_string_sorted(), "30 40 50 ");
+}
+
+TEST(TestAVLTree, erase_work_correctly_case_RL)
+{
+    AVLTree<int, int> t;
+    t.insert(50, 1);
+    t.insert(30, 1);
+    t.insert(70, 1);
+    t.insert(60, 1);
+
+    EXPECT_EQ(t.to_string(), "50 30 70 60 ");
+    EXPECT_EQ(t.size(), 4);
+    t.erase(30);
+    EXPECT_EQ(t.size(), 3);
+    EXPECT_EQ(t.to_string(), "60 50 70 ");
+    EXPECT_EQ(t.to_string_sorted(), "50 60 70 ");
+}
+
+TEST(TestAVLTree, erase_work_correctly) {
+    AVLTree<int, int> t;
+    t.insert(40, 1);
+    t.insert(20, 1);
+    t.insert(60, 1);
+    t.insert(10, 1);
+    t.insert(30, 1);
+    t.insert(50, 1);
+    t.insert(70, 1);
+    t.insert(25, 1);
+
+    EXPECT_EQ(t.to_string(), "40 20 60 10 30 50 70 25 ");
+    EXPECT_EQ(t.size(), 8);
+    t.erase(70);
+    EXPECT_EQ(t.to_string(), "40 20 60 10 30 50 25 ");
+    EXPECT_EQ(t.size(), 7);
+
+    t.erase(10);
+    EXPECT_EQ(t.to_string(), "40 25 60 20 30 50 ");
+    EXPECT_EQ(t.size(), 6);
+
+    t.erase(60);
+    EXPECT_EQ(t.to_string(), "40 25 50 20 30 ");
+    EXPECT_EQ(t.size(), 5);
+
+    t.erase(20);
+    EXPECT_EQ(t.to_string(), "40 25 50 30 ");
+    EXPECT_EQ(t.size(), 4);
+
+    EXPECT_EQ(t.to_string_sorted(), "25 30 40 50 ");
+}
+
+TEST(AVLTree, DeleteCascadeRotations)
+{
+    AVLTree<int,int> tree;
+
+    tree.insert(60,1);
+    tree.insert(40,1);
+    tree.insert(80,1);
+    tree.insert(30,1);
+    tree.insert(50,1);
+    tree.insert(70,10);
+    tree.insert(90,1);
+    tree.insert(20,1);
+    tree.insert(35,1);
+    tree.insert(45,1);
+    tree.insert(55,1);
+    tree.insert(65,1);
+    tree.insert(75,1);
+
+    EXPECT_EQ(
+        tree.to_string(),
+        "60 40 80 30 50 70 90 20 35 45 55 65 75 "
+    );
+
+
+    tree.erase(90);
+    EXPECT_EQ(
+        tree.to_string(),
+        "60 40 70 30 50 65 80 20 35 45 55 75 "
+    );
 }
