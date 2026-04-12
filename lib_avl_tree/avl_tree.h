@@ -1,3 +1,4 @@
+#pragma once
 #include "../lib_bstree/bstree.h"
 #include <iostream>
 #include <stdexcept>
@@ -494,4 +495,38 @@ std::string AVLTree<TKey, TValue>::to_string() const {
         }
     }
     return out.str();
+}
+
+
+
+template <typename TKey, typename TValue>
+void AVLTree<TKey, TValue>::print_tree() const
+{
+    if (_root == nullptr) {
+        std::cout << "Empty tree\n";
+        return;
+    }
+    print_tree_rec(_root, "", true);
+}
+
+
+template <typename TKey, typename TValue>
+void AVLTree<TKey, TValue>::print_tree_rec(AVLNode<TKey, TValue>* node, std::string prefix, bool is_last) const {
+    if (!node) return;
+    std::cout << prefix;
+
+    if (!prefix.empty()) {
+        std::cout << (is_last ? "|__" : "|--");
+    }
+
+
+    std::cout << "(" << node->value.first << ", " << node->value.second << ", " <<node->height<< ")\n";
+
+    std::string new_prefix = prefix + (is_last ? "    " : "|   ");
+
+    if (node->right)
+        print_tree_rec(node->right, new_prefix, node->left == nullptr);
+
+    if (node->left)
+        print_tree_rec(node->left, new_prefix, true);
 }

@@ -28,12 +28,15 @@ add_subdirectory(lib_skip_list)
 add_subdirectory(lib_binary_tree)
 add_subdirectory(lib_bstree)
 add_subdirectory(lib_avl_tree)
+add_subdirectory(lib_hash_table_chain)
+add_subdirectory(lib_hash_table_open_address)
 add_subdirectory(lib_unsorted_table_on_binary_tree) 
 add_subdirectory(lib_table_on_bstree)
 add_subdirectory(lib_sorted_table_on_avl_tree)    # подключаем дополнительный CMakeLists.txt из подкаталога с именем 
 add_subdirectory(lib_algorithms)
 add_subdirectory(print_skip_list)
 add_subdirectory(print_binary_tree)
+add_subdirectory(print_hash_table)
 
 add_subdirectory(main)                # подключаем дополнительный CMakeLists.txt из подкаталога с именем main
 

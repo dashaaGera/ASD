@@ -2,28 +2,28 @@
 #include <gtest/gtest.h>
 #include <string>
 TEST(TestBSTreeNode, can_create_with_init_constructor_correctly) {
-    TreeNode<int, int> n1;
+    BSTreeNode<int, int> n1;
     EXPECT_EQ(n1.value.first, 0);
     EXPECT_EQ(n1.value.second, 0);
     EXPECT_EQ(n1.left, nullptr);
     EXPECT_EQ(n1.right, nullptr);
 
-    TreeNode<int, int> n2(std::pair<int, int>(5, 10));
+    BSTreeNode<int, int> n2(std::pair<int, int>(5, 10));
     EXPECT_EQ(n2.value.first, 5);
     EXPECT_EQ(n2.value.second, 10);
     EXPECT_EQ(n2.left, nullptr);
     EXPECT_EQ(n2.right, nullptr);
 
-    TreeNode<int, int> child1(std::pair<int, int>(1, 2));
-    TreeNode<int, int> child2(std::pair<int, int>(3, 4));
+    BSTreeNode<int, int> child1(std::pair<int, int>(1, 2));
+    BSTreeNode<int, int> child2(std::pair<int, int>(3, 4));
 
-    TreeNode<int, int> n3(std::pair<int, int>(5, 6), &child1);
+    BSTreeNode<int, int> n3(std::pair<int, int>(5, 6), &child1);
     EXPECT_EQ(n3.value.first, 5);
     EXPECT_EQ(n3.value.second, 6);
     EXPECT_EQ(n3.left, &child1);
     EXPECT_EQ(n3.right, nullptr);
 
-    TreeNode<int, int> n4(std::pair<int, int>(7, 8), &child1, &child2);
+    BSTreeNode<int, int> n4(std::pair<int, int>(7, 8), &child1, &child2);
     EXPECT_EQ(n4.value.first, 7);
     EXPECT_EQ(n4.value.second, 8);
     EXPECT_EQ(n4.left, &child1);

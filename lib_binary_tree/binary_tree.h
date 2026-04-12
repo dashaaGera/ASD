@@ -1,5 +1,4 @@
-#ifndef BINARY_TREE_H
-#define BINARY_TREE_H
+#pragma once
 #include <iostream>
 #include <stdexcept>
 #include "../lib_tqueue/tqueue.h"
@@ -329,4 +328,3 @@ void Tree<TKey, TValue>::print_tree_rec(TreeNode<TKey, TValue>* node,std::string
     if (node->left)
         print_tree_rec(node->left,new_prefix,true);
 }
-#endif

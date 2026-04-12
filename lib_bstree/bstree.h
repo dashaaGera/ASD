@@ -1,34 +1,35 @@
+#pragma once
 #include <iostream>
 #include <stdexcept>
 #include <sstream>
 #include "../lib_tqueue/tqueue.h"
 template <typename TKey, typename TValue>
-struct TreeNode {
+struct BSTreeNode {
     std::pair<TKey, TValue> value;
-    TreeNode<TKey, TValue>* left;
-    TreeNode<TKey, TValue>* right;
-    TreeNode(std::pair<TKey, TValue> value_ = std::pair<TKey, TValue>(), TreeNode<TKey, TValue>* left_ = nullptr,
-        TreeNode<TKey, TValue>* right_ = nullptr);
+    BSTreeNode<TKey, TValue>* left;
+    BSTreeNode<TKey, TValue>* right;
+    BSTreeNode(std::pair<TKey, TValue> value_ = std::pair<TKey, TValue>(), BSTreeNode<TKey, TValue>* left_ = nullptr,
+        BSTreeNode<TKey, TValue>* right_ = nullptr);
 };
 
 template <typename TKey, typename TValue>
-TreeNode<TKey, TValue>::TreeNode(std::pair<TKey, TValue> value_, TreeNode<TKey, TValue>* left_, TreeNode<TKey, TValue>* right_)
+BSTreeNode<TKey, TValue>::BSTreeNode(std::pair<TKey, TValue> value_, BSTreeNode<TKey, TValue>* left_, BSTreeNode<TKey, TValue>* right_)
     : value(value_), left(left_), right(right_) {
 }
 
 template <typename TKey, typename TValue>
 class BSTree {
-    TreeNode<TKey, TValue>* _root;
+    BSTreeNode<TKey, TValue>* _root;
     int _count;
-    void clear_tree(TreeNode< TKey, TValue >* curr);
-    TreeNode<TKey, TValue>* find_pos(const TKey& Key) const;
-    TreeNode<TKey, TValue>* find_max_left(TreeNode<TKey, TValue>* node);
-    TreeNode<TKey, TValue>* erase_node(TreeNode<TKey, TValue>* node, const TKey& Key);
-    void to_string_sorted_rec(TreeNode<TKey, TValue>* curr, std::ostringstream& out) const;
+    void clear_tree(BSTreeNode< TKey, TValue >* curr);
+    BSTreeNode<TKey, TValue>* find_pos(const TKey& Key) const;
+    BSTreeNode<TKey, TValue>* find_max_left(BSTreeNode<TKey, TValue>* node);
+    BSTreeNode<TKey, TValue>* erase_node(BSTreeNode<TKey, TValue>* node, const TKey& Key);
+    void to_string_sorted_rec(BSTreeNode<TKey, TValue>* curr, std::ostringstream& out) const;
 public:
     BSTree();
     ~BSTree();
-    TreeNode<TKey, TValue>* root() const;
+    BSTreeNode<TKey, TValue>* root() const;
     void insert(const TKey& Key, const TValue& Val);
     void erase(const TKey& Key);
     bool is_empty() const;
@@ -48,7 +49,7 @@ BSTree<TKey, TValue>::~BSTree() {
 }
 
 template <typename TKey, typename TValue>
-void BSTree<TKey, TValue>::clear_tree(TreeNode< TKey, TValue >* curr) {
+void BSTree<TKey, TValue>::clear_tree(BSTreeNode< TKey, TValue >* curr) {
     if (curr == nullptr) return;
     clear_tree(curr->left);
     clear_tree(curr->right);
@@ -61,7 +62,7 @@ bool BSTree<TKey, TValue>::is_empty() const {
 }
 
 template <typename TKey, typename TValue>
-TreeNode<TKey, TValue>* BSTree<TKey, TValue>::root() const {
+BSTreeNode<TKey, TValue>* BSTree<TKey, TValue>::root() const {
     return _root;
 }
 
@@ -71,9 +72,9 @@ int BSTree<TKey, TValue>::size() const {
 }
 
 template <typename TKey, typename TValue>
-TreeNode<TKey, TValue>* BSTree<TKey, TValue>::find_pos(const TKey& Key)const {
-    TreeNode<TKey, TValue>* curr = _root;
-    TreeNode<TKey, TValue>* prev = nullptr;
+BSTreeNode<TKey, TValue>* BSTree<TKey, TValue>::find_pos(const TKey& Key)const {
+    BSTreeNode<TKey, TValue>* curr = _root;
+    BSTreeNode<TKey, TValue>* prev = nullptr;
     while (curr != nullptr && curr->value.first != Key ) {
         prev = curr;
         if (curr->value.first > Key)
@@ -88,7 +89,7 @@ TreeNode<TKey, TValue>* BSTree<TKey, TValue>::find_pos(const TKey& Key)const {
 
 template <typename TKey, typename TValue>
 TValue BSTree<TKey, TValue>::find(const TKey& Key) const {
-    TreeNode<TKey, TValue>* found = find_pos(Key);
+    BSTreeNode<TKey, TValue>* found = find_pos(Key);
     if (found == nullptr)
         throw std::logic_error("elem not found");
 
@@ -106,12 +107,12 @@ TValue BSTree<TKey, TValue>::find(const TKey& Key) const {
 
 template <typename TKey, typename TValue>
 void BSTree<TKey, TValue>::insert(const TKey& Key, const TValue& Val) {
-    TreeNode<TKey, TValue>* found = find_pos(Key);
+    BSTreeNode<TKey, TValue>* found = find_pos(Key);
     if ( (found && found->value.first == Key) ||
         (found && found->left && found->left->value.first == Key) ||
         (found && found->right && found->right->value.first == Key))
         throw std::logic_error("elem exist in the bstree");
-    TreeNode<TKey, TValue>* node = new TreeNode<TKey, TValue>(std::pair<TKey, TValue>(Key, Val));
+    BSTreeNode<TKey, TValue>* node = new BSTreeNode<TKey, TValue>(std::pair<TKey, TValue>(Key, Val));
     if (is_empty()) {
         _root = node;
         _count++;
@@ -129,10 +130,10 @@ void BSTree<TKey, TValue>::insert(const TKey& Key, const TValue& Val) {
 
 }
 template <typename TKey, typename TValue>
-TreeNode<TKey, TValue>* BSTree<TKey, TValue>::find_max_left(TreeNode<TKey, TValue>* node) {
+BSTreeNode<TKey, TValue>* BSTree<TKey, TValue>::find_max_left(BSTreeNode<TKey, TValue>* node) {
     if (node == nullptr || node->left == nullptr)
         return nullptr; 
-    TreeNode<TKey, TValue>* current = node->left;
+    BSTreeNode<TKey, TValue>* current = node->left;
     while (current->right != nullptr) {
         current = current->right;  
     }
@@ -141,7 +142,7 @@ TreeNode<TKey, TValue>* BSTree<TKey, TValue>::find_max_left(TreeNode<TKey, TValu
 
 
 template <typename TKey, typename TValue>
-TreeNode<TKey, TValue>* BSTree<TKey, TValue>::erase_node(TreeNode<TKey, TValue>* node,const TKey& Key) {
+BSTreeNode<TKey, TValue>* BSTree<TKey, TValue>::erase_node(BSTreeNode<TKey, TValue>* node,const TKey& Key) {
     if (node == nullptr)
         return nullptr;
     if (Key < node->value.first) {
@@ -152,21 +153,21 @@ TreeNode<TKey, TValue>* BSTree<TKey, TValue>::erase_node(TreeNode<TKey, TValue>*
     }
     else {
         if (node->left == nullptr) {
-            TreeNode<TKey, TValue>* right_child = node->right;
+            BSTreeNode<TKey, TValue>* right_child = node->right;
             delete node;
             _count--;
             return right_child; 
         }
 
         else if (node->right == nullptr) {
-            TreeNode<TKey, TValue>* left_child = node->left;
+            BSTreeNode<TKey, TValue>* left_child = node->left;
             delete node;
             _count--;
             return left_child;
         }
 
         else {
-            TreeNode<TKey, TValue>* max_left = find_max_left(node);
+            BSTreeNode<TKey, TValue>* max_left = find_max_left(node);
             node->value = max_left->value;
             node->left = erase_node(node->left, max_left->value.first);
             return node;
@@ -188,10 +189,10 @@ std::string BSTree<TKey, TValue>::to_string() const {
     }
     std::ostringstream out;
 
-    Queue<TreeNode<TKey, TValue>*> q;
+    Queue<BSTreeNode<TKey, TValue>*> q;
     q.push(_root);
     while (!q.is_empty()) {
-        TreeNode<TKey, TValue>* cur = q.head();
+        BSTreeNode<TKey, TValue>* cur = q.head();
         q.pop();
         out << cur->value.first << " ";
         if (cur->left != nullptr) {
@@ -213,7 +214,7 @@ std::string BSTree<TKey, TValue>::to_string_sorted() const {
 
 
 template <typename TKey, typename TValue>
-void BSTree<TKey, TValue>::to_string_sorted_rec(TreeNode<TKey, TValue>* curr,
+void BSTree<TKey, TValue>::to_string_sorted_rec(BSTreeNode<TKey, TValue>* curr,
     std::ostringstream& out) const {
     if (curr == nullptr)
         return;
