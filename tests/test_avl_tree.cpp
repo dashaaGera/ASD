@@ -54,6 +54,7 @@ TEST(TestAVLTree, can_create_with_init_constructor_correctly) {
     EXPECT_EQ(t1.size(), 0);
 }
 
+
 TEST(TestAVLTree, insert_work_correctly_case_LL) {
     AVLTree<int, int> t1;
     EXPECT_EQ(t1.is_empty(), true);
@@ -75,6 +76,8 @@ TEST(TestAVLTree, insert_work_correctly_case_LL) {
     EXPECT_EQ(t1.size(), 5);
 
 }
+
+
 
 TEST(TestAVLTree, insert_work_correctly_case_RR) {
     AVLTree<int, int> t1;
