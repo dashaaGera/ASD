@@ -2,6 +2,8 @@
 #include <iostream>
 #include <stdexcept>
 #include <vector>
+#include <algorithm>
+
 
 template <class T>
 class Heap {
@@ -77,14 +79,10 @@ void Heap<T>::sift_down(size_t i) {
 	while (1) {
 		int l = left(i);
 		int r = right(i);
-		if (l < _heap.size() && _heap[l] < _heap[i]) {
-			swap(i, l);
-			i = l;
-		}
-
-		else if (r < _heap.size() && _heap[r] < _heap[i]) {
-			swap(i, r);
-			i = r;
+		int mini = std::min(l, r);
+		if (l < _heap.size() && _heap[mini] < _heap[i]) {
+			swap(i, mini);
+			i = mini;
 		}
 
 		else {
