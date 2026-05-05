@@ -207,3 +207,71 @@ TEST(TestRBTree, can_insert_correctly_all_cases) {
     EXPECT_EQ(t1.to_string_sorted(), "3 5 7 8 10 ");
 
 }
+
+TEST(TestRBTree, can_erase_correctly_case_delete_red) {
+    RBTree<int, int> t;
+    t.insert(10, 1);
+    t.insert(5, 1); // red
+    t.erase(5);
+    EXPECT_EQ(t.to_string(), "10 ");
+    EXPECT_EQ(t.to_string_sorted(), "10 ");
+    EXPECT_EQ(t.size(), 1);
+    EXPECT_EQ(t.root()->color, RBColor::BLACK);
+}
+
+TEST(TestRBTree, can_erase_correctly_case_replacer_red) {
+    RBTree<int, int> t;
+    t.insert(50, 1);
+    t.insert(25, 1);
+    t.insert(75, 1);
+    t.insert(10, 1);
+    EXPECT_EQ(t.root()->color, RBColor::BLACK);
+    EXPECT_EQ(t.root()->left->color, RBColor::BLACK);
+    EXPECT_EQ(t.root()->right->color, RBColor::BLACK);
+    EXPECT_EQ(t.root()->left->left->color, RBColor::RED);
+    t.erase(25);
+    EXPECT_EQ(t.to_string(), "50 10 75 ");
+    EXPECT_EQ(t.to_string_sorted(), "10 50 75 ");
+    EXPECT_EQ(t.size(), 3);
+    EXPECT_EQ(t.root()->color, RBColor::BLACK);
+    EXPECT_EQ(t.root()->left->color, RBColor::BLACK);
+    EXPECT_EQ(t.root()->right->color, RBColor::BLACK);
+}
+
+TEST(RBTreeTest, BlackSiblingRedChild) {
+    RBTree<int, int> t;
+
+    t.insert(10, 1);
+    t.insert(5, 1);
+    t.insert(20, 1);
+    t.insert(15, 1);
+
+    t.erase(5);
+
+    EXPECT_EQ(t.size(), 3);
+}
+
+TEST(RBTreeTest, BlackSiblingBlackChildren) {
+    RBTree<int, int> t;
+
+    t.insert(10, 1);
+    t.insert(5, 1);
+    t.insert(15, 1);
+
+    t.erase(5);
+
+    EXPECT_EQ(t.size(), 2);
+}
+
+TEST(RBTreeTest, RedSibling) {
+    RBTree<int, int> t;
+
+    t.insert(10, 1);
+    t.insert(5, 1);
+    t.insert(20, 1);
+    t.insert(30, 1);
+
+    t.erase(5);
+
+    EXPECT_EQ(t.size(), 3);
+}

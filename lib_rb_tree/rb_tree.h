@@ -4,7 +4,7 @@
 #include <sstream>
 #include "../lib_tqueue/tqueue.h"
 
-enum class RBColor { RED, BLACK };
+enum class RBColor { RED, BLACK , BLACKBLACK};
 
 template <typename TKey, typename TValue>
 struct RBNode {
@@ -48,8 +48,9 @@ private:
     void restore_balance(RBNode<TKey, TValue>* node);
     void swap_colors(RBNode<TKey, TValue>* node1, RBNode<TKey, TValue>* node2);
     void recolor(RBNode<TKey, TValue>* node);
+    std::pair<RBNode<TKey, TValue>*, RBColor> erase_node(RBNode<TKey, TValue>* node);
+    void fix_double_black(RBNode<TKey, TValue>* node);
     RBNode<TKey, TValue>* insert_node(const TKey& Key, const TValue& Val);
-    RBNode<TKey, TValue>* erase_node(RBNode<TKey, TValue>* node);
     RBNode<TKey, TValue>* find_pos(const TKey& Key)const;
     RBNode<TKey, TValue>* find_max_left(RBNode<TKey, TValue>* node);
     void print_tree_rec(RBNode<TKey, TValue>* node, std::string prefix, bool is_last) const;
@@ -347,6 +348,223 @@ void RBTree<TKey, TValue>::insert(const TKey& Key, const TValue& Val) {
         return;
 
     restore_balance(node);
+}
+
+
+template <typename TKey, typename TValue>
+std::pair<RBNode<TKey, TValue>*, RBColor>
+RBTree<TKey, TValue>::erase_node(RBNode<TKey, TValue>* node) {
+
+    RBColor deleted_color = node->color;
+
+    // no children
+    if (!node->left && !node->right) {
+        RBNode<TKey, TValue>* parent = node->parent;
+
+        if (parent) {
+            if (parent->left == node) parent->left = nullptr;
+            else parent->right = nullptr;
+        }
+        else {
+            _root = nullptr;
+        }
+
+        delete node;
+        _count--;
+
+        return { nullptr, deleted_color };
+    }
+
+    //1 child
+    if (!node->left || !node->right) {
+        RBNode<TKey, TValue>* child = node->left ? node->left : node->right;
+        RBNode<TKey, TValue>* parent = node->parent;
+
+        if (parent) {
+            if (parent->left == node) parent->left = child;
+            else parent->right = child;
+        }
+        else {
+            _root = child;
+        }
+
+        child->parent = parent;
+
+        delete node;
+        _count--;
+
+        return { child, deleted_color };
+    }
+
+    // 2 children
+    RBNode<TKey, TValue>* pred = find_max_left(node);
+    node->value = pred->value;
+
+    return erase_node(pred);
+}
+
+template <typename TKey, typename TValue>
+void RBTree<TKey, TValue>::fix_double_black(RBNode<TKey, TValue>* node) {
+    //node-double black
+    while (node != _root) {
+        RBNode<TKey, TValue>* parent = node->parent;
+        if (!parent) break;
+
+        RBNode<TKey, TValue>* sibling =
+            (node == parent->left) ? parent->right : parent->left;
+        if (!sibling) {
+            node = parent;
+            continue;
+        }
+
+        // 1) sibling - red
+        //    P(B)
+        //    / \
+        //  node  S(R)
+        //         / \
+        //        B  B
+        if (sibling && sibling->color == RBColor::RED) {
+            swap_colors(parent, sibling);
+
+            if (node == parent->left)
+                left_rotate(parent);
+            else
+                right_rotate(parent);
+        //        S(B)
+        //        / \
+        //       P(R) B
+        //        /
+        //      node
+        // case - S-black
+            continue;
+        }
+
+        // 2) sibling -black and his children -black
+        //    P(B)
+        //    / \
+        //  node S(B)
+        //         / \
+        //        B   B
+        if ((!sibling->left || sibling->left->color == RBColor::BLACK) &&
+            (!sibling->right || sibling->right->color == RBColor::BLACK)) {
+
+            sibling->color = RBColor::RED;
+                // P(? )
+                // / \
+                //B   S(R)
+
+            if (parent->color == RBColor::RED) {
+                parent->color = RBColor::BLACK;
+                break;
+            }
+            else {
+                node = parent;
+                continue;
+            }
+        }
+
+        // 3) S- black CS - red
+        //     P
+        //    / \
+        //  node  S(B)
+        //         /
+        //         R
+        if (node == parent->left) {
+            if (!sibling->right || sibling->right->color == RBColor::BLACK) {
+                if (sibling->left)
+                    sibling->left->color = RBColor::BLACK;
+                sibling->color = RBColor::RED;
+                right_rotate(sibling);
+                sibling = parent->right;
+            }
+
+         //        P
+         //       / \
+         //      node  R
+         //             \
+         //             S
+
+            sibling->color = parent->color;
+            parent->color = RBColor::BLACK;
+            if (sibling->right)
+                sibling->right->color = RBColor::BLACK;
+            left_rotate(parent);
+        //        R
+        //       / \
+        //      P    S
+        //      /
+        //     B
+        }
+        else {
+        //         P
+        //        / \
+        //       S(B) node
+        //        \
+        //          R
+            if (!sibling->left || sibling->left->color == RBColor::BLACK) {
+                if (sibling->right)
+                    sibling->right->color = RBColor::BLACK;
+                sibling->color = RBColor::RED;
+                left_rotate(sibling);
+                sibling = parent->left;
+            }
+
+        //        P
+        //       / \
+        //       R   node
+        //      /
+        //      S
+                 
+            sibling->color = parent->color;
+            parent->color = RBColor::BLACK;
+            if (sibling->left)
+                sibling->left->color = RBColor::BLACK;
+            right_rotate(parent);
+        //         R
+        //        / \
+        //       S   P
+        //        \
+        //         B
+        }
+
+        break;
+    }
+
+    if (node) node->color = RBColor::BLACK;
+}
+
+template <typename TKey, typename TValue>
+void RBTree<TKey, TValue>::erase(const TKey& Key) {
+
+    RBNode<TKey, TValue>* node = find_pos(Key);
+
+    if (!node || node->value.first != Key)
+        throw std::logic_error("not found");
+
+    auto [replacer, deleted_color] = erase_node(node);
+
+    if (!replacer) {
+        if (_root) _root->color = RBColor::BLACK;
+        return;
+    }
+
+    if (deleted_color == RBColor::RED)
+        return;
+     //    B
+     //    /
+     //  (R) < -deleted
+
+    if (replacer && replacer->color == RBColor::RED) {
+        replacer->color = RBColor::BLACK;
+        return;
+    }
+    //    B
+    //    /
+    //   B < -deleted
+    //   /
+    //   R < -replacer
+
+    fix_double_black(replacer);
 }
 
 template <typename TKey, typename TValue>
