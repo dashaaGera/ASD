@@ -4,7 +4,15 @@
 #include <sstream>
 #include "../lib_tqueue/tqueue.h"
 
-enum class RBColor { RED, BLACK , BLACKBLACK};
+enum class RBColor { RED, BLACK};
+inline std::ostream& operator<<(std::ostream& os, RBColor color) {
+    switch (color) {
+    case RBColor::RED:         os << "RED"; break;
+    case RBColor::BLACK:       os << "BLACK"; break;
+    default:                   os << "UNKNOWN";
+    }
+    return os;
+}
 
 template <typename TKey, typename TValue>
 struct RBNode {
@@ -541,9 +549,33 @@ void RBTree<TKey, TValue>::erase(const TKey& Key) {
     if (!node || node->value.first != Key)
         throw std::logic_error("not found");
 
+    RBNode<TKey, TValue>* parent = node->parent;
+    bool was_left = (parent && parent->left == node);
+
     auto [replacer, deleted_color] = erase_node(node);
 
     if (!replacer) {
+        if (deleted_color == RBColor::BLACK && parent) {
+            RBNode<TKey, TValue>* fake = new RBNode<TKey, TValue>(std::pair<TKey, TValue>(), parent, nullptr, nullptr, RBColor::BLACK);
+            if (was_left)
+                parent->left = fake;
+            else
+                parent->right = fake;
+
+            fix_double_black(fake);
+
+            RBNode<TKey, TValue>* p = fake->parent;
+            if (p) {
+                if (p->left == fake) p->left = nullptr;
+                else if (p->right == fake) p->right = nullptr;
+            }
+            else {
+                _root = nullptr;
+            }
+            delete fake;
+            return;
+        }
+
         if (_root) _root->color = RBColor::BLACK;
         return;
     }

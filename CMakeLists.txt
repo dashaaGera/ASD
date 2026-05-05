@@ -34,6 +34,7 @@ add_subdirectory(lib_hash_table_open_address)
 add_subdirectory(lib_unsorted_table_on_binary_tree) 
 add_subdirectory(lib_table_on_bstree)
 add_subdirectory(lib_sorted_table_on_avl_tree)
+add_subdirectory(lib_sorted_table_on_rb_tree)
 add_subdirectory(lib_heap)    # подключаем дополнительный CMakeLists.txt из подкаталога с именем 
 add_subdirectory(lib_priority_queue)
 add_subdirectory(lib_algorithms)

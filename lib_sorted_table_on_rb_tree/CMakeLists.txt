@@ -1,0 +1,3 @@
+create_project_lib(SortedTableOnRBTree)
+add_depend(SortedTableOnRBTree ITable lib_itable)
+add_depend(SortedTableOnRBTree AVLTree lib_rb_tree)
