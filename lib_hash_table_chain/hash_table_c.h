@@ -115,14 +115,15 @@ template <class TValue>
 HashTableChain< TValue> merge_dict(TVector<std::pair<std::string, TValue>> dict1, TVector<std::pair<std::string, TValue>> dict2) {
     HashTableChain<TValue> result;
 
+
     for (auto it = dict1.begin(); it != dict1.end(); ++it) {
         result.insert((*it).first, (*it).second);
     }
 
     for (auto it = dict2.begin(); it != dict2.end(); ++it) {
-        if (!result.consist((*it).first)) {
+        try {
             result.insert((*it).first, (*it).second);
-        }
+        } catch(...){}
     }
 
     return result;

@@ -47,7 +47,7 @@ TEST(TestHashTableOpenAddress, consist_works_correctly) {
 
 
 TEST(TestHashTableOpenAddress, find_works_correctly) {
-    HashTableOpenAddress<std::string> table(15);
+    HashTableOpenAddress<std::string> table(3);
 
     table.insert("name", "John");
     table.insert("city", "Moscow");

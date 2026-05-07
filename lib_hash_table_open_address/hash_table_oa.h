@@ -124,7 +124,9 @@ TValue HashTableOpenAddress<TValue>::find(const std::string& Key) const {
     if (is_empty())
         throw std::logic_error("Hash table is empty");
 
+
     size_t index = h(Key);
+    size_t hash_1 = index;
     while (true) {
         if (_rows[index].status == HashData<TValue>::empty) {
             throw std::logic_error("Key not found");
@@ -135,7 +137,12 @@ TValue HashTableOpenAddress<TValue>::find(const std::string& Key) const {
             return _rows[index].val;
         }
 
+
         index = hh(index);
+
+        if (index == hash_1) {
+            throw std::logic_error("Key not found");
+        }
     }
 
     throw std::logic_error("Key not found");

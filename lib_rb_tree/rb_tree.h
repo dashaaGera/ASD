@@ -471,7 +471,7 @@ void RBTree<TKey, TValue>::fix_double_black(RBNode<TKey, TValue>* node) {
             }
         }
 
-        // 3) S- black CS - red
+        // 3) S- black CS - red +
         //     P
         //    / \
         //  node  S(B)
@@ -580,13 +580,13 @@ void RBTree<TKey, TValue>::erase(const TKey& Key) {
         return;
     }
 
-    if (deleted_color == RBColor::RED)
+    if (deleted_color == RBColor::RED) //+
         return;
      //    B
      //    /
      //  (R) < -deleted
 
-    if (replacer && replacer->color == RBColor::RED) {
+    if (replacer && replacer->color == RBColor::RED) { //+
         replacer->color = RBColor::BLACK;
         return;
     }

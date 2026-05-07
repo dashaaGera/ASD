@@ -238,7 +238,8 @@ TEST(TestRBTree, can_erase_correctly_case_replacer_red) {
     EXPECT_EQ(t.root()->right->color, RBColor::BLACK);
 }
 
-TEST(TestRBTree, can_erase_correctly_case_s_black_cs_red) {
+TEST(TestRBTree, can_erase_correctly_case_s_black_cs_red) { 
+    
     RBTree<int, int> t;
 
     t.insert(50, 1);
@@ -264,6 +265,8 @@ TEST(TestRBTree, can_erase_correctly_case_s_black_cs_red) {
     t.insert(150, 1);
     t.erase(35);
     t.erase( 10);
+    t.erase(40);
+    t.print_tree();
     t.erase(20);
     t.print_tree();
     EXPECT_EQ(t.to_string(), "70 50 120 40 60 90 130 55 65 150 ");
@@ -275,7 +278,7 @@ TEST(TestRBTree, can_erase_correctly_case_s_black_cs_red) {
     
 }
 
-TEST(TestRBTree, can_erase_correctly_case_s_black_children_s_black) {
+TEST(TestRBTree, can_erase_correctly_case_s_red_children_s_black) {
     RBTree<int, int> t;
 
     t.insert(50, 1);
@@ -304,7 +307,11 @@ TEST(TestRBTree, can_erase_correctly_case_s_black_children_s_black) {
     t.erase(20);
     t.erase(150);
     t.erase(130);
+    t.erase(90);
+    t.print_tree();
+  
     t.erase(120);
+
     t.print_tree();
     EXPECT_EQ(t.to_string(), "70 50 90 40 60 55 65 ");
     EXPECT_EQ(t.size(), 7);
