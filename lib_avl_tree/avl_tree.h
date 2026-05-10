@@ -437,20 +437,15 @@ AVLNode<TKey, TValue>* AVLTree<TKey, TValue>::erase_node(AVLNode<TKey, TValue>* 
 template <typename TKey, typename TValue>
 void AVLTree<TKey, TValue>::erase(const TKey& Key) {
     AVLNode<TKey, TValue>* node_to_delete = find_pos(Key);
+
     if (!node_to_delete || node_to_delete->value.first != Key)
         throw std::logic_error("elem not found");
-    AVLNode<TKey, TValue>* real_delete_node_parent = erase_node(node_to_delete);
-    AVLNode<TKey, TValue>* cur = real_delete_node_parent;
+
+    AVLNode<TKey, TValue>* cur = erase_node(node_to_delete);
+
     while (cur) {
-        int balance = calculate_balance(cur);
-        if (std::abs(balance) > 1)
-            restore_balance(cur);
-
-        int old_height = cur->height;
         recalc_height(cur);
-        if (old_height == cur->height)
-            break;
-
+        restore_balance(cur);
         cur = cur->parent;
     }
 }

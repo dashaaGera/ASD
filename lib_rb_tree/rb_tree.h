@@ -425,7 +425,7 @@ void RBTree<TKey, TValue>::fix_double_black(RBNode<TKey, TValue>* node) {
             continue;
         }
 
-        // 1) sibling - red
+        // 1) sibling - red+
         //    P(B)
         //    / \
         //  node  S(R)
@@ -447,7 +447,7 @@ void RBTree<TKey, TValue>::fix_double_black(RBNode<TKey, TValue>* node) {
             continue;
         }
 
-        // 2) sibling -black and his children -black
+        // 2) sibling -black and his children -black+
         //    P(B)
         //    / \
         //  node S(B)

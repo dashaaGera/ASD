@@ -275,33 +275,35 @@ TEST(TestAVLTree, erase_work_correctly) {
     EXPECT_EQ(t.to_string_sorted(), "25 30 40 50 ");
 }
 
-TEST(AVLTree, DeleteCascadeRotations)
+TEST(TestAVLTree, delete_cascade_rotations)
 {
     AVLTree<int,int> tree;
 
-    tree.insert(60,1);
-    tree.insert(40,1);
-    tree.insert(80,1);
-    tree.insert(30,1);
-    tree.insert(50,1);
-    tree.insert(70,10);
-    tree.insert(90,1);
+    tree.insert(17,1);
+    tree.insert(11,1);
     tree.insert(20,1);
-    tree.insert(35,1);
-    tree.insert(45,1);
-    tree.insert(55,1);
-    tree.insert(65,1);
-    tree.insert(75,1);
-
+    tree.insert(7,1);
+    tree.insert(12,1);
+    tree.insert(18,10);
+    tree.insert(22,1);
+    tree.insert(4,1);
+    tree.insert(8, 1);
+    tree.insert(13,1);
+    tree.insert(21,1);
+    tree.insert(2, 1);
+    tree.insert(6, 1);
+    tree.insert(10, 1);
     EXPECT_EQ(
         tree.to_string(),
-        "60 40 80 30 50 70 90 20 35 45 55 65 75 "
+        "17 11 20 7 12 18 22 4 8 13 21 2 6 10 "
     );
+    tree.erase(18);
 
+   
+    
 
-    tree.erase(90);
     EXPECT_EQ(
         tree.to_string(),
-        "60 40 70 30 50 65 80 20 35 45 55 75 "
+        "11 7 17 4 8 12 21 2 6 10 13 20 22 "
     );
 }

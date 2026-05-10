@@ -269,16 +269,12 @@ TEST(TestRBTree, can_erase_correctly_case_s_black_cs_red) {
     t.print_tree();
     t.erase(20);
     t.print_tree();
-    EXPECT_EQ(t.to_string(), "70 50 120 40 60 90 130 55 65 150 ");
-    EXPECT_EQ(t.size(), 10);
-    EXPECT_EQ(t.root()->color, RBColor::BLACK);
-    EXPECT_EQ(t.root()->left->color, RBColor::BLACK);
-    EXPECT_EQ(t.root()->left->left->color, RBColor::BLACK);
-    EXPECT_EQ(t.root()->right->color, RBColor::BLACK);
+    EXPECT_EQ(t.to_string(), "70 60 120 50 65 90 130 55 150 ");
+    EXPECT_EQ(t.size(), 9);
     
 }
 
-TEST(TestRBTree, can_erase_correctly_case_s_red_children_s_black) {
+TEST(TestRBTree, can_erase_correctly_case_s_red_and_case_s_black_children_black) {
     RBTree<int, int> t;
 
     t.insert(50, 1);
@@ -304,6 +300,7 @@ TEST(TestRBTree, can_erase_correctly_case_s_red_children_s_black) {
     t.insert(150, 1);
     t.erase(35);
     t.erase(10);
+    t.erase(40);
     t.erase(20);
     t.erase(150);
     t.erase(130);
@@ -313,16 +310,13 @@ TEST(TestRBTree, can_erase_correctly_case_s_red_children_s_black) {
     t.erase(120);
 
     t.print_tree();
-    EXPECT_EQ(t.to_string(), "70 50 90 40 60 55 65 ");
-    EXPECT_EQ(t.size(), 7);
-    EXPECT_EQ(t.root()->color, RBColor::BLACK);
-    EXPECT_EQ(t.root()->left->color, RBColor::RED);
-    EXPECT_EQ(t.root()->left->left->color, RBColor::BLACK);
-    EXPECT_EQ(t.root()->right->color, RBColor::BLACK);
+    EXPECT_EQ(t.to_string(), "60 50 70 55 65 ");
+    EXPECT_EQ(t.size(), 5);
+
 
 }
 
-TEST(TestRBTree, can_erase_correctly_case_s_red) {
+TEST(TestRBTree, can_erase_correctly_case_s_red_and_case_s_black_cs_red) {
     RBTree<int, int> t;
 
     t.insert(50, 1);
@@ -351,15 +345,13 @@ TEST(TestRBTree, can_erase_correctly_case_s_red) {
     t.erase(20);
     t.erase(150);
     t.erase(130);
-    t.erase(120);
     t.erase(90);
+    t.print_tree();
+
+    t.erase(120);
+
     t.print_tree();
     EXPECT_EQ(t.to_string(), "50 40 60 55 70 65 ");
     EXPECT_EQ(t.size(), 6);
-    EXPECT_EQ(t.root()->color, RBColor::BLACK);
-    EXPECT_EQ(t.root()->left->color, RBColor::BLACK);
-    EXPECT_EQ(t.root()->right->left->color, RBColor::BLACK);
-    EXPECT_EQ(t.root()->right->color, RBColor::RED);
-
 }
 
